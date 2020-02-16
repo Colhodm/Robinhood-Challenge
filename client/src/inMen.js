@@ -136,11 +136,9 @@ this.setStyle = this.setStyle.bind(this);
 }
 //TODO fix so that will work for hours
   tick() {
-    console.log(67)
     var hour = Math.floor(this.secondsRemaining / (60*60));
     var min = Math.floor((this.secondsRemaining - (hour * 60*60))/60);
     var sec = this.secondsRemaining -(hour*3600) - (min * 60);
-    console.log(sec)
     this.setState({
       hours: hour,
       minutes: min,
@@ -168,7 +166,6 @@ this.setStyle = this.setStyle.bind(this);
     let time = this.state.minutes;
     let hours = this.state.hours;
     let seconds = this.state.seconds;
-    console.log(hours*3600,seconds*1,time*60)
     this.secondsRemaining = time * 60 + hours*3600 + seconds*1;
     }
     setStyle(){

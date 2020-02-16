@@ -151,6 +151,7 @@ class Order extends Component {
   // fix right margin for the first column formatting since now with respect to the column boundry
   // as opposed to card boundry
   render() {
+    //TODO fix the arriving Wednesday, so that it gets the right day of the week
     return (
     
       <Card style={{marginLeft:"43px",width:"1290px",height:"234px"}}>
@@ -158,17 +159,19 @@ class Order extends Component {
         <Menu.Item>
           <div class="order-placed" >Order Placed
             <br/>
-          December 26th, 2019</div>
+            {this.props.date}
+         </div>
         </Menu.Item>
         <Menu.Item>
           <div class="order-placed">Total
             <br/>
-          CDN $9000.96</div>
+            CDN ${this.props.total}
+          </div>
         </Menu.Item>
         <Menu.Item>
           <div>
           <div class="order-placed"> Ship to </div>
-          <div class="order-item">John Doe <Icon name='question circle outline' /> </div>
+          <div class="order-item"> {this.props.buyer}<Icon name='question circle outline' /> </div>
           </div>
         </Menu.Item>
         </Menu>
@@ -176,8 +179,8 @@ class Order extends Component {
           <Grid.Row columns={2}>
             <Grid.Column>
         <div class="arriving" style={description_formatting} > Arriving Wednesday </div>
-        <div  style={headline}>Softwood Bundle </div>
-        <div  style={seller}>Sold by IamCanadaMill </div>
+    <div  style={headline}> {this.props.type}</div>
+    <div  style={seller}>Sold by {this.props.seller}</div>
         </Grid.Column>
         <Grid.Column>
           <Button style={assist}>GET ASSISTANCE</Button>

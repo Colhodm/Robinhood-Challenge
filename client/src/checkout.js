@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import {Grid,Card,Divider,Icon,Button,Menu,Popup,Portal  } from "semantic-ui-react";
-import { Link  } from 'react-router-dom';
+import { Link,Redirect  } from 'react-router-dom';
 let endpoint = "http://localhost:8080/";
 const gridoffset = {
           marginTop: "24px",
@@ -209,6 +209,18 @@ class Checkout extends Component {
       this.closeEmail=this.closeEmail.bind(this);
 
   }
+  doCheckout = () => {
+	  axios.get(endpoint + "auth/api/checkout",{
+		  withCredentials: true,
+    }).then(res => {
+    console.log(res)
+    if (res.status == 200){
+      this.setState({ emailOpen: true })
+    } else {
+      this.setState({ emailOpen: false })
+    }
+  });
+};
   handleOpen = () => {
     this.setState({ emailOpen: true })
   }
@@ -234,6 +246,9 @@ class Checkout extends Component {
       this.setState({ address: temp })
     }  
     render() {    
+      if (!this.props.bundleData){
+        return (<Redirect to={"/lumber"}/>)
+      }
     return (
 <div>
 <MenuBar/>
@@ -243,16 +258,16 @@ class Checkout extends Component {
                 <Grid.Column>
                 <Card style={{marginLeft:"33px",width:"606px",height:"137px"}}>
                   <div class='date' >
-                    Guaranteed Delivery date: Jan 6. 2020
+                    Guaranteed Delivery date: {this.props.bundleData.date}
                   </div>
                   <Divider style={{marginTop:"0px",marginLeft:"21px",marginRight:"24px",marginBottom:"16px"}}/>
                   <div class='type'>
-                    SOFT WOOD BUNDLE
+                    {this.props.bundleData.type}
                     <span class='change-order'>Change</span>
                   </div>
 
                   <div class='seller'>
-                    SOLD BY IAMCANADAMILL
+                    SOLD BY {this.props.bundleData.owner}
                   </div>
     </Card>
     <Card style={{marginLeft:"33px",width:"606px",height:"231px"}}>
@@ -302,36 +317,36 @@ class Checkout extends Component {
                     <Grid.Column>
                     <Card style={{marginTop:"0px",marginLeft:"16px",marginRight:"285px",width:"398px",marginBottom:"0px",height:"396px"}}>
                     <Card.Header>
-                    <Button onClick={this.handleOpen} className="checkout-button"> PLACE YOUR ORDER </Button>
+                    <Button onClick={this.doCheckout} className="checkout-button"> PLACE YOUR ORDER </Button>
                     </Card.Header>
                     <div className="checkout-header">
                       Order Summary
                     </div>
                     <div className="checkout-info">
-                      Items: <span class="checkout-amount">CDN$ 9500.99</span>
+                      Items: <span class="checkout-amount">CDN$ {this.props.bundleData.itemcost}</span>
                       <br/>
-                      Shipping & Handling <span class="checkout-amount">CDN$ 9500.99</span>
+                      Shipping & Handling <span class="checkout-amount">CDN$ {this.props.bundleData.shipcost}</span>
                     </div>
                     <Divider style={{marginLeft:"24px",marginRight:"22px"}}/>
                     <div className="checkout-info">
-                      Total before tax: <span class="checkout-amount">CDN$ 9609.61</span>
+                      Total before tax: <span class="checkout-amount">CDN$ {this.props.bundleData.pretax}</span>
                       <br/>
-                      Estimated GST/HST: <span class="checkout-amount">CDN$ 14.73</span>
+                      Estimated GST/HST: <span class="checkout-amount">CDN$ {this.props.bundleData.gst}</span>
                       <br/>
-                      Estimated PST/RST/QST: <span class="checkout-amount">CDN$ 29.39</span>
+                      Estimated PST/RST/QST: <span class="checkout-amount">CDN$ {this.props.bundleData.pst}</span>
                     </div>
                     <Divider style={{marginLeft:"24px",marginRight:"22px",marginBottom:"9px",marginTop:"9px"}}/>
                     <div class="total-header">
                       Total 
                       <div class="total-cdn">
-                        CDN$ 9999
+                        CDN$ {this.props.bundleData.price}
                       </div>
                     </div>
                     <div class="savings-footer">
                       <div class="savings-checkout">
                       <Popup className="pop-up" content='On average, a lumber trader would take 7-12% commision from each trade. You save by using lumber.io'
                       trigger={<Icon name="info circle" />} />
-                      <span style={{float:"right"}}>	My Savings:			CDN$700 - $1200</span>
+                      <span style={{float:"right"}}>	My Savings:			CDN${this.props.bundleData.saving}</span>
                       </div>
                     </div>
                     </Card>

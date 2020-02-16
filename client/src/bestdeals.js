@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Image,Grid,Card, Header, Form, Input, Icon, Button,Table,Segment,List,Container } from "semantic-ui-react";
-import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link,Redirect  } from 'react-router-dom';
 import Type from "./lumtype"
-import Formx from "./Formx"
 let endpoint = "http://localhost:8080/";
 const gridoffset = {
           marginTop: "19.5px",
@@ -68,12 +67,40 @@ class BestDeals extends Component {
     super(props);
     this.state = {
         //cars:[<Car identifier={0} stateLink={this.updateState.bind(this)} />],
-        types:[<Type/>,<Type/>,<Type/>],
+        types:[],
 
     };
       this.join=this.join.bind(this);
 
   }
+  componentDidMount() {
+    this.getBundles();
+  }
+  getBundles = () => {
+    console.log("called the function")
+    axios.get(endpoint + "auth/api/lumberbundles",{
+        withCredentials: true,
+    }).then(res => {
+    console.log(res);
+    if (res.data) {
+      this.setState({
+        types: res.data.map(driver => {
+          return (
+              <Type id={driver._id} type={driver.type} owner={driver.woodName} location={driver.location}
+              price={driver.price} traits={driver.traits} sendBundle={this.props.sendBundle} date={driver.date}
+              itemcost={driver.itemcost} shipcost={driver.shipcost} pretax={driver.pretax} 
+              gst={driver.gst} pst={driver.pst} saving={driver.saving}
+              />
+          );
+        })
+      });
+    } else {
+      this.setState({
+        types: [<Type/>]
+      });
+    }
+  });
+};
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });

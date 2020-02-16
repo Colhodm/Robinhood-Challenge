@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Image,Grid,Card, Header, Form, Input, Icon, Button,Table,Segment,List,Container } from "semantic-ui-react";
-import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link ,Redirect } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import Order from "./order_prim"
 import Formx from "./Formx"
 let endpoint = "http://localhost:8080/";
@@ -51,16 +52,106 @@ class Orders extends Component {
     super(props);
     this.state = {
         //cars:[<Car identifier={0} stateLink={this.updateState.bind(this)} />],
-        orders:[<Order/>,<Order/>,<Order/>],
-
+        orders:[<Order/>],
+        view: "active",
+        auth: true,
     };
       this.join=this.join.bind(this);
+      this.loadCard = this.loadCard.bind(this)
+      this.updateView = this.updateView.bind(this)
+      this.cancelView = this.cancelView.bind(this)
+      this.activeView = this.activeView.bind(this)
+      this.setStyle = this.setStyle.bind(this);
 
   }
+  componentDidMount() {
+    this.getOrdersInProg();
+  }
+  setStyle(){
+    this.border_all_select = {
+      borderBottom: this.props.location.pathname =='/lumber' ? "2px solid #3F691A" : "",
+      marginLeft: "32px",
+    };
+    this.border_open_select = {
+      borderBottom: this.props.location.pathname =='/profile' ? "2px solid #3F691A" : "",
+      marginLeft: "32px",
+    };
+    this.border_cancel_select = {
+      borderBottom: this.props.location.pathname =='/orders' ? "2px solid #3F691A" : "",
+      marginLeft: "32px",
+    };
+  }
+  getOrdersInProg = () => {
+    let value = Cookies.get('session_token')
+    if (!value){
+      this.setState({
+        auth: false,
+      });
+      return
+    }
+    console.log(value)
+    console.log("called the function")
+    axios.get(endpoint + "auth/api/orders",{
+        withCredentials: true,
+    }).then(res => {
+    console.log(res);
+    if (res.status == 401){
+      this.setState({
+        auth: false,
+      });
+      return
+    }
+    if (res.data) {
+      this.setState({
+        orders: res.data.map(driver => {
+            if (driver.status === "transit"){
+          return (
+              <Order type={driver.type} seller={driver.seller} 
+              buyer={driver.buyer} 
+              location={driver.location}
+              total={driver.total} date={driver.date} 
+              status={driver.status} 
+              />
+          );
+            }
+        }),
+        cancelOrd: res.data.map(driver => {
+            if (driver.status === "cancel"){
+          return (
+              <Order type={driver.type} seller={driver.seller} 
+              buyer={driver.buyer} 
+              location={driver.location}
+              total={driver.total} date={driver.date} 
+              status={driver.status} 
+              />
+          );
+            }
+        })
+      });
+    } else {
+      this.setState({
+        orders: [<Order/>],
+        cancelOrd: [<Order/>]
+      });
+    }
+  });
+};
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
     console.log(value.target.value)
+  };
+  updateView() {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ view: "all" });
+  };
+  cancelView() {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ view: "cancel" });
+  };
+  activeView() {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ view: "active" });
   };
   join(){
       // this function makes a call to our backend with the current email in the box
@@ -70,7 +161,22 @@ class Orders extends Component {
     sendData(data) {
         this.props.buttonClick(data);
     };
+    loadCard(){
+        // Todo figure out how the all look view should be like
+        if (this.state.view === 'active'){
+            return  <Card.Group>{this.state.orders}</Card.Group>
+        } else if(this.state.view === 'cancel'){
+            return <Card.Group>{this.state.cancelOrd}</Card.Group>
+        } else {
+            return <Card.Group>{this.state.orders}</Card.Group>
+        }
+    }
     render() {
+        let displaycard = this.loadCard()
+        this.setStyle()
+        if (!this.state.auth){
+          return <Redirect to='/login'  />
+        }
     return (
 <Grid fluid divided='vertically' style={gridoffset}>
     <Grid.Row columns={1}>
@@ -79,17 +185,19 @@ class Orders extends Component {
                     <Table celled columns style={tableStyle}>
                         <Table.Body>
                             <Table.Row>
-                            <Table.Cell >
+                            <Table.Cell onClick={this.updateView}>
+                            <div style={this.border_all_select}>
                                 <div style={rightTable}>
                                 All Orders
                                     </div>
+                                    </div>
                             </Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell onClick={this.activeView}>
                             <div style={rightTable}>
                                 Open Orders
                                 </div>
                             </Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell   onClick={this.cancelView}>
                             <div style={rightTable}>
                                 Cancelled Order
                                 </div>
@@ -97,7 +205,7 @@ class Orders extends Component {
                             </Table.Row>
                 </Table.Body>
   </Table>
-                    <Card.Group>{this.state.orders}</Card.Group>
+                    {displaycard}
                     </Grid.Column>
             </Grid.Row>
   </Grid.Row>

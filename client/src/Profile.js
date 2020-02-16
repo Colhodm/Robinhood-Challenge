@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Image,Grid,Card,Checkbox,Divider, Header, Form, Input,Dropdown, Icon, Label,Button,Table,Segment,List,Container } from "semantic-ui-react";
-import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
-import Type from "./lumtype"
-import Formx from "./Formx"
+import { BrowserRouter as Router, Switch, Route, Link ,Redirect } from 'react-router-dom';
 let endpoint = "http://localhost:8080/";
 const gridoffset = {
           marginTop: "32px",
@@ -110,14 +108,51 @@ class Profile extends Component {
     this.state = {
         //cars:[<Car identifier={0} stateLink={this.updateState.bind(this)} />],
         types:[],
-        favorites:[["Hardwood",true],["Softwood",false],["Maple",true],["Oak",false]],
+        // fix to be ful default
+        favorites:[["Hardwood",false],["Softwood",false],["Maple",false],["Oak",false],
+        ["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
+        lengths:[["1 x 3",false],["1 x 4",false],["1 x 6",false],["1 x 8",false],
+        ["2 x 2",false],["2 x 4",false],["2 x 6",false]],
+        auth: true,
+
     };
       this.setStyle = this.setStyle.bind(this);
       this.join=this.join.bind(this);
       this.setButton=this.setButton.bind(this);
+      this.updatePref=this.updatePref.bind(this);
       console.log(this.state.favorites)
 
   }
+  componentDidMount() {
+    this.getPreferences();
+  }
+  updatePref = () => {
+    console.log(66)
+	  let Lumber = this.state.favorites
+	  axios.post(endpoint + "auth/api/profileupdate",{Lumber},
+		  {
+		  withCredentials: true,
+		  headers:{
+		'Content-Type': 'application/x-www-form-urlencoded'  
+		  }
+		  }
+    ).then(res => {
+    if (res.status == 200) {
+    
+    }
+  });
+};
+  getPreferences = () => {
+	  axios.get(endpoint + "auth/api/profilefetch",{
+		  withCredentials: true,
+    }).then(res => {
+    if (Object.values(res.data[5])[1] != null) {
+      this.setState({
+        favorites: Object.values(res.data[5])[1]});
+    } else {
+    }
+  });
+};
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
@@ -194,7 +229,7 @@ class Profile extends Component {
                           <input/>
                         </Form.Field>
                         <div>
-                        <Button className="group">SAVE CHANGES</Button>
+                        <Button onClick={this.updatePref}  className="group">SAVE CHANGES</Button>
                         <Button className="cancel">CANCEL </Button>
                             </div>
                     </Form>

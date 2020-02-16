@@ -19,8 +19,8 @@ const mynav = {
     border: "none"
 };
 // since menu has 10 margin
-const form_formatting = { marginLeft: "36px", marginRight: "32px",marginTop: "10px" };
-const pref_formatting = { marginLeft: "37px", marginRight: "20px",marginTop: "25px" };
+const form_formatting = { marginLeft: "36px", marginRight: "32px",marginTop: "25px" };
+const pref_formatting = { marginLeft: "37px", marginRight: "20px",marginTop: "45px" };
 
 const submit = {
   marginRight: "519px",
@@ -81,17 +81,24 @@ class NavBar extends Component {
   this.setLenStyle = this.setLenStyle.bind(this);
   this.setButton=this.setButton.bind(this);
   this.closeEmail=this.closeEmail.bind(this);
-
+  this.loginUser=this.loginUser.bind(this);
+  this.switchRegister=this.switchRegister.bind(this);
+  this.validateLoginForm = this.validateLoginForm.bind(this)
+  this.loginBackendUser= this.loginBackendUser.bind(this)
   }
   registerUser = () => {
     let email = this.state.email
     let name = this.state.name
     let password = this.state.password
+    let buyer = this.state.buyer
+    let lumber = this.state.favorites
+    let length = this.state.lengths
+
     axios
     .post(
       endpoint + "/api/register",
       {
-    email,name,password
+    email,password,buyer,lumber,length
       },
       {
         headers: {
@@ -140,6 +147,58 @@ class NavBar extends Component {
   loadNext(){
     this.setState({ activeItem: "prefer" });
   }
+  validateLoginForm(){
+    // this function makes a call to our backend with the current email in the box
+    // TODO call the backend from here
+    var validated = true
+    if (!this.state["email"]){
+      validated = false
+      this.setState({
+        errEmail: true
+    });
+    } 
+    if (!this.state["password"]){
+      validated = false
+      this.setState({
+        errPassword: true
+    });
+    } 
+    if (validated){
+      console.log(36)
+      var response = this.loginBackendUser()
+      // if token not valid 
+      // if response not valid throw an error on the page
+    }
+  
+
+}
+  loginBackendUser = () => {
+    let email = this.state.email
+    let password = this.state.password
+    axios
+    .post(
+      endpoint + "/api/login",
+      {
+    email,password
+      },
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      }
+    )
+    .then(res => {
+      //console.log(res.status);
+      //console.log(res);
+      if (res.status == 200){
+      this.props.history.push('lumber')
+      } else {
+        // throw an error for the program //TODO TEST THIS works
+        // TODO when logout, clear the cookie from cache and browser..
+      }
+    });
+  };
   validateForm(){
       // this function makes a call to our backend with the current email in the box
       // TODO call the backend from here
@@ -187,7 +246,6 @@ class NavBar extends Component {
         this.setState({ 
           open: false,
         })
-        this.props.history.push("lumber")
       }
     }
     
@@ -215,6 +273,13 @@ class NavBar extends Component {
       this.setState({lengths: len})
     }
 }
+  loginUser(){
+    this.setState({activeItem: "login"})
+  
+  }
+  switchRegister(){
+    this.setState({activeItem: "register"})
+  }
   setLumStyle(){
     //TODO ensure first guys margin is effectively 24 
     const favorites = this.state.favorites;
@@ -247,9 +312,10 @@ class NavBar extends Component {
     return result
   }
   loadCard(){
-    if (this.state.activeItem == 'register'){
+    console.log(this.state.activeItem)
+    if (this.state.activeItem === 'register'){
       return  <Form style={form_formatting}>
-      <Form.Field style={{marginTop:"16px"}}>
+      <Form.Field style={{marginTop:"0px"}}>
         <div class="email-address"  style={{marginBottom:"6.5px"}}>Email Address:</div>
         <Form.Input  
         error={this.state.errEmail}
@@ -283,6 +349,33 @@ class NavBar extends Component {
 <div className="button-text">NEXT</div>
 </Form.Button>
     </Form >
+    } else if(this.state.activeItem === 'login'){
+      return <Form style={form_formatting}>
+      <Form.Field style={{marginTop:"0px"}}>
+        <div class="email-address"  style={{marginBottom:"6.5px"}}>Email Address:</div>
+        <Form.Input  
+        error={this.state.errEmail}
+        value={this.state.email}
+        onChange={this.onEChange}
+        style={{color:"#595959",	fontFamily: "Rubik",
+        fontSize: "13px",letterSpacing: ".46px",lineHeight: "17px",marginRight:"21px",width:"607px",marginBottom:"16px"}}/>
+      </Form.Field>
+      <Form.Field style={{marginTop:"16px",marginBottom:"0px"
+    }}>
+        <div class="email-address"  style={{marginBottom:"6.5px"}}>Password (at least 8 characters)</div>
+        <Form.Input  type="Password" 
+          error={this.state.errPassword}
+          value={this.password}
+          onChange={this.onPChange}
+        style={{color:"#595959",	fontFamily: "Rubik",
+        fontSize: "13px",letterSpacing: ".46px",lineHeight: "17px",
+        marginRight:"21px",width:"607px"}}/>
+      </Form.Field>
+      <Form.Button color="blue" size="large" style={{marginRight: "519px",marginTop: "22px",marginBottom: "42px",background: "#3F691A"}} 
+onClick={this.validateLoginForm} >
+<div className="button-text">LOGIN</div>
+</Form.Button>
+      </Form>
     }
     let return_lum = this.setLumStyle()
     let return_len = this.setLenStyle()
@@ -324,9 +417,43 @@ class NavBar extends Component {
                 </Card.Content>
       </Form>
   }
+  loadBottom(){
+    if (this.state.activeItem != "login"){
+    return <div style={{display:"flex",height:"55px"}}>
+      <div class="sign-in"> Already have an account? <Link to='/' onClick={this.loginUser} style={{color:"#3F691A"}}><u>Sign in</u></Link></div>
+      <Button floated='right' size="large" 
+      style={{background:"#FFFFFF",float:"right",height:"42px",width: "120px",marginBottom:"13px",	
+      boxShadow: "0 2px 3px 0 rgba(0,0,0,0.2)"}}
+      onClick={this.handleClose}>
+<div className="button-text" style={{color:"#3F691A"}}>CANCEL</div></Button>
+      </div>
+  }
+  return <div style={{display:"flex",height:"55px"}}>
+  <div class="sign-in"> Already have an account? <Link to='/' onClick={this.switchRegister} style={{color:"#3F691A"}}><u>Register</u></Link></div>
+  <Button floated='right' size="large" 
+  style={{background:"#FFFFFF",float:"right",height:"42px",width: "120px",marginBottom:"13px",	
+  boxShadow: "0 2px 3px 0 rgba(0,0,0,0.2)"}}
+  onClick={this.handleClose}>
+<div className="button-text" style={{color:"#3F691A"}}>CANCEL</div></Button>
+  </div>
+}
+  loadMenu(){
+    if (this.state.activeItem === "login"){
+      return <Menu className='menu-text' fluid widths={1} size={"massive"} style={{height: "60px",marginBottom: "0px"}}>
+      <Menu.Item className='menu-text' name='register' > Login </Menu.Item>
+    </Menu>
+    }
+    return <Menu className='menu-text' fluid widths={2} size={"massive"} style={{height: "60px",marginBottom: "0px"}}>
+    <Menu.Item className='menu-text' name='register' onClick={this.handleItemClick} active={this.state.activeItem == 'register'} >Register (1 of 2 steps)</Menu.Item>
+    <Menu.Item className='menu-text' name='prefer' onClick={this.handleItemClick} active={this.state.activeItem == 'prefer'} >Preference (2 of 2 steps)</Menu.Item>
+  </Menu>
+  }
   render() {
     // FOR NOW FOR TESTING
     let displaycard = this.loadCard()
+    let bottomcard = this.loadBottom()
+    let myMenu = this.loadMenu()
+
     return (
       <div className='NavBar'>
       <Menu style={mynav} borderless={true}>
@@ -381,20 +508,10 @@ class NavBar extends Component {
                 zIndex: 1,
               }}
             >     
-              <Menu className='menu-text' fluid widths={2} size={"massive"} style={{height: "60px",marginBottom: "0px"}}>
-                <Menu.Item className='menu-text' name='register' onClick={this.handleItemClick} active={this.state.activeItem == 'register'} >Register (1 of 2 steps)</Menu.Item>
-                <Menu.Item className='menu-text' name='prefer' onClick={this.handleItemClick} active={this.state.activeItem == 'prefer'} >Preference (2 of 2 steps)</Menu.Item>
-              </Menu>
+              {myMenu}
              {displaycard}
              <Divider style={{marginTop:"0px",marginBottom:"5px"}}/>
-    <div style={{display:"flex",height:"55px"}}>
-      <div class="sign-in"> Already have an account? <Link to='/login' style={{color:"#3F691A"}}><u>Sign in</u></Link></div>
-      <Button floated='right' size="large" 
-      style={{background:"#FFFFFF",float:"right",height:"42px",width: "120px",marginBottom:"13px",	
-      boxShadow: "0 2px 3px 0 rgba(0,0,0,0.2)"}}
-      onClick={this.handleClose}>
-<div className="button-text" style={{color:"#3F691A"}}>CANCEL</div></Button>
-      </div>
+             {bottomcard}
             </Card>
             </div>
           </Portal>

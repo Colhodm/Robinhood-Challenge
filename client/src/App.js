@@ -4,13 +4,12 @@ import { Button,Container, Menu } from "semantic-ui-react";
 import Login from './Login';
 import Profile from './Profile';
 import Registration from './Register';
-import MasterDriver from './MasterDriver';
-import MasterCar from './MasterCar';
-import MasterRate from './MasterRate';
 import Footer from './footer'
 import Info from './Info';
 import Orders from './Order';
 import Checkout from './checkout';
+import Cookies from 'js-cookie';
+
 
 
 import BestDeals from './bestdeals';
@@ -23,6 +22,9 @@ import NavBar from './Menu';
 const mydriverboundry = {
     margin: "auto",
 };
+const NotFound = () => <div>Not found</div>
+
+const NotFoundRedirect = () => <Redirect to='/' />
 class App extends Component {
   constructor(props) {
     super(props)
@@ -32,50 +34,34 @@ class App extends Component {
     };
   }
       // our send data function sets the state correctly to use the data passed on by the child component
-    login(){
-      console.log(3)
+    updateCurrentBundle(value){
+      console.log(value,999999)
       this.setState({
-        page:'/login'
+        bundle:value
       });
     }
-    sendData(data) {
-      this.setState({
-      zipcode:data
-    });
-    };
-    //TODO this also needs to validate all the forms of the kids
-    // Requires Learning how to have access to your child components and call functions inside them
-    moveDriver(){
-        console.log("Moving to the Driver Info Page")
-        this.setState({
-            vehicleCompletion:true,
-        });
-    };
-    //TODO this also needs to validate all the forms of the kids
-    // Requires Learning how to have access to your child components and call functions inside them
-    moveToRate(){
-        console.log("Moving to the Rate Info Page")
-        this.setState({
-            driverCompletion:true,
-        });
-    };
-render () {
-    const { redirect  } = this.state;
-    // redirecting to the driver page, because the zipcode has been entered and the this.state.vehicleCompletion is True
-    // encodes our logic for loading the correct components with respect to each route
-    switch(this.state["page"]) {
-      case '/login':
-        return <Redirect to='/login'/>;
-      default:
-    }
-    return (
-        <Router>
-        <div className="myroot">
-<Switch>
+  auth(){
+    let value = Cookies.get('session_token')
+    console.log(value)
+    if (!value){
+      return <Switch>
+      <Route exact path ='/' render={(props) => 
+      <div>
+      <NavBar {...props}/>
+      <CentralText {...props}  />
+      </div>
+      } 
+      />
+      <Route exact path ='/register' render={(props) => <Registration {...props} />}/>
+      <Route exact path ='/login' render={(props) => <Login {...props} />}/>
+      <Route component={NotFoundRedirect} />
+      </Switch>
+    } 
+    return <Switch>
     <Route exact path ='/' render={(props) => 
     <div>
-    <NavBar {...props} login={this.login.bind(this)}/>
-    <CentralText {...props} buttonClick={this.sendData.bind(this)} />
+    <NavBar {...props} />
+    <CentralText {...props}  />
     </div>
     } 
     />
@@ -83,7 +69,7 @@ render () {
     <div >
     <InMenu {...props} />
     <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
-    <BestDeals {...props} buttonClick={this.sendData.bind(this)} />
+    <BestDeals {...props} sendBundle={this.updateCurrentBundle.bind(this)} />
     <Footer/>
     </div>
     </div>
@@ -106,20 +92,31 @@ render () {
     </div>
     </div>
     }/>
-       <Route path ='/soft:id' render={(props) => 
+       <Route path ='/wood' render={(props) => 
     <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
-    <Info {...props} />
+    <Info {...props} bundleData={this.state.bundle}/>
     </div>
     }/>
         <Route path ='/check:id' render={(props) => 
         <div >
-            <Checkout {...props} buttonClick={this.sendData.bind(this)} />
+            <Checkout {...props} bundleData={this.state.bundle} />
         </div>
     }/>
     <Route exact path ='/register' render={(props) => <Registration {...props} />}/>
     <Route exact path ='/login' render={(props) => <Login {...props} />}/>
-    <Route exact path ='/quote/vehicles' render={(props) => <MasterCar {...props} routeChange={this.moveDriver.bind(this)} />}/>
+    <Route component={NotFoundRedirect} />
     </Switch>
+
+    
+    
+  }
+render () {
+    const { redirect  } = this.state;
+    const login = this.auth()
+    return (
+        <Router>
+        <div className="myroot">
+{login}
     </div>
     </Router>
 )};

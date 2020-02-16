@@ -4,7 +4,7 @@ import { Image,Grid,Card, Header, Form, Input, Icon, Button } from "semantic-ui-
 import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
 
 import Formx from "./Formx"
-let endpoint = "http://localhost:8080/";
+let endpoint = "http://localhost:8080";
 const gridoffset = {
           marginTop: "150px",
           textAlign:"center",
@@ -40,12 +40,25 @@ class CentralText extends Component {
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
-    console.log(value.target.value)
   };
   join(){
-      // this function makes a call to our backend with the current email in the box
-      // TODO call the backend from here
-      console.log(this.state["email"])
+      console.log(14)
+      let email = this.state.email
+      axios
+      .post(
+        endpoint + "/api/joinnow",
+        {
+      email
+        },
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        }
+      )
+      .then(res => {
+        console.log(res);
+      });
   }
     sendData(data) {
         this.props.buttonClick(data);

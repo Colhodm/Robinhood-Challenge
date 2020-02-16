@@ -1,7 +1,7 @@
 import React, { Component,useReducer } from "react";
 import axios from "axios";
 import { Image,Grid,Card, Header, Form, Input, Icon, Button,Table,Segment,List,Container,Accordion } from "semantic-ui-react";
-import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link ,Redirect } from 'react-router-dom';
 import Order from "./order_prim"
 import Formx from "./Formx"
 let endpoint = "http://localhost:8080/";
@@ -137,10 +137,13 @@ class Info extends Component {
     };
     //TODO the icon should acutally by a 48 by 48 right now it is 30 by 30
     render() {
+      if (!this.props.bundleData){
+        return (<Redirect to={"/lumber"}/>)
+      }
     return (
         <div>
         <div class="info-top">
-        <div class="info-header" > <u>SOFT WOOD BUNDLE </u> </div>
+        <div class="info-header" > <u> {this.props.bundleData.type}</u> </div>
        <Link to="/lumber"><Icon className="info-exit" size='big' name="close"/> </Link>
         </div>
         <div>

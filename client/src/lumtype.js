@@ -90,6 +90,8 @@ class Type extends Component {
       carModel: "",
       carStyle: ""
     };
+    this.sendData=this.sendData.bind(this);
+
   }
 
   //<div style={{marginLeft:"13px",marginTop:"10px",marginRight:"36px",width:"318px",height:"49px"}}>
@@ -103,6 +105,9 @@ class Type extends Component {
       console.log("I detected an error in the year");
     }
   }
+  sendData(value){
+    this.props.sendBundle(this.props)
+  }
   handleChange = (e, { value }) => {
     this.setState({ carYear: value });
     this.props.stateLink(this.props.identifier, this.state);
@@ -112,10 +117,15 @@ class Type extends Component {
   }
   // The link from the View more info should be a variable link later...
   render() {
+    console.log(this.props)
+    // TODO fix the link instead of just linking to softwood, dynamically create a route
+    // TODO fix the key traits
+    // TODO fix the essential
     return (
       <Card style={{marginLeft:"43px",width:"367px",height:"397px"}}>
         <Header as="h3" textAlign={'center'} style={header}> Essential </Header>
-        <div  textAlign={'left'} style={headline}>SOFT WOOD BUNDLE       
+        <div  textAlign={'left'} style={headline}>
+          {this.props.type}
          <Link to="/softwood">
          <span style={{fontFamily:"Rubik",letterSpacing:".43px",lineHeight:"17px",fontSize:"12px",width:"127px",height:"17px",marginRight:"0px",  color: "#3F691A",
 }} >     
@@ -125,7 +135,7 @@ class Type extends Component {
 
         <div class="lumber-text" style={{lineHeight: "17px",marginLeft:"13px",marginTop:"10px",marginRight:"36px",width:"318px",height:"49px",textAlign:"left"}}>
           Selling for 
-          <div style={{color:"#3F691A",fontFamily:"Rubik",fontSize:"21px",fontWeight:"500",letterSpacing:".43px",lineHeight:"24px"}}>$10,000 
+          <div style={{color:"#3F691A",fontFamily:"Rubik",fontSize:"21px",fontWeight:"500",letterSpacing:".43px",lineHeight:"24px"}}>${this.props.price}
           <Popup className="pop-up" content='On average, a lumber trader would take 7-12% commision from each trade. You save by using lumber.io'
                        trigger={<Icon color={'grey'} name="question circle outline" />} />
           </div>
@@ -150,7 +160,7 @@ class Type extends Component {
           </List>
           </div>
           <Divider section style={{marginTop:"0px",marginBottom:"0px"}}/>
-          <Link to="/softwood">
+          <Link onClick={this.sendData}to={`/wood`}>
           <Button style={{paddingLeft:"16px",paddingTop:"13px",paddingBottom:"13px",paddingRight:"16px",marginLeft:"24px",marginTop:"15px",marginRight:"24px",marginBottom:"16px",width:"319px",height:"42px",background:"#3F691A",color:"#FFFFFF"}}> SELECT </Button>
           </Link>
 
