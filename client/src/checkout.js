@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import {Grid,Card,Divider,Icon,Button,Menu,Popup,Portal,Form  } from "semantic-ui-react";
 import { Link,Redirect  } from 'react-router-dom';
-let endpoint = "http://localhost:8080/";
+let endpoint = "http://35.227.147.196:8080/";
 const gridoffset = {
           marginTop: "24px",
           fontFamily: "	OverpassSemiBold",
@@ -229,9 +229,8 @@ class Checkout extends Component {
     axios.get(endpoint + "auth/api/address",{
         withCredentials: true,
     }).then(res => {
-    console.log(Object.entries(res.data),8888888,Object.entries(res.data)[0][1]);
     //console.log(Object.fromEntries(res.data["address"]),6666666)
-    if (res.status === 200) {
+    if (res.status === 200 && res.data) {
       var temp = {}
         Object.entries(res.data).map(obj => {
           console.log(obj[1].Key,obj[1].Value)

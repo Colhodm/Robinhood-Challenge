@@ -4,7 +4,7 @@ import { Image,Grid,Card, Header, Form, Input, Icon, Button,Table,Segment,List,C
 import { BrowserRouter as Router, Switch, Route, Link ,Redirect } from 'react-router-dom';
 import Order from "./order_prim"
 import Formx from "./Formx"
-let endpoint = "http://localhost:8080/";
+let endpoint = "http://35.227.147.196:8080/";
 const gridoffset = {
           textAlign:"center",
           fontFamily: "	OverpassSemiBold",

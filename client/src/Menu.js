@@ -5,7 +5,7 @@ import { Container, Image, Menu,Button,Portal,Header,Card ,Form ,Input,Divider,I
 import PasswordStrengthBar from 'react-password-strength-bar';
 import validator from 'validator';
 
-let endpoint = "http://localhost:8080";
+let endpoint = "http://35.227.147.196:8080";
 
 const mynav = {
     background: "inherit",

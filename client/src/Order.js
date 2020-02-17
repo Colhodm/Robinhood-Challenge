@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Switch, Route, Link ,Redirect } from 'react-ro
 import Cookies from 'js-cookie';
 import Order from "./order_prim"
 import Formx from "./Formx"
-let endpoint = "http://localhost:8080/";
+let endpoint = "http://35.227.147.196:8080/";
 const gridoffset = {
           marginTop: "19.5px",
           textAlign:"center",

@@ -1,7 +1,7 @@
 package router
 
 import (
-	"go-to-do-app/server/middleware"
+	"Ozone-Dev/server/middleware"
 	"github.com/gorilla/mux"
 )
 

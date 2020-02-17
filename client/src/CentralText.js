@@ -75,15 +75,6 @@ class CentralText extends Component {
                         <Header as= 'h1' style={mymidtext}>
                         Skip the middlemen, buy lumber straight from the sawmill with logistics handled - the best price is just a bonus. 
                         </Header>
-                        <Header as='h1'style={mymidtext}>
-                        Join our mailing list for free early access - Release Summer 2020
-                        </Header>
-                        <Form size ='massive' style = {submit}>
-                            <Form.Group inline={true}>
-                        <input placeholder='Enter your Email address' onChange={this.updateEmail}/>
-                        <Form.Button content='Join Now' size={"huge"} style={greenBut}  onClick={this.join}/>
-                        </Form.Group>
-                        </Form>
                     </Grid.Column>
             </Grid.Row>
   </Grid.Row>

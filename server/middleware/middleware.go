@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
     "reflect"
-	"go-to-do-app/server/models"
+	"Ozone-Dev/server/models"
     "github.com/gorilla/mux"
     "time"
     "github.com/google/uuid"
@@ -43,6 +43,7 @@ var emailCollection *mongo.Collection
 var bundleCollection *mongo.Collection
 var cache redis.Conn
 var  srv *sheets.Service
+var  email *gmail.Service
 // smtpServer data to smtp server
 type smtpServer struct {
  host string
@@ -116,10 +117,10 @@ func saveToken(path string, token *oauth2.Token) {
 func Bundles(w http.ResponseWriter, r *http.Request) {
 	  // Prints the names and majors of students in a sample spreadsheet:
         // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-        w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
         w.Header().Set("Access-Control-Allow-Credentials", "true")
         fmt.Println("Routed.")
-        spreadsheetId := "1MnZd3zfxfq0pA1UeZ7Jv-7XsI4lDaCCgUqSxSeBbf8U"
+        spreadsheetId := "1BBgpYSLu29IKU-c6o6xUGubr-H7-FIqvLJY_bjnY7tM/edit#gid=2069414429"
         readRange := "A2:N4"
         resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
         if err != nil {
@@ -164,6 +165,10 @@ func initGoogleSheets() {
                 log.Fatalf("Unable to parse client secret file to config: %v", err)
         }
         client := getClient(config)
+	email,err = gmail.New(client)
+        if err != nil {
+                log.Fatalf("Unable to retrieve Gmail client: %v", err)
+        }
 
         srv, err = sheets.New(client)
         if err != nil {
@@ -249,7 +254,7 @@ func GetBundle(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(fetched)
 }
 func Order(w http.ResponseWriter, r *http.Request) {
-        w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
         w.Header().Set("Access-Control-Allow-Credentials", "true")
         fmt.Println("Routed.")
         spreadsheetId := "1MnZd3zfxfq0pA1UeZ7Jv-7XsI4lDaCCgUqSxSeBbf8U"
@@ -287,7 +292,7 @@ func Order(w http.ResponseWriter, r *http.Request) {
     }
 func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
     w.Header().Set("Access-Control-Allow-Credentials", "true")
     //w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080/api/login")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
@@ -300,8 +305,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
     }
      fetched,err := findOneUser(user)
      if (err != nil){
-	    http.Redirect(w, r,"http://35.233.168.169:3000" , http.StatusSeeOther)
-	    fmt.Println("Error0")
+	    fmt.Println("Error0",err)
         w.WriteHeader(http.StatusForbidden)
         w.Write([]byte("500 - Something bad happened!"))
         return
@@ -396,7 +400,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 func GetAddress(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
     w.Header().Set("Access-Control-Allow-Credentials", "true")
     w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
     w.Header().Set("Access-Control-Allow-Methods", "GET")
@@ -413,7 +417,7 @@ func GetAddress(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(result[len(result)-1].Value)
 }
 func DoCheckout(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
     w.Header().Set("Access-Control-Allow-Credentials", "true")
     w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
     w.Header().Set("Access-Control-Allow-Methods", "POST")
@@ -465,7 +469,7 @@ func DoCheckout(w http.ResponseWriter, r *http.Request) {
 
 }
 func UpdateProfile(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
     w.Header().Set("Access-Control-Allow-Credentials", "true")
     w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
     w.Header().Set("Access-Control-Allow-Methods", "POST")
@@ -489,7 +493,7 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 
 }
 func GetProfile(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
     w.Header().Set("Access-Control-Allow-Credentials", "true")
     w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
     w.Header().Set("Access-Control-Allow-Methods", "GET")
