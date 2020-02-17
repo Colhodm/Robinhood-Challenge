@@ -192,6 +192,7 @@ class NavBar extends Component {
       //console.log(res.status);
       //console.log(res);
       if (res.status == 200){
+      this.props.update()
       this.props.history.push('lumber')
       } else {
         // throw an error for the program //TODO TEST THIS works

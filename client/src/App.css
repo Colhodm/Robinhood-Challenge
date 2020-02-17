@@ -152,6 +152,13 @@
           letter-spacing: 0.57px;
           line-height: 17px;
         }
+.email-checkout {
+          color: #595959;
+          font-family: Rubik;
+          font-size: 16px;
+          letter-spacing: 0.57px;
+          line-height: 17px;
+        }
 .ui.button.group {
     height: 42px;
     width: 172px;

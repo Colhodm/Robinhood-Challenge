@@ -24,7 +24,7 @@ const mydriverboundry = {
 };
 const NotFound = () => <div>Not found</div>
 
-const NotFoundRedirect = () => <Redirect to='/' />
+const NotFoundRedirect = () => <div />
 class App extends Component {
   constructor(props) {
     super(props)
@@ -47,20 +47,19 @@ class App extends Component {
       return <Switch>
       <Route exact path ='/' render={(props) => 
       <div>
-      <NavBar {...props}/>
+      <NavBar {...props} update={this.auth.bind(this)}/>
       <CentralText {...props}  />
       </div>
       } 
       />
       <Route exact path ='/register' render={(props) => <Registration {...props} />}/>
-      <Route exact path ='/login' render={(props) => <Login {...props} />}/>
       <Route component={NotFoundRedirect} />
       </Switch>
     } 
     return <Switch>
     <Route exact path ='/' render={(props) => 
     <div>
-    <NavBar {...props} />
+    <NavBar {...props} update={this.auth.bind(this)}/>
     <CentralText {...props}  />
     </div>
     } 
@@ -78,7 +77,7 @@ class App extends Component {
     <div>
     <InMenu {...props} />
     <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
-    <Profile {...props} buttonClick={this.sendData.bind(this)} />
+    <Profile {...props}  />
     <Footer/>
     </div>
     </div>

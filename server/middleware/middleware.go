@@ -395,7 +395,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Creating User")
 	json.NewEncoder(w).Encode(user)
 }
-func DoCheckout(w http.ResponseWriter, r *http.Request) {
+func GetAddress(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
     w.Header().Set("Access-Control-Allow-Credentials", "true")
     w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
@@ -403,6 +403,37 @@ func DoCheckout(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
     user_id := string(r.Context().Value("user_id").([]uint8))
     result,err := findUserByID(user_id)
+    if (err != nil){
+        w.WriteHeader(http.StatusUnauthorized)
+        fmt.Println(err)
+        return
+    }
+    fmt.Println(result[len(result)-1].Value)
+    // we also want to update our users addresses if we need to
+    json.NewEncoder(w).Encode(result[len(result)-1].Value)
+}
+func DoCheckout(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+    w.Header().Set("Access-Control-Allow-Credentials", "true")
+    w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+    w.Header().Set("Access-Control-Allow-Methods", "POST")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+    user_id := string(r.Context().Value("user_id").([]uint8))
+    result,err := findUserByID(user_id)
+    if (err != nil){
+        w.WriteHeader(http.StatusUnauthorized)
+        fmt.Println(err)
+        return
+    }
+    // we also want to update our users addresses if we need to
+    var addy models.Address
+    err = json.NewDecoder(r.Body).Decode(&addy)
+    if (err != nil){
+        w.WriteHeader(http.StatusUnauthorized)
+        fmt.Println(err)
+        return
+    }
+    err = updateUserAddress(user_id,addy)
     if (err != nil){
         w.WriteHeader(http.StatusUnauthorized)
         fmt.Println(err)
@@ -528,6 +559,28 @@ func fetchProfileUser(user_id string) (primitive.D,error) {
 	}
 	fmt.Println("Found a Single User Profile Woot Woot", result)
     return result,nil
+}
+func updateUserAddress(user_id string, address models.Address) (error) {
+    result := bson.D{}
+    id, err := primitive.ObjectIDFromHex(user_id)
+    if err != nil {
+        fmt.Println(err)
+        return err
+    }
+    filter := bson.M{"_id": id}
+    update := bson.M{"$set": bson.M{"address": address}}
+    _, err = collection.UpdateOne(
+        context.Background(),
+        filter,
+        update,
+    )
+    if err != nil {
+        fmt.Println(err)
+        return err
+        //log.Fatal(err)
+	}
+	fmt.Println("Updated a Single User Address  Woot Woot", result)
+    return nil
 }
 func updateProfileUser(userData models.User,user_id string) (primitive.D,error) {
     result := bson.D{}

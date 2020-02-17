@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import {Grid,Card,Divider,Icon,Button,Menu,Popup,Portal  } from "semantic-ui-react";
+import {Grid,Card,Divider,Icon,Button,Menu,Popup,Portal,Form  } from "semantic-ui-react";
 import { Link,Redirect  } from 'react-router-dom';
 let endpoint = "http://localhost:8080/";
 const gridoffset = {
@@ -10,6 +10,12 @@ const gridoffset = {
           paddingBottom: "40px",
           width : "1366px",
 
+};
+const form_formatting = { marginLeft: "36px", marginRight: "32px",marginTop: "25px" };
+const submitButton = {
+  marginRight: "519px",
+  marginBottom: "42px",
+  background: "#3F691A"
 };
 const friendOptions = [
     {
@@ -197,20 +203,55 @@ class Checkout extends Component {
         address:{
           name:"First Name Last Name",
           unit:"1234-00",
-          streetName:"crescent street",
-          cityName:"Toronto",
-          stateName:"Ontario 1A2 3B4",
-          countryName:"Canada",
-          phoneNum:"7781231234",
+          street:"Crescent Street",
+          city:"Toronto",
+          state:"Ontario 1A2 3B4",
+          country:"Canada",
+          phone:"778-123-1234",
           prompt:false,
         },
     };
       this.join=this.join.bind(this);
       this.closeEmail=this.closeEmail.bind(this);
+      this.closeAddress=this.closeAddress.bind(this);
+      this.fillAddress=this.fillAddress.bind(this);
+      this.validateAddress=this.validateAddress.bind(this);
+      this.changeAddress=this.changeAddress.bind(this);
+
+
 
   }
+  componentDidMount() {
+    this.getAddress();
+  }
+  getAddress = () => {
+    console.log("called the function")
+    axios.get(endpoint + "auth/api/address",{
+        withCredentials: true,
+    }).then(res => {
+    console.log(Object.entries(res.data),8888888,Object.entries(res.data)[0][1]);
+    //console.log(Object.fromEntries(res.data["address"]),6666666)
+    if (res.status === 200) {
+      var temp = {}
+        Object.entries(res.data).map(obj => {
+          console.log(obj[1].Key,obj[1].Value)
+          temp[obj[1].Key] = obj[1].Value
+        })
+        console.log(temp,898989898)
+        this.setState({
+          address: temp
+      });
+    } 
+  });
+};
   doCheckout = () => {
-	  axios.get(endpoint + "auth/api/checkout",{
+    let address = this.state.address
+	  axios.post(endpoint + "auth/api/checkout",
+      address
+    ,{
+      headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
 		  withCredentials: true,
     }).then(res => {
     console.log(res)
@@ -229,6 +270,44 @@ class Checkout extends Component {
     this.setState({ email: value.target.value });
     console.log(value.target.value)
   };
+  fillAddress(){
+    this.setState({ 
+      addressOpen: true,
+      emailOpen: false })
+  }
+  onFNChange = (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ firstname: value.target.value });
+  };
+  onUnitchange = (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ unit: value.target.value });
+  };
+  onLNChange = (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ lastname: value.target.value });
+  };
+  onAddresschange = (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ myAddress: value.target.value });
+  };
+  onCitychange= (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ city: value.target.value });
+  };
+  onStatechange= (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ stateName: value.target.value });
+  };
+  onCountrychange= (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ country: value.target.value });
+  };
+  onPhonechange= (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ phone: value.target.value });
+  };
+
   join(){
       // this function makes a call to our backend with the current email in the box
       // TODO call the backend from here
@@ -240,15 +319,147 @@ class Checkout extends Component {
     closeEmail = () => {
       this.setState({ emailOpen: false })
     }  
+    closeAddress = () => {
+      this.setState({ addressOpen: false })
+    }  
     closeAdd = () => {
-      var temp = this.state.address
+      var temp = Object.assign({},this.state.address)
       temp.prompt = true
       this.setState({ address: temp })
     }  
+    validateAddress = () =>{
+      return true
+    }
+    changeAddress(){
+      console.log(222222)
+      if (this.validateAddress()) {
+      var temp = {}
+      temp.name = this.state.firstname + ' ' + this.state.lastname
+      temp.unit = this.state.unit
+      temp.street = this.state.myAddress
+      temp.city = this.state.city
+      temp.state = this.state.stateName
+      temp.country = this.state.country
+      temp.phone = this.state.phone
+      temp.prompt = true
+      this.setState({ 
+        address: temp,
+        addressOpen: false
+      })
+    }
+  }
+    panel(){
+      return <Portal
+      open={this.state.addressOpen}
+      >
+             <div
+            style={{
+                height: '100%',
+                width: '1366px',
+                left: '0px',
+                position: 'fixed',
+                top: '0px',
+                background: 'rgba(0,0,0,0.5)',
+                zIndex: 1,
+                overflowX:'hidden',
+              }}>
+            <Card
+              style={{
+                height: '509px',
+                width: '707px',
+                marginLeft: '519px',
+                marginRight: '518px',
+                position: 'relative',
+                top: '196px',
+                background: '#FFFFFF',
+                zIndex: 1,
+              }}
+            >   
+          <Form style={form_formatting}>
+          <Form.Group widths='equal'>
+
+          <Form.Input
+        error={this.state.errFirstName}
+        value={this.state.firstname}
+        onChange={this.onFNChange}
+        style={{color:"#595959",	fontFamily: "Rubik"}}
+        placeholder='First name'
+        fluid label='First name'
+        />
+
+        <Form.Input   
+          error={this.state.errLastName}
+          value={this.lastname}
+          onChange={this.onLNChange}
+        style={{color:"#595959",	fontFamily: "Rubik",}}
+        placeholder='Last Name'
+        fluid label='Last Name'
+        />
+          </Form.Group>
+          <Form.Group widths='equal'>
+          <Form.Input   
+          error={this.state.errUnit}
+          value={this.unit}
+          onChange={this.onUnitchange}
+        style={{color:"#595959",	fontFamily: "Rubik",}}
+        placeholder='201'
+        fluid label='Unit Number'
+        />
+          <Form.Input   
+          error={this.state.errAddress}
+          value={this.myAddress}
+          onChange={this.onAddresschange}
+        style={{color:"#595959",	fontFamily: "Rubik",}}
+        placeholder='6666 Park Plaza Street'
+        fluid label='Street Address'
+        />
+        
+            <Form.Input   
+          error={this.state.errCity}
+          value={this.city}
+          onChange={this.onCitychange}
+        style={{color:"#595959",	fontFamily: "Rubik",}}
+        placeholder='Toronto'
+        fluid label='City'
+        />
+                  </Form.Group>
+           <Form.Input   
+          error={this.state.errState}
+          value={this.stateName}
+          onChange={this.onStatechange}
+        style={{color:"#595959",	fontFamily: "Rubik",}}
+        placeholder='Ontario'
+        fluid label='State'
+        />
+          <Form.Input   
+          error={this.state.errCountry}
+          value={this.country}
+          onChange={this.onCountrychange}
+        style={{color:"#595959",	fontFamily: "Rubik",}}
+        placeholder='Canada'
+        fluid label='Country'
+        />
+         <Form.Input   
+          error={this.state.errPhone}
+          value={this.phone}
+          onChange={this.onPhonechange}
+        style={{color:"#595959",	fontFamily: "Rubik",}}
+        placeholder='778-329-3030'
+        fluid label='Phone'
+        />
+           <Form.Button color="blue" size="large" style={submitButton} onClick={this.changeAddress} >
+<div className="button-text"> CONFIRM </div>
+</Form.Button>
+      </Form>
+            </Card>      
+            </div>
+        </Portal>
+    }
     render() {    
       if (!this.props.bundleData){
         return (<Redirect to={"/lumber"}/>)
       }
+      let addressPanel = this.panel()
     return (
 <div>
 <MenuBar/>
@@ -272,19 +483,19 @@ class Checkout extends Component {
     </Card>
     <Card style={{marginLeft:"33px",width:"606px",height:"231px"}}>
                   <div class='shipping-details' >
-                    Shipping Details <span class='change-order'>Change</span>
+                    Shipping Details <span class='change-order' onClick={this.fillAddress}>Change</span>
                   </div>
                   <Divider style={{marginTop:"0px",marginLeft:"21px",marginRight:"24px",marginBottom:"18px"}}/>
                   <div class='address'>
                     {this.state.address.name}
                     <br/>
-                    {this.state.address.unit} {this.state.address.streetName}
+                    {this.state.address.unit} {this.state.address.street}
                     <br/>
-                    {this.state.address.cityName}, {  this.state.address.stateName}
+                    {this.state.address.city}, {  this.state.address.state}
                     <br/>
-                    {this.state.address.countryName}
+                    {this.state.address.country}
                     <br/>
-                    Phone: {this.state.address.phoneNum}
+                    Phone: {this.state.address.phone}
                     <br/>
                     <br/>
                     <span style={{marginLeft:"0px"}} class='change-order'>Add Delivery Instructions</span>
@@ -354,6 +565,7 @@ class Checkout extends Component {
             </Grid.Row>
   </Grid>
   </div>
+  {addressPanel}
   <Portal
       open={this.state.emailOpen}
       >
@@ -436,13 +648,13 @@ class Checkout extends Component {
             <div  style={{marginLeft: '26px',marginTop: '22px'} }class='address'>
                     {this.state.address.name}
                     <br/>
-                    {this.state.address.unit} {this.state.address.streetName}
+                    {this.state.address.unit} {this.state.address.street}
                     <br/>
-                    {this.state.address.cityName}, {  this.state.address.stateName}
+                    {this.state.address.city}, {  this.state.address.state}
                     <br/>
-                    {this.state.address.countryName}
+                    {this.state.address.country}
                     <br/>
-                    Phone: {this.state.address.phoneNum}
+                    Phone: {this.state.address.phone}
                 </div>
             <Card.Header>
             <Button  className="address"
@@ -451,11 +663,12 @@ class Checkout extends Component {
                 paddingRight:"16px",paddingLeft:"16px",paddingTop:"10px"}}  
                  onClick={this.closeAdd} content="DELIVER TO THIS ADDRESS">
                 </Button>
-              <Button  className="change-add"
+              <Button  onClick={this.fillAddress} className="change-add"
                 style={{width:"271px",height: "36px",marginLeft:"67px",marginRight:"66px",
                 marginTop:"15.5px",marginBottom:"42.5px",paddingRight:"16px",paddingLeft:"16px"}}  
                   >
                   <div>
+
                     CHANGE ADDRESS INFO
                     </div>
                 </Button>

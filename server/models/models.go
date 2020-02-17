@@ -13,6 +13,15 @@ type Length struct{
 type Email struct{
     Email         string  `json:"email,omitempty"`
 }
+type Address struct{
+    Name         string  `json:"name,omitempty"`
+    Unit         string  `json:"unit,omitempty"`
+    Street         string  `json:"street,omitempty"`
+    City         string  `json:"city,omitempty"`
+    State         string  `json:"state,omitempty"`
+    Country         string  `json:"country,omitempty"`
+    Phone         string  `json:"phone,omitempty"`
+}
 type Bundle struct {
 	Name   string          `json:"type,omitempty"`
 	Owner string           `json:"woodName,omitempty"`

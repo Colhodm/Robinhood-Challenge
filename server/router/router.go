@@ -22,6 +22,7 @@ func Router() *mux.Router {
     s.HandleFunc("/api/profileupdate", middleware.UpdateProfile).Methods("POST", "OPTIONS")
 	
     // Checkout Route, we send an email to them
-    s.HandleFunc("/api/checkout", middleware.DoCheckout).Methods("GET", "OPTIONS")
+    s.HandleFunc("/api/checkout", middleware.DoCheckout).Methods("POST", "OPTIONS")
+    s.HandleFunc("/api/address", middleware.GetAddress).Methods("GET", "OPTIONS")
     return router
 }
