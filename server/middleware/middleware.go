@@ -121,7 +121,7 @@ func Bundles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
         w.Header().Set("Access-Control-Allow-Credentials", "true")
         fmt.Println("Routed.")
-        spreadsheetId := "1BBgpYSLu29IKU-c6o6xUGubr-H7-FIqvLJY_bjnY7tM"
+        spreadsheetId := "1lPOGUVrbVUc0W2gdXbG7DdFSgBiSMvIZbz9vhOloxfA"
 	readRange := "A2:N4"
         resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
         if err != nil {
@@ -258,27 +258,39 @@ func Order(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
         w.Header().Set("Access-Control-Allow-Credentials", "true")
         fmt.Println("Routed.")
-        spreadsheetId := "1MnZd3zfxfq0pA1UeZ7Jv-7XsI4lDaCCgUqSxSeBbf8U"
-        readRange := "Orders!A2:G4"
+        spreadsheetId := "1lPOGUVrbVUc0W2gdXbG7DdFSgBiSMvIZbz9vhOloxfA"
+	readRange := "Orders!A2:H"
         resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
         if err != nil {
                 log.Fatalf("Unable to retrieve data from sheet: %v", err)
         }
-
+	user_id := string(r.Context().Value("user_id").([]uint8))
+	result,err := findUserByID(user_id)
+        if err != nil {
+                log.Fatalf("Unable to retrieve data from mongo: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+        }
+	fmt.Println(result[1].Value)
+	fetchedemail :=  result[1].Value
+	fmt.Println(688888,fetchedemail)
         if len(resp.Values) == 0 {
                 fmt.Println("No data found.")
         } else {
                 fmt.Println("Order Printed")
-                var orders [3] models.Order
+                orders := make([]models.Order, len(resp.Values))
                 for index, row := range resp.Values {
                         // Print columns A and E, which correspond to indices 0 and 4.
-                        if len(row) != 7{
+                        fmt.Println(row)
+                        if len(row) != 8{
                             fmt.Println("Error")
                             continue
                             // THROW Error
                         }
-                        fmt.Printf("%s\n", row)
-                        var order models.Order
+                        temp_email := row[7].(string)
+			if (temp_email != fetchedemail){
+				continue
+			}
+			var order models.Order
                         order.Name = row[0].(string) 
                         order.Total = row[1].(string)
                         order.Date = row[2].(string)
@@ -333,7 +345,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
     // Set the token in the cache, along with the user whom it represents
     // The token has an expiry time of 120 seconds
     //fetched[0] has the id of the user we just validated
-    _, err = cache.Do("SETEX", sessionToken, "1200", fetched[0].Value.(primitive.ObjectID).Hex())
+    _, err = cache.Do("SETEX", sessionToken, "3600", fetched[0].Value.(primitive.ObjectID).Hex())
     if err != nil {
         // If there is an error in setting the cache, return an internal server error
 	    fmt.Println("Error2")

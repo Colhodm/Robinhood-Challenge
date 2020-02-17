@@ -69,15 +69,15 @@ class Orders extends Component {
   }
   setStyle(){
     this.border_all_select = {
-      borderBottom: this.props.location.pathname =='/lumber' ? "2px solid #3F691A" : "",
+      borderBottom: this.state.view =='all' ? "2px solid #3F691A" : "",
       marginLeft: "32px",
     };
     this.border_open_select = {
-      borderBottom: this.props.location.pathname =='/profile' ? "2px solid #3F691A" : "",
+      borderBottom: this.state.view =='active' ? "2px solid #3F691A" : "",
       marginLeft: "32px",
     };
     this.border_cancel_select = {
-      borderBottom: this.props.location.pathname =='/orders' ? "2px solid #3F691A" : "",
+      borderBottom: this.state.view =='cancel' ? "2px solid #3F691A" : "",
       marginLeft: "32px",
     };
   }
@@ -184,22 +184,20 @@ class Orders extends Component {
                 <Grid.Column>
                     <Table celled columns style={tableStyle}>
                         <Table.Body>
-                            <Table.Row>
-                            <Table.Cell onClick={this.updateView}>
-                            <div style={this.border_all_select}>
+                            <Table.Row >
+                            <Table.Cell style={this.border_all_select} onClick={this.updateView}>
                                 <div style={rightTable}>
                                 All Orders
                                     </div>
-                                    </div>
                             </Table.Cell>
-                            <Table.Cell onClick={this.activeView}>
+                            <Table.Cell style={this.border_open_select}onClick={this.activeView}>
                             <div style={rightTable}>
                                 Open Orders
                                 </div>
                             </Table.Cell>
-                            <Table.Cell   onClick={this.cancelView}>
+                            <Table.Cell   style={this.border_cancel_select}onClick={this.cancelView}>
                             <div style={rightTable}>
-                                Cancelled Order
+                                Cancelled Orders
                                 </div>
                             </Table.Cell>
                             </Table.Row>
