@@ -120,6 +120,8 @@ class Profile extends Component {
       this.join=this.join.bind(this);
       this.setButton=this.setButton.bind(this);
       this.updatePref=this.updatePref.bind(this);
+      this.updateLength=this.updateLength.bind(this);
+      this.deleteLength=this.deleteLength.bind(this);
       console.log(this.state.favorites)
 
   }
@@ -129,7 +131,8 @@ class Profile extends Component {
   updatePref = () => {
     console.log(66)
 	  let Lumber = this.state.favorites
-	  axios.post(endpoint + "auth/api/profileupdate",{Lumber},
+	  let Length = this.state.lengths
+	  axios.post(endpoint + "auth/api/profileupdate",{Lumber,Length},
 		  {
 		  withCredentials: true,
 		  headers:{
@@ -138,7 +141,7 @@ class Profile extends Component {
 		  }
     ).then(res => {
     if (res.status == 200) {
-    
+	    //TODO come up with some confirmation mechanism and actually verify the password
     }
   });
 };
@@ -146,13 +149,44 @@ class Profile extends Component {
 	  axios.get(endpoint + "auth/api/profilefetch",{
 		  withCredentials: true,
     }).then(res => {
-    if (Object.values(res.data[5])[1] != null) {
+     if (Object.values(res.data[5])[1] != null) {
       this.setState({
-        favorites: Object.values(res.data[5])[1]});
+        favorites: Object.values(res.data[5])[1],
+        lengths: Object.values(res.data[6])[1],
+      });
     } else {
     }
   });
 };
+  deleteLength  = (event, {value}) => {
+	  let selection_name = value
+	  var temp = this.state.lengths
+	  this.state.lengths.forEach(function (item, index) {
+		  console.log(item,selection_name)
+		  if (item[0] == selection_name){
+			  console.log(36789314159)
+		  temp[index][1] = !(temp[index][1])
+	  	  }  
+	  });
+      this.setState({
+       lengths: temp,
+      });
+  } 
+  updateLength  = (event, {value}) => {
+	 console.log(event.target,value)
+	  let selection_name = event.target.textContent;
+	  var temp = this.state.lengths
+	  this.state.lengths.forEach(function (item, index) {
+		  console.log(item,selection_name)
+		  if (item[0] == selection_name){
+			  console.log(36789314159)
+		  temp[index][1] = !(temp[index][1])
+	  	  }  
+	  });
+      this.setState({
+       lengths: temp,
+      });
+  }
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
@@ -182,15 +216,25 @@ class Profile extends Component {
           var margin_left = i == 0? "24px":"16px"
           console.log(favorites[i][1])
           if (favorites[i][1]){
-            result.push(<Button style={{marginLeft:margin_left,background:"#3F691A"}} index={i} onClick={this.setButton} className="success-check-wood" icon='check circle outline' content={favorites[i][0]} />);
+            result.push(<Button style={{marginBottom:"8px",marginLeft:margin_left,background:"#3F691A"}} index={i} onClick={this.setButton} className="success-check-wood" icon='check circle outline' content={favorites[i][0]} />);
           } else {
             result.push(<Button style={{marginLeft:margin_left,background:"#FFFFFF"}} index={i} onClick={this.setButton} className="fail-check-wood"  content={favorites[i][0]}  /> );
           }
       }
       return result
     }
+   setDefault(){
+	  var my_lst = []
+	  this.state.lengths.forEach(function (item, index) {
+		  if (item[1]){
+	  	  my_lst.push(String(item[0]))
+		  }  
+	  });
+	return my_lst
+   }
     render() {
       let return_array = this.setStyle()
+      let default_val = this.setDefault()
     return (
 <div>
 <Grid fluid divided='vertically' style={gridoffset}>
@@ -235,7 +279,7 @@ class Profile extends Component {
                     </Form>
                     </Grid.Column>
                     <Grid.Column>
-                    <Card style={{marginTop:"84px",marginLeft:"16px",marginRight:"29px",width:"637px",marginBottom:"0px",height:"208px"}}>
+                    <Card style={{marginTop:"84px",marginLeft:"16px",marginRight:"29px",width:"637px",marginBottom:"0px",height:"268px"}}>
                     <Form style={{marginLeft:"24px",marginTop:"16px",marginBottom:"16.5px"}}>
                     <div class="lumber-preferences" style={{marginBottom:"8px"}}> 
                         Lumber Preferences
@@ -247,11 +291,15 @@ class Profile extends Component {
             <div class="lumber-preferences" style={{marginBottom:"6.83px"}}> 
                 Length Preferences
             </div>
-        <Form.Dropdown style={{marginLeft:".5px",marginBottom:"16.5px",marginRight:"394.5px",width:"208px"}}
+        <Form.Dropdown style={{marginLeft:".5px",marginBottom:"16.5px",marginRight:"394.5px",width:"308px"}}
         placeholder='Select Length(ft)'
         fluid
-        selection
+	clearable={true}
+        multiple selection
         options={friendOptions}
+	value={default_val}
+	onLabelClick={this.deleteLength}
+	onChange={this.updateLength}
   />
         </Form.Field>    
         </Form>

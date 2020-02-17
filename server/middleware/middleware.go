@@ -486,7 +486,7 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
     // Then we can update the current_user record
     var user models.User
     err := json.NewDecoder(r.Body).Decode(&user)
-    fmt.Println(3333333,user.Lumber)
+    fmt.Println(3333333,user.Lumber,user.Length)
     result,err := updateProfileUser(user,user_id)
     if (err != nil){
 	    http.Redirect(w, r,"http://35.233.168.169:3000" , http.StatusSeeOther)

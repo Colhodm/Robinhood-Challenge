@@ -107,7 +107,10 @@ class NavBar extends Component {
       }
     )
     .then(res => {
-      console.log(res);
+	    if (res.status === 200){
+	    this.setState({ emailOpen:true});
+	    console.log(res);
+	    }
     });
   };
   onEChange = (value) => {
@@ -210,24 +213,12 @@ class NavBar extends Component {
           errEmail: true
       });
       } 
-      if (!(this.state["passwordStrength"] > 2)){
+      if (!(this.state["passwordStrength"] > 1)){
         validated = false
         this.setState({
           errPassword: true
       });
       } 
-      // if (!this.state["preferredLumber"]){
-      //   validated = false
-      //   this.setState({
-      //     errLumber: true
-      // });
-      //} 
-      // if (!this.state["preferredLength"]){
-      //   validated = false
-      //   this.setState({
-      //     errLength: true
-      // });
-      // }
       if (this.state["Location"].length === 0){
         validated = false
         this.setState({
@@ -553,8 +544,8 @@ onClick={this.validateLoginForm} >
             We sent you an email!  
             </div>  
             <div className='email-text'>
-              Please find in your email instructions to recover your password 
-              </div>
+            You succesfully registered and can now login to Lumber.io!  
+	    </div>
               <Button  className="button-text"
                 style={{width:"96px",height: "36px",marginLeft:"150px",marginRight:"157px",
                 marginTop:"2px",marginBottom:"12px",paddingRight:"16px",paddingLeft:"16px"}}  
