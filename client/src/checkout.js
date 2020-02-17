@@ -165,7 +165,7 @@ function MenuBar(props) {
     <Grid fluid padded={false} columns={2} style={gridS}>
       <Grid.Row fluid stye={greenBut}>
       <Grid.Column>
-      <Link to={"/"} style={navbar}>
+      <Link to={"/lumber"} style={navbar}>
     Lumber.io
     </Link>
     </Grid.Column>
@@ -245,8 +245,11 @@ class Checkout extends Component {
 };
   doCheckout = () => {
     let address = this.state.address
+    let bundle_info = this.props.bundleData
 	  axios.post(endpoint + "auth/api/checkout",
-      address
+		  {
+		  address,bundle_info
+		  }
     ,{
       headers: {
       "Content-Type": "application/x-www-form-urlencoded"

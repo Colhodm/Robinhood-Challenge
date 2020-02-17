@@ -22,8 +22,8 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/sheets/v4"
-    "net/smtp"
     "google.golang.org/api/gmail/v1"
+    "encoding/base64"
 )
 
 // DB connection string
@@ -121,8 +121,8 @@ func Bundles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
         w.Header().Set("Access-Control-Allow-Credentials", "true")
         fmt.Println("Routed.")
-        spreadsheetId := "1BBgpYSLu29IKU-c6o6xUGubr-H7-FIqvLJY_bjnY7tM/edit#gid=2069414429"
-        readRange := "A2:N4"
+        spreadsheetId := "1BBgpYSLu29IKU-c6o6xUGubr-H7-FIqvLJY_bjnY7tM"
+	readRange := "A2:N4"
         resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
         if err != nil {
                 log.Fatalf("Unable to retrieve data from sheet: %v", err)
@@ -161,7 +161,7 @@ func initGoogleSheets() {
                 log.Fatalf("Unable to read client secret file: %v", err)
         }
         // If modifying these scopes, delete your previously saved token.json.
-        config, err := google.ConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets.readonly")
+        config, err := google.ConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets.readonly" +" "+ gmail.GmailComposeScope)
         if err != nil {
                 log.Fatalf("Unable to parse client secret file to config: %v", err)
         }
@@ -396,6 +396,16 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
     hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
 	user.Password = string(hashedPassword)
     insertOneUser(user)
+    var message gmail.Message
+    messageStr := []byte(
+	    "From: hello@lumberio.com\r\n" +"To: " + user.Email + "\r\n" +"Subject: Welcome from Lumber.io\r\n\r\n" +"We have received a Lumber Bundle Order from you. We will reach out promptly to determine payment and logistics. ")
+    message.Raw = base64.URLEncoding.EncodeToString(messageStr)
+    _,err = email.Users.Messages.Send("me", &message).Do()
+    if (err != nil){
+        w.WriteHeader(http.StatusUnauthorized)
+        fmt.Println(err)
+        return
+    }
     //TODO add logic to hash the password and give the user some unique token so we ensure hes logged in
 	fmt.Println("Creating User")
 	json.NewEncoder(w).Encode(user)
@@ -431,38 +441,33 @@ func DoCheckout(w http.ResponseWriter, r *http.Request) {
         return
     }
     // we also want to update our users addresses if we need to
-    var addy models.Address
-    err = json.NewDecoder(r.Body).Decode(&addy)
+    var checkout models.Checkout
+    err = json.NewDecoder(r.Body).Decode(&checkout)
     if (err != nil){
-        w.WriteHeader(http.StatusUnauthorized)
         fmt.Println(err)
+        w.WriteHeader(http.StatusUnauthorized)
         return
     }
-    err = updateUserAddress(user_id,addy)
+    fmt.Println(3333333,checkout.Addy,checkout.Bundle)
+    err = updateUserAddress(user_id,checkout.Addy)
     if (err != nil){
-        w.WriteHeader(http.StatusUnauthorized)
         fmt.Println(err)
+        w.WriteHeader(http.StatusUnauthorized)
         return
     }
     fmt.Println(result)
-    email := result[1].Value.(string)
-	// Sender data.
-    // TODO 
-	from := "colhodm@gmail.com"
-    password := "foolishidiot"
-	// smtp server configuration.^
-	smtpServer := smtpServer{host: "smtp.gmail.com", port: "587"}
- // Message.
-    message := []byte("This is a really unimaginative message, I know.")
-    auth := smtp.PlainAuth("", from, password, smtpServer.host)
-	// Receiver email address.
-    to := []string{
-        email,
-    }
- // Sending email.
-    err = smtp.SendMail(smtpServer.Address(), auth, from, to, message)
-    if err != nil {
+    tempEmail := result[1].Value.(string)
+    var message gmail.Message
+    messageStr := []byte(
+	    "From: hello@lumberio.com\r\n" +
+	    "To: " + tempEmail + "\r\n" +
+	    "Subject: Checkout from Lumber.io\r\n\r\n" +
+	    "You checked out from Lumber.io! You purchased a " +checkout.Bundle["type"].(string) + " from " + checkout.Bundle["owner"].(string) +" for a price of " +   checkout.Bundle["price"].(string)  + ". Please enjoy the other bundles we have on offer!" + " We are shipping it to " + checkout.Addy.Unit + " " + checkout.Addy.Street + " " +checkout.Addy.City + " " + checkout.Addy.State +  ". If needed, we can reach you at " + checkout.Addy.Phone) 
+    message.Raw = base64.URLEncoding.EncodeToString(messageStr)
+    _,err = email.Users.Messages.Send("me", &message).Do()
+    if (err != nil){
         fmt.Println(err)
+        w.WriteHeader(http.StatusUnauthorized)
         return
     }
     fmt.Println("Email Sent!")    

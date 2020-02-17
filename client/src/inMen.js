@@ -189,7 +189,7 @@ this.setStyle = this.setStyle.bind(this);
         <Grid fluid padded={false} columns={2} style={gridS}>
           <Grid.Row fluid stye={greenBut}>
           <Grid.Column>
-          <Link to={"/"} style={navbar}>
+          <Link to={"/lumber"} style={navbar}>
         Lumber.io
         </Link>
         </Grid.Column>

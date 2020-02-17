@@ -13,6 +13,10 @@ type Length struct{
 type Email struct{
     Email         string  `json:"email,omitempty"`
 }
+type Checkout struct{
+    Addy         Address  `json:"address"`
+    Bundle         map[string]interface{} `json:"bundle_info"`
+}
 type Address struct{
     Name         string  `json:"name,omitempty"`
     Unit         string  `json:"unit,omitempty"`

@@ -126,7 +126,7 @@ class Type extends Component {
         <Header as="h3" textAlign={'center'} style={header}> Essential </Header>
         <div  textAlign={'left'} style={headline}>
           {this.props.type}
-         <Link to="/softwood">
+         <Link to="/wood">
          <span style={{fontFamily:"Rubik",letterSpacing:".43px",lineHeight:"17px",fontSize:"12px",width:"127px",height:"17px",marginRight:"0px",  color: "#3F691A",
 }} >     
           View more detail &gt; </span>
@@ -160,7 +160,7 @@ class Type extends Component {
           </List>
           </div>
           <Divider section style={{marginTop:"0px",marginBottom:"0px"}}/>
-          <Link onClick={this.sendData}to={`/wood`}>
+          <Link onClick={this.sendData}to={`/checkout`}>
           <Button style={{paddingLeft:"16px",paddingTop:"13px",paddingBottom:"13px",paddingRight:"16px",marginLeft:"24px",marginTop:"15px",marginRight:"24px",marginBottom:"16px",width:"319px",height:"42px",background:"#3F691A",color:"#FFFFFF"}}> SELECT </Button>
           </Link>
 
