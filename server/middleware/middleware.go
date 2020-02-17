@@ -23,6 +23,7 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/sheets/v4"
     "net/smtp"
+    "google.golang.org/api/gmail/v1"
 )
 
 // DB connection string
