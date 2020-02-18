@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Image,Grid,Card,Checkbox,Divider, Header, Form, Input,Dropdown, Icon, Label,Button,Table,Segment,List,Container } from "semantic-ui-react";
 import { BrowserRouter as Router, Switch, Route, Link ,Redirect } from 'react-router-dom';
-let endpoint = "http://35.227.147.196:8080/";
+let endpoint = "https://lumberio.com/";
 const gridoffset = {
           marginTop: "32px",
           fontFamily: "	OverpassSemiBold",

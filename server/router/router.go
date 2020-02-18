@@ -3,6 +3,7 @@ package router
 import (
 	"Ozone-Dev/server/middleware"
 	"github.com/gorilla/mux"
+	"fmt"
 )
 
 // Router is exported and used in main.go
@@ -10,6 +11,7 @@ func Router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/joinnow", middleware.AddEmail).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/register", middleware.AddUser).Methods("POST", "OPTIONS")
+	fmt.Println(router)
 	router.HandleFunc("/api/login", middleware.Login).Methods("POST", "OPTIONS")
     
     s := router.PathPrefix("/auth").Methods("GET","POST", "OPTIONS").Subrouter()
