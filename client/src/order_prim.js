@@ -138,7 +138,7 @@ class Order extends Component {
   yearError() {
     // If they made a selection it wouldn't be none
     if (this.state.carYear == "") {
-      console.log("I detected an error in the year");
+      //console.log("I detected an error in the year");
     }
   }
   handleChange = (e, { value }) => {
@@ -146,7 +146,7 @@ class Order extends Component {
     this.props.stateLink(this.props.identifier, this.state);
   };
   checkError() {
-    console.log("I got called!!");
+    //console.log("I got called!!");
   }
   // fix right margin for the first column formatting since now with respect to the column boundry
   // as opposed to card boundry

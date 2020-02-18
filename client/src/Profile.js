@@ -122,14 +122,14 @@ class Profile extends Component {
       this.updatePref=this.updatePref.bind(this);
       this.updateLength=this.updateLength.bind(this);
       this.deleteLength=this.deleteLength.bind(this);
-      console.log(this.state.favorites)
+      //console.log(this.state.favorites)
 
   }
   componentDidMount() {
     this.getPreferences();
   }
   updatePref = () => {
-    console.log(66)
+    //console.log(66)
 	  let Lumber = this.state.favorites
 	  let Length = this.state.lengths
 	  axios.post(endpoint + "auth/api/profileupdate",{Lumber,Length},
@@ -162,9 +162,9 @@ class Profile extends Component {
 	  let selection_name = value
 	  var temp = this.state.lengths
 	  this.state.lengths.forEach(function (item, index) {
-		  console.log(item,selection_name)
+		  //console.log(item,selection_name)
 		  if (item[0] == selection_name){
-			  console.log(36789314159)
+			  //console.log(36789314159)
 		  temp[index][1] = !(temp[index][1])
 	  	  }  
 	  });
@@ -173,13 +173,13 @@ class Profile extends Component {
       });
   } 
   updateLength  = (event, {value}) => {
-	 console.log(event.target,value)
+	 //console.log(event.target,value)
 	  let selection_name = event.target.textContent;
 	  var temp = this.state.lengths
 	  this.state.lengths.forEach(function (item, index) {
-		  console.log(item,selection_name)
+		  //console.log(item,selection_name)
 		  if (item[0] == selection_name){
-			  console.log(36789314159)
+			  //console.log(36789314159)
 		  temp[index][1] = !(temp[index][1])
 	  	  }  
 	  });
@@ -190,19 +190,19 @@ class Profile extends Component {
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
-    console.log(value.target.value)
+    //console.log(value.target.value)
   };
   join(){
       // this function makes a call to our backend with the current email in the box
       // TODO call the backend from here
-      console.log(this.state["email"])
+      //console.log(this.state["email"])
   }
     sendData(data) {
         this.props.buttonClick(data);
     };
     setButton = (e, data) => {
       // access to e.target here
-      console.log(data,data.index);
+      //console.log(data,data.index);
       const fav = this.state.favorites.slice()
       fav[data.index][1] = !fav[data.index][1]
       this.setState({favorites: fav})
@@ -210,11 +210,11 @@ class Profile extends Component {
     setStyle(){
       //TODO ensure first guys margin is effectively 24 
       const favorites = this.state.favorites;
-      console.log(favorites,favorites[0])
+      //console.log(favorites,favorites[0])
       var result = [];
       for (var i = 0; i < favorites.length; ++i) {
           var margin_left = i == 0? "24px":"16px"
-          console.log(favorites[i][1])
+          //console.log(favorites[i][1])
           if (favorites[i][1]){
             result.push(<Button style={{marginBottom:"8px",marginLeft:margin_left,background:"#3F691A"}} index={i} onClick={this.setButton} className="success-check-wood" icon='check circle outline' content={favorites[i][0]} />);
           } else {

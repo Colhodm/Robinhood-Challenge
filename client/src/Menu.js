@@ -109,7 +109,7 @@ class NavBar extends Component {
     .then(res => {
 	    if (res.status === 200){
 	    this.setState({ emailOpen:true});
-	    console.log(res);
+	    //console.log(res);
 	    }
     });
   };
@@ -128,7 +128,7 @@ class NavBar extends Component {
   onStrengthChange = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     if (value){
-    console.log(value)
+    //console.log(value)
     this.setState({ passwordStrength: value });
     }
   };
@@ -167,7 +167,7 @@ class NavBar extends Component {
     });
     } 
     if (validated){
-      console.log(36)
+      //console.log(36)
       var response = this.loginBackendUser()
       // if token not valid 
       // if response not valid throw an error on the page
@@ -192,8 +192,8 @@ class NavBar extends Component {
       }
     )
     .then(res => {
-      //console.log(res.status);
-      //console.log(res);
+      ////console.log(res.status);
+      ////console.log(res);
       if (res.status == 200){
       this.props.update()
       this.props.history.push('lumber')
@@ -254,7 +254,7 @@ class NavBar extends Component {
   }  
   setButton = (e, data) => {
     // access to e.target here
-    console.log(data,data.index);
+    //console.log(data,data.index);
     if (data.type == "lum"){
     const fav = this.state.favorites.slice()
     fav[data.index][1] = !fav[data.index][1]
@@ -280,7 +280,7 @@ class NavBar extends Component {
         var margin_left = i == 0|| i == 6? "2px":"16px"
         var margin_right = i == 5? "50px":"0px"
 
-        console.log(favorites[i][1])
+        //console.log(favorites[i][1])
         if (favorites[i][1]){
           result.push(<Button style={{marginLeft:margin_left,marginRight:margin_right,marginBottom:"16px",height:"36px",background:"#0F4210"}} index={i} type={"lum"} onClick={this.setButton} className="cho-reg-choices" icon='check circle outline' content={favorites[i][0]} />);
         } else {
@@ -304,7 +304,7 @@ class NavBar extends Component {
     return result
   }
   loadCard(){
-    console.log(this.state.activeItem)
+    //console.log(this.state.activeItem)
     if (this.state.activeItem === 'register'){
       return  <Form style={form_formatting}>
       <Form.Field style={{marginTop:"0px"}}>

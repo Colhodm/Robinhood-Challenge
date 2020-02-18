@@ -77,11 +77,11 @@ class BestDeals extends Component {
     this.getBundles();
   }
   getBundles = () => {
-    console.log("called the function")
+    //console.log("called the function")
     axios.get(endpoint + "auth/api/lumberbundles",{
         withCredentials: true,
     }).then(res => {
-    console.log(res);
+    //console.log(res);
     if (res.data) {
       this.setState({
         types: res.data.map(driver => {
@@ -104,12 +104,12 @@ class BestDeals extends Component {
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
-    console.log(value.target.value)
+    //console.log(value.target.value)
   };
   join(){
       // this function makes a call to our backend with the current email in the box
       // TODO call the backend from here
-      console.log(this.state["email"])
+      //console.log(this.state["email"])
   }
     sendData(data) {
         this.props.buttonClick(data);

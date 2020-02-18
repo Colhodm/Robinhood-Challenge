@@ -102,7 +102,7 @@ class Type extends Component {
   yearError() {
     // If they made a selection it wouldn't be none
     if (this.state.carYear == "") {
-      console.log("I detected an error in the year");
+      //console.log("I detected an error in the year");
     }
   }
   sendData(value){
@@ -113,11 +113,11 @@ class Type extends Component {
     this.props.stateLink(this.props.identifier, this.state);
   };
   checkError() {
-    console.log("I got called!!");
+    //console.log("I got called!!");
   }
   // The link from the View more info should be a variable link later...
   render() {
-    console.log(this.props)
+    //console.log(this.props)
     // TODO fix the link instead of just linking to softwood, dynamically create a route
     // TODO fix the key traits
     // TODO fix the essential

@@ -125,12 +125,12 @@ class Info extends Component {
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
-    console.log(value.target.value)
+    //console.log(value.target.value)
   };
   join(){
       // this function makes a call to our backend with the current email in the box
       // TODO call the backend from here
-      console.log(this.state["email"])
+      //console.log(this.state["email"])
   }
     sendData(data) {
         this.props.buttonClick(data);

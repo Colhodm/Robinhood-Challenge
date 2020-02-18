@@ -35,14 +35,14 @@ class App extends Component {
   }
       // our send data function sets the state correctly to use the data passed on by the child component
     updateCurrentBundle(value){
-      console.log(value,999999)
+      //console.log(value,999999)
       this.setState({
         bundle:value
       });
     }
   auth(){
     let value = Cookies.get('session_token')
-    console.log(value)
+    //console.log(value)
     if (!value){
       return <Switch>
       <Route exact path ='/' render={(props) => 

@@ -42,7 +42,7 @@ class CentralText extends Component {
     this.setState({ email: value.target.value });
   };
   join(){
-      console.log(14)
+      //console.log(14)
       let email = this.state.email
       axios
       .post(
@@ -57,7 +57,7 @@ class CentralText extends Component {
         }
       )
       .then(res => {
-        console.log(res);
+        //console.log(res);
       });
   }
     sendData(data) {

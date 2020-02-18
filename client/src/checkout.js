@@ -225,18 +225,18 @@ class Checkout extends Component {
     this.getAddress();
   }
   getAddress = () => {
-    console.log("called the function")
+    ////console.log("called the function")
     axios.get(endpoint + "auth/api/address",{
         withCredentials: true,
     }).then(res => {
-    //console.log(Object.fromEntries(res.data["address"]),6666666)
+    ////console.log(Object.fromEntries(res.data["address"]),6666666)
     if (res.status === 200 && res.data) {
       var temp = {}
         Object.entries(res.data).map(obj => {
-          console.log(obj[1].Key,obj[1].Value)
+          //console.log(obj[1].Key,obj[1].Value)
           temp[obj[1].Key] = obj[1].Value
         })
-        console.log(temp,898989898)
+        //console.log(temp,898989898)
         this.setState({
           address: temp
       });
@@ -256,7 +256,7 @@ class Checkout extends Component {
     },
 		  withCredentials: true,
     }).then(res => {
-    console.log(res)
+    //console.log(res)
     if (res.status == 200){
       this.setState({ emailOpen: true })
     } else {
@@ -270,7 +270,7 @@ class Checkout extends Component {
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
-    console.log(value.target.value)
+    //console.log(value.target.value)
   };
   fillAddress(){
     this.setState({ 
@@ -313,7 +313,7 @@ class Checkout extends Component {
   join(){
       // this function makes a call to our backend with the current email in the box
       // TODO call the backend from here
-      console.log(this.state["email"])
+      //console.log(this.state["email"])
   }
     sendData(data) {
         this.props.buttonClick(data);
@@ -333,7 +333,7 @@ class Checkout extends Component {
       return true
     }
     changeAddress(){
-      console.log(222222)
+      //console.log(222222)
       if (this.validateAddress()) {
       var temp = {}
       temp.name = this.state.firstname + ' ' + this.state.lastname

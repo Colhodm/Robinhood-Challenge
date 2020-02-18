@@ -89,12 +89,12 @@ class Orders extends Component {
       });
       return
     }
-    console.log(value)
-    console.log("called the function")
+    //console.log(value)
+    //console.log("called the function")
     axios.get(endpoint + "auth/api/orders",{
         withCredentials: true,
     }).then(res => {
-    console.log(res);
+    //console.log(res);
     if (res.status == 401){
       this.setState({
         auth: false,
@@ -139,7 +139,7 @@ class Orders extends Component {
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
-    console.log(value.target.value)
+    //console.log(value.target.value)
   };
   updateView() {
     // TODO if its an invalid email we can prompt them for an error later
@@ -156,7 +156,7 @@ class Orders extends Component {
   join(){
       // this function makes a call to our backend with the current email in the box
       // TODO call the backend from here
-      console.log(this.state["email"])
+      //console.log(this.state["email"])
   }
     sendData(data) {
         this.props.buttonClick(data);
