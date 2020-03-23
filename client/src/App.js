@@ -9,6 +9,7 @@ import Info from './Info';
 import Orders from './Order';
 import Checkout from './checkout';
 import Cookies from 'js-cookie';
+import Upload from 'upload'
 
 
 
@@ -53,6 +54,8 @@ class App extends Component {
       } 
       />
       <Route exact path ='/register' render={(props) => <Registration {...props} />}/>
+      <Route component={NotFoundRedirect} />
+      <Route exact path ='/upload' render={(props) => <Upload {...props} />}/>
       <Route component={NotFoundRedirect} />
       </Switch>
     } 
