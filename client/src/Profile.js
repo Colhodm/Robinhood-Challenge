@@ -108,11 +108,15 @@ class Profile extends Component {
     this.state = {
         //cars:[<Car identifier={0} stateLink={this.updateState.bind(this)} />],
         types:[],
-        // fix to be ful default
-        favorites:[["Hardwood",false],["Softwood",false],["Maple",false],["Oak",false],
-        ["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
-        lengths:[["1 x 3",false],["1 x 4",false],["1 x 6",false],["1 x 8",false],
-        ["2 x 2",false],["2 x 4",false],["2 x 6",false]],
+        favorites:[["SPF",false],["Douglas Green",false],["Southern Pine",false],["Other",false]],
+	//["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
+	lengths:[["2 x 4",false],["2 x 6",false],["2 x 8",false],["2 x 8",false],
+	   ["1 x 2",false],["1 x 3",false],["1 x 4",false],["Other",false]],
+	// fix to be ful default
+        //favorites:[["Hardwood",false],["Softwood",false],["Maple",false],["Oak",false],
+        //["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
+        //lengths:[["1 x 3",false],["1 x 4",false],["1 x 6",false],["1 x 8",false],
+        //["2 x 2",false],["2 x 4",false],["2 x 6",false]],
         auth: true,
 
     };

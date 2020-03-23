@@ -195,7 +195,7 @@ this.setStyle = this.setStyle.bind(this);
         </Grid.Column>
         <Grid.Column >
           <div style={call}>              
-          Call <span style={phone}>778-329-3030</span> for assistance </div>
+          Call <span style={phone}>778-321-0233</span> for assistance </div>
               </Grid.Column>
 
       </Grid.Row>

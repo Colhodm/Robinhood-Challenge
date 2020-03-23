@@ -67,10 +67,10 @@ class NavBar extends Component {
     errSeller: false,
     errBuyer: false,
 
-    favorites:[["Hardwood",false],["Softwood",false],["Maple",false],["Oak",false],
-    ["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
-    lengths:[["1 x 3",false],["1 x 4",false],["1 x 6",false],["1 x 8",false],
-    ["2 x 2",false],["2 x 4",false],["2 x 6",false]],
+    favorites:[["SPF",false],["Douglas Green",false],["Southern Pine",false],["Other",false]],
+    //["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
+    lengths:[["2 x 4",false],["2 x 6",false],["2 x 8",false],["2 x 8",false],
+    ["1 x 2",false],["1 x 3",false],["1 x 4",false],["Other",false]],
 
   };
   this.loadCard = this.loadCard.bind(this)
@@ -460,7 +460,7 @@ onClick={this.validateLoginForm} >
             Product
             </Menu.Item>
             <Menu.Item style={navbar}>
-            Testamonials
+            Testimonials
             </Menu.Item>
             <Menu.Item style={navbar}>
             Contact

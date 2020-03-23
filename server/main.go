@@ -1,10 +1,10 @@
 package main
 
 import (
+	"Ozone-Dev/server/router"
 	"fmt"
 	"log"
 	"net/http"
-	"Ozone-Dev/server/router"
 )
 
 func main() {

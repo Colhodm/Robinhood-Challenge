@@ -136,7 +136,7 @@ class Type extends Component {
         <div class="lumber-text" style={{lineHeight: "17px",marginLeft:"13px",marginTop:"10px",marginRight:"36px",width:"318px",height:"49px",textAlign:"left"}}>
           Selling for 
           <div style={{color:"#3F691A",fontFamily:"Rubik",fontSize:"21px",fontWeight:"500",letterSpacing:".43px",lineHeight:"24px"}}>${this.props.price}
-          <Popup className="pop-up" content='On average, a lumber trader would take 7-12% commision from each trade. You save by using lumber.io'
+          <Popup className="pop-up" content='You save by using lumber.io'
                        trigger={<Icon color={'grey'} name="question circle outline" />} />
           </div>
           </div>
@@ -147,15 +147,15 @@ class Type extends Component {
           <List>
             <List.Item>
             <List.Icon style={icon_style} name='square full' />
-    <List.Content style={custom_line_height} className='lumber-text'>Find the best price</List.Content>
+    <List.Content style={custom_line_height} className='lumber-text'>{this.props.traits[0]}</List.Content>
             </List.Item>
             <List.Item >
             <List.Icon style={icon_style} name='square full' />
-    <List.Content style={custom_line_height} className='lumber-text'>Ability to track your orders</List.Content>
+    <List.Content style={custom_line_height} className='lumber-text'>{this.props.traits[1]}</List.Content>
             </List.Item>
             <List.Item>
             <List.Icon style={icon_style} name='square full' />
-    <List.Content style={custom_line_height} className='lumber-text'>24 hours phone support </List.Content>
+    <List.Content style={custom_line_height} className='lumber-text'>{this.props.traits[2]}</List.Content>
             </List.Item>
           </List>
           </div>

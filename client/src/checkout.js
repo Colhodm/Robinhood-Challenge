@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import {Grid,Card,Divider,Icon,Button,Menu,Popup,Portal,Form  } from "semantic-ui-react";
 import { Link,Redirect  } from 'react-router-dom';
-let endpoint = "http://lumberio.com/";
+let endpoint = "https://lumberio.com/";
 const gridoffset = {
           marginTop: "24px",
           fontFamily: "	OverpassSemiBold",
@@ -476,7 +476,7 @@ class Checkout extends Component {
                   <Divider style={{marginTop:"0px",marginLeft:"21px",marginRight:"24px",marginBottom:"16px"}}/>
                   <div class='type'>
                     {this.props.bundleData.type}
-                    <span class='change-order'>Change</span>
+                    <Link to={'/lumber'}> <span class='change-order'>Change</span> </Link>
                   </div>
 
                   <div class='seller'>
