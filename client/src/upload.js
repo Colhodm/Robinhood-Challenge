@@ -4,7 +4,9 @@ import { Image,Grid,Card, Portal,Header, Form, Input, Icon, Button,Table,Segment
 import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
 import Formx from "./Formx"
 import FormData from 'form-data';
-let endpoint = "http://localhost:8080/";
+import AddData from './data-imputation';
+import Data from './data-source';
+let endpoint = "https://lumberio.com/";
 const gridoffset = {
           textAlign:"center",
           fontFamily: "	OverpassSemiBold",
@@ -104,7 +106,7 @@ class Upload extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        //cars:[<Car identifier={0} stateLink={this.updateState.bind(this)} />],
+        data:[<Data identifier={0} stateLink={this.updateState.bind(this)} />],
         expanded:[false,false],
         name:"Project Name",
         upload:false,
@@ -114,11 +116,18 @@ class Upload extends Component {
     };
       this.join=this.join.bind(this);
       this.closeEmail=this.closeEmail.bind(this);
+      this.createData=this.createData.bind(this);
 
   }
   closeEmail = () => {
     this.setState({ open: false })
   }  
+  createData = () => {
+    console.log("Someone told me to create some Data")
+        this.setState({
+            data:this.state.data.concat([<Data/>])
+        });
+    };
   uploadCSV = () => {
     console.log(this.state.csv)
     let form = new FormData();
@@ -127,9 +136,9 @@ class Upload extends Component {
     const config = { headers: { 'Content-Type': 'multipart/form-data' } };
     form.append('file', new Blob([this.state.csv], { type: 'text/csv' }));
     console.log(this.props)
-    form.append('id', this.props.match.params.id.substring(1));
+    //form.append('id', this.props.match.params.id.substring(1));
 
-    axios.post(endpoint + "auth/api/project/upload", form, config
+    axios.post(endpoint + "api/project/upload", form, config
     ).then(result => {
       // Handle result…
       if (result.status == 200){
@@ -194,44 +203,8 @@ class Upload extends Component {
         </div>
         <Grid style={third_offset}>
             <Grid.Row columns={1} style={{marginTop:"0px"}}>
-            </Grid.Row>
-            </Grid>
-
-
-<Grid style={gridoffset}>
-    <Grid.Row columns={2} style={{marginTop:"0px",width:"624px",height:"451px"}}>
-                <Grid.Column style={{paddingLeft:"0px",paddingRight:"0px"}}>
-                    <Card padded={false} fluid style={{width:"624px",height:"451px"}}>
-                        <div class="info-text">Circle Graph</div>
-                    <div class="info-describe">Short Description</div>
-                    </Card>
-                    </Grid.Column>
-                    <Grid.Column style={{paddingLeft:"0px",paddingRight:"0px"}}>
-                    <Card padded={false} fluid style={{width:"624px",height:"451px"}}>
-                        <div class="info-text" >Line Graph</div>
-                    <div class="info-describe">Short Description</div>
-                    </Card>
-                    </Grid.Column>
-            </Grid.Row>
-            </Grid>
-            <Grid style={second_offset}>
-            <Grid.Row columns={1} style={{marginTop:"0px"}}>
-            </Grid.Row>
-            </Grid>
-            <Grid style={gridoffset}>
-            <Grid.Row columns={2}>
-                <Grid.Column style={{paddingLeft:"0px",paddingRight:"0px"}}>
-                    <Card padded={false} fluid style={{width:"624px",height:"451px"}}>
-                        <div class="info-text" >Bar Graph</div>
-                    <div class="info-describe">Short Description</div >
-                    </Card>
-                    </Grid.Column>
-                    <Grid.Column style={{paddingLeft:"0px",paddingRight:"0px"}}>
-                    <Card padded={false} fluid style={{width:"624px",height:"451px"}}>
-                        <div class="info-text" >Line Graph</div>
-                    <div class="info-describe">Short Description</div>
-                    </Card>
-                    </Grid.Column>
+            <Card.Group>{this.state.data}</Card.Group>
+            <AddData createData={this.createData}/>
             </Grid.Row>
             </Grid>
             <Portal

@@ -2,13 +2,22 @@ package middleware
 
 import (
 	"Ozone-Dev/server/models"
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"reflect"
+	"time"
+
 	"github.com/gomodule/redigo/redis"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
+	"github.com/tealeg/xlsx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,12 +27,6 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/gmail/v1"
 	"google.golang.org/api/sheets/v4"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"os"
-	"reflect"
-	"time"
 )
 
 // DB connection string
@@ -51,6 +54,22 @@ type smtpServer struct {
 	host string
 	port string
 }
+
+// holds a data entry for a given 2x4 term
+type size struct {
+	lengths []length
+}
+
+// holds a data entry for a given length
+type length struct {
+	length string
+	tally  int
+	USD    int
+	CDN    int
+}
+
+var globRow int
+var globCol int
 
 // Address URI to smtp server
 func (s *smtpServer) Address() string {
@@ -541,44 +560,70 @@ func GetProfile(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 
 }
+func storeData(cell *xlsx.Cell) {
+	value, _ := cell.FormattedValue()
+	if cell.GetStyle().Font.Bold && value == "2&btr" {
+		fmt.Println("I found a special one ", value, " at position ", globRow, globCol)
+		// I now located the Header for the Type of the Lumber, now I want to populate the rest of my data
+		// We can assume the column width is always 5 but sometimes we get the headers and sometimes we do not
+		// We should iterate through the rows from this position untill we reach the black borderline
+		tempCell, _ := cell.Row.Sheet.Cell(globRow+1, globCol+4)
+		tempValue, _ := tempCell.FormattedValue()
+		fmt.Println(tempValue, tempCell.GetStyle().Border)
+		rowIterator := globRow
+		colIterator := globCol
+		if tempValue == "Cdn$" {
+			rowIterator += 2
+		}
+		// We are now aligned with the data portion of the entry
 
-// TaskComplete update task route
-func TaskComplete(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "PUT")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	params := mux.Vars(r)
-	taskComplete(params["id"])
-	json.NewEncoder(w).Encode(params["id"])
+	}
 }
-
-// UndoTask undo the complete task route
-func UndoTask(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "PUT")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	params := mux.Vars(r)
-	undoTask(params["id"])
-	json.NewEncoder(w).Encode(params["id"])
+func processCell(cell *xlsx.Cell) error {
+	storeData(cell)
+	globCol += 1
+	return nil
 }
-
-// DeleteTask delete one task route
-func DeleteTask(w http.ResponseWriter, r *http.Request) {
+func processRow(row *xlsx.Row) error {
+	row.ForEachCell(processCell)
+	globRow += 1
+	globCol = 0
+	return nil
+}
+func AddProjectFile(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "DELETE")
+	w.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS,PUT")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	params := mux.Vars(r)
-	deleteOneCar(params["id"])
-	json.NewEncoder(w).Encode(params["id"])
-	// json.NewEncoder(w).Encode("Task not found")
-
+	globRow = 0
+	globCol = 0
+	read_form, err := r.MultipartReader()
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	buf := new(bytes.Buffer)
+	for {
+		part, err_part := read_form.NextPart()
+		if err_part == io.EOF {
+			break
+		}
+		if part.FormName() == "file" {
+			buf.ReadFrom(part)
+			fmt.Println("LOOP")
+		}
+		fmt.Println("Creating Project Upload PART 1 XSLX")
+		xlsxFile, err := xlsx.OpenBinary(buf.Bytes())
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+		xlsxFile.Sheets[0].ForEachRow(processRow)
+	}
+	fmt.Println("FINISH UPLOAD TO CLOUD")
+	w.WriteHeader(http.StatusOK)
 }
 func fetchProfileUser(user_id string) (primitive.D, error) {
 	result := bson.D{}

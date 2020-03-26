@@ -13,6 +13,8 @@ func Router() *mux.Router {
 	router.HandleFunc("/api/register", middleware.AddUser).Methods("POST", "OPTIONS")
 	fmt.Println(router)
 	router.HandleFunc("/api/login", middleware.Login).Methods("POST", "OPTIONS")
+	// Upload
+	router.HandleFunc("/api/project/upload", middleware.AddProjectFile).Methods("POST", "OPTIONS")
 
 	s := router.PathPrefix("/auth").Methods("GET", "POST", "OPTIONS").Subrouter()
 	s.Use(middleware.AuthMiddle)
@@ -26,5 +28,6 @@ func Router() *mux.Router {
 	// Checkout Route, we send an email to them
 	s.HandleFunc("/api/checkout", middleware.DoCheckout).Methods("POST", "OPTIONS")
 	s.HandleFunc("/api/address", middleware.GetAddress).Methods("GET", "OPTIONS")
+	
 	return router
 }
