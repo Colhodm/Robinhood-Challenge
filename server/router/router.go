@@ -2,7 +2,6 @@ package router
 
 import (
 	"Ozone-Dev/server/middleware"
-	"fmt"
 	"github.com/gorilla/mux"
 )
 
@@ -11,10 +10,10 @@ func Router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/api/joinnow", middleware.AddEmail).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/register", middleware.AddUser).Methods("POST", "OPTIONS")
-	fmt.Println(router)
 	router.HandleFunc("/api/login", middleware.Login).Methods("POST", "OPTIONS")
 	// Upload
 	router.HandleFunc("/api/project/upload", middleware.AddProjectFile).Methods("POST", "OPTIONS")
+	router.HandleFunc("/api/project/uploadData", middleware.AddProjectEntries).Methods("POST", "OPTIONS")
 
 	s := router.PathPrefix("/auth").Methods("GET", "POST", "OPTIONS").Subrouter()
 	s.Use(middleware.AuthMiddle)

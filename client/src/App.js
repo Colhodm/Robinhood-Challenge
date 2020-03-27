@@ -1,15 +1,15 @@
 import React, { Fragment, Component  } from 'react';
 import "./App.css";
 import { Button,Container, Menu } from "semantic-ui-react";
-import Login from './Login';
 import Profile from './Profile';
-import Registration from './Register';
 import Footer from './footer'
 import Info from './Info';
 import Orders from './Order';
 import Checkout from './checkout';
 import Cookies from 'js-cookie';
-import Upload from './upload'
+import Upload from './upload';
+import Invoice from './invoice';
+
 
 
 
@@ -53,8 +53,8 @@ class App extends Component {
       </div>
       } 
       />
-      <Route exact path ='/register' render={(props) => <Registration {...props} />}/>
       <Route exact path ='/upload' render={(props) => <Upload {...props} />}/>
+      <Route exact path ='/invoice' render={(props) => <Invoice {...props} />}/>
       <Route component={NotFoundRedirect} />
       </Switch>
     } 
@@ -103,8 +103,6 @@ class App extends Component {
             <Checkout {...props} bundleData={this.state.bundle} />
         </div>
     }/>
-    <Route exact path ='/register' render={(props) => <Registration {...props} />}/>
-    <Route exact path ='/login' render={(props) => <Login {...props} />}/>
     <Route component={NotFoundRedirect} />
     </Switch>
 

@@ -1,5 +1,5 @@
 package models
-
+import "time"
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
 // TODO Should make usage have a defined type instead of string
@@ -70,21 +70,12 @@ type User struct {
 	Lumber   []interface{}      `json:"lumber,omitempty"`
 	Length   []interface{}      `json:"length,omitempty"`
 }
-type Driver struct {
-	ID            primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	FullName      string             `json:"task,omitempty"`
-	Birthday      string             `json:"task,omitempty"`
-	LicenseNumber string             `json:"task,omitempty"`
-	// TODO Should make gender have a defined type instead of string
-	Gender        bool   `json:"task,omitempty"`
-	email_address string `json:"task,omitempty"`
-	age_license   int    `json:"task,omitempty"`
-	Marriage      bool   `json:"task,omitempty"`
-	// TODO Should make Status have a defined type instead of string
-	Status            string `json:"task,omitempty"`
-	Employment        bool   `json:"status,omitempty"`
-	Convictions       bool   `json:"status,omitempty"`
-	LicenseSuspension bool   `json:"status,omitempty"`
-	// TODO Should make phoneNum have a defined type instead of string
-	phoneNum string `json:"status,omitempty"`
+type Entry struct {
+	Location  string
+	Grade     string               `json:"grade,omitempty"`
+	Size 	  string             `json:"size,omitempty"`
+	Data      []interface{}      `json:"raw_data,omitempty"`
+	Time     time.Time      `json:"time,omitempty"`
+	//Data      []map[string]string      `json:"raw_data,omitempty"`
 }
+

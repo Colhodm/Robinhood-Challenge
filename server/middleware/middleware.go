@@ -14,7 +14,6 @@ import (
 	"os"
 	"reflect"
 	"time"
-
 	"github.com/gomodule/redigo/redis"
 	"github.com/google/uuid"
 	"github.com/tealeg/xlsx"
@@ -40,9 +39,11 @@ const dbName = "test"
 const collName = "users"
 const emailColName = "emails"
 const bundlesCollName = "bundles"
+const entryCollName = "entries"
 
 // collection object/instance
 var collection *mongo.Collection
+var entryCollection *mongo.Collection
 var emailCollection *mongo.Collection
 var bundleCollection *mongo.Collection
 var cache redis.Conn
@@ -228,7 +229,7 @@ func init() {
 	collection = client.Database(dbName).Collection(collName)
 	emailCollection = client.Database(dbName).Collection(emailColName)
 	bundleCollection = client.Database(dbName).Collection(bundlesCollName)
-
+	entryCollection = client.Database(dbName).Collection(entryCollName)
 	fmt.Println("Collection instance created!")
 }
 func AuthMiddle(next http.Handler) http.Handler {
@@ -571,12 +572,12 @@ func storeData(cell *xlsx.Cell) {
 		tempValue, _ := tempCell.FormattedValue()
 		fmt.Println(tempValue, tempCell.GetStyle().Border)
 		rowIterator := globRow
-		colIterator := globCol
+		//colIterator := globCol
 		if tempValue == "Cdn$" {
 			rowIterator += 2
 		}
 		// We are now aligned with the data portion of the entry
-
+		//var tempSize size
 	}
 }
 func processCell(cell *xlsx.Cell) error {
@@ -589,6 +590,26 @@ func processRow(row *xlsx.Row) error {
 	globRow += 1
 	globCol = 0
 	return nil
+}
+func AddProjectEntries(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS,PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	fmt.Println("FINISH UPLOAD TO CLOUD")
+	fmt.Println(r.Body)
+	var entries []models.Entry
+	err := json.NewDecoder(r.Body).Decode(&entries)
+	if (err != nil) {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	err = insertEntries(entries)
+	if (err != nil) {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
 func AddProjectFile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
@@ -685,16 +706,6 @@ func updateProfileUser(userData models.User, user_id string) (primitive.D, error
 	return result, nil
 }
 
-// DeleteAllTask delete all tasks route
-func DeleteAllTask(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	count := deleteAllTask()
-	json.NewEncoder(w).Encode(count)
-	// json.NewEncoder(w).Encode("Task not found")
-
-}
-
 // get all cars from the DB and return them
 func getMyOrders() []primitive.M {
 	// How do we fetch data about our current user? to get his current order_ids
@@ -779,6 +790,25 @@ func findOneUser(user models.User) (primitive.D, error) {
 	fmt.Println("Found a Single User", result)
 	return result, nil
 }
+// Insert Entries in the DB
+func insertEntries(entries []models.Entry) error {
+	fmt.Println(entries)
+	// We will encode more complex logic in here later after erics feedback
+	var ui []interface{}
+	for _, entry := range entries{
+		entry.Time = time.Now()   
+		ui = append(ui, entry)
+	    }
+	//update := bson.M{"$set": bson.M{"status": true}}
+	insertResult, err := entryCollection.InsertMany(context.Background(), ui)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	fmt.Println("Inserted the entries", insertResult)
+}
+	return nil
+}
+
 
 // Insert one task in the DB
 func insertOneEmail(user models.Email) {

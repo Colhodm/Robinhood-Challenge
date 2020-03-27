@@ -287,6 +287,13 @@ Order Page
 	letter-spacing: 0.71px;
 	line-height: 24px;
 }
+.rearriving {
+	color: #595959;
+	font-family: Rubik;
+	font-size: 14px;
+	font-weight: 500;
+	letter-spacing: 0.51px;
+}
 /*
 extra info page attributes
 */

@@ -1,12 +1,14 @@
 import React, { Component,useReducer } from "react";
 import axios from "axios";
-import { Image,Grid,Card, Portal,Header, Form, Input, Icon, Button,Menu,Table,Segment,List,Container,Accordion } from "semantic-ui-react";
+import { Image,Grid,Card, Portal,Divider,Header, Search,Form, Input, Icon, Button,Menu,Table,Segment,List,Container,Accordion } from "semantic-ui-react";
 import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
 import Formx from "./Formx"
 import FormData from 'form-data';
 import AddData from './data_imputation';
+import CustOrder from "./custOrder"
 import Data from './data_source';
 import EntMenu from './entMenu';
+import NewCustomer from "./addCustomer";
 let endpoint = "http://35.227.147.196:8080/";
 function ExtraContentAccordionClosed({ onClick }) {
     return (
@@ -40,11 +42,12 @@ function ExtraContentAccordionClosed({ onClick }) {
       <ExtraContentAccordionClosed onClick={onClick} />
     );
   }
-class Upload extends Component {
+class Invoice extends Component {
   constructor(props) {
     super(props);
     this.state = {
         data:[<Data updateParent={this.updateParent} identifier={0}/>],
+        orders:[<CustOrder/>,<CustOrder/>],
         expanded:[false,false],
         name:"Project Name",
         upload:false,
@@ -85,7 +88,7 @@ class Upload extends Component {
   uploadData =() => {
     var group = this.state.raw_data
     console.log(group,Object.keys(group))
-    axios.post(endpoint + "api/project/uploadData", group,{
+    axios.post(endpoint + "api/project/invoice", group,{
       headers: {
       "Content-Type": "application/x-www-form-urlencoded"
     }
@@ -98,34 +101,6 @@ class Upload extends Component {
         this.setState({uploadErr: true })
       }
     });
-  }
-  uploadCSV = () => {
-    console.log(this.state.csv)
-    let form = new FormData();
-    // Second argument  can take Buffer or Stream (lazily read during the request) too.
-    // Third argument is filename if you want to simulate a file upload. Otherwise omit.
-    const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-    form.append('file', new Blob([this.state.csv], { type: 'text/csv' }));
-    console.log(this.props)
-    //form.append('id', this.props.match.params.id.substring(1));
-
-    axios.post(endpoint + "api/project/upload", form, config
-    ).then(result => {
-      // Handle result…
-      if (result.status == 200){
-        this.setState({upload: false,uploadErr : false,open:true})
-      } else {
-        this.setState({uploadErr: true })
-      }
-    });
-  };
-  handleChange = (event) => {
-    this.setState({
-      csv: event.target.files[0],
-      upload: true,
-    },
-    this.uploadCSV
-    )
   }
   toggleCard0(card) {
     const temp_expand = this.state.expanded.slice()
@@ -158,27 +133,161 @@ class Upload extends Component {
         <div class="info-top">
         <EntMenu location={this.props.location.pathname}/>
         </div>
-        <Header style={{marginLeft:"50px",marginTop:"50px"}}> Either upload a document or manually input data </Header>
-        <div>
-        <Input
-        style={{marginLeft:"50px"}}
-   type="file"
-   ref={(input) => { this.filesInput = input }}
-   name="file"
-   icon='file text outline'
-   iconPosition='left'
-   label='Upload CSV'
-   labelPosition='right'
-   placeholder='UploadCSV...'
-   onChange={this.handleChange}
-   loading={this.upload}
-   error={this.uploadErr}
- />        
+        <Grid verticalAlign="middle" columns={2} style={{marginTop:"0px"}}>
+          <Grid.Column>
+        <Search      attached='right' defaultValue={"Company Name"} style={{marginTop:"40px",marginLeft:"60px"}}>
+        </Search>
+        </Grid.Column>
+        <Grid.Column>
+          <NewCustomer></NewCustomer>
+        </Grid.Column>
+        </Grid>
+        <Card.Group itemsPerRow={2} fluid style={{marginLeft:"50px",marginTop:"20px"}}>
+          <Card>
+          <Card.Content>
+            <Image
+          floated='right'
+          size='mini'
+          src='/images/avatar/large/steve.jpg'
+          />
+          <Card.Header>Company Name</Card.Header>
+          <Card.Meta>Company Meta Data</Card.Meta>
+          <Card.Description>
+          Describe this company with some words <strong>really strong words</strong>
+        </Card.Description>
+        <Card.Header style={{marginTop:"12px"}}>Lumber Preferences</Card.Header>
+        <Divider></Divider>
+        <List horizontal relaxed>
+          
+          <List.Item>
+        <List.Header>Sawmill </List.Header>
+        </List.Item>
+        <List.Item>
+        West Fraser
+        </List.Item>
+        <List.Item>
+          Dunkley
+          </List.Item>
+          <List.Item>
+          Sawmill
+          </List.Item>
+        </List>
+          <Divider></Divider>
+          <List horizontal relaxed>
+          <List.Item>
+        <List.Header>Grade </List.Header>
+        </List.Item>
+        <List.Item>
+        Grade 1
+        </List.Item>
+        <List.Item>
+          Grade 2
+          </List.Item>
+          <List.Item>
+          Grade 3
+          </List.Item>
+        </List> 
+        <Divider></Divider>
+        <List horizontal relaxed>
+          <List.Item>
+        <List.Header>Size </List.Header>
+        </List.Item>
+        <List.Item>
+        1x3
+        </List.Item>
+        <List.Item>
+          2x4
+          </List.Item>
+          <List.Item>
+          3x6
+          </List.Item>
+        </List> 
+        <Divider></Divider>
+        <List horizontal relaxed>
+          <List.Item>
+        <List.Header>Length </List.Header>
+        </List.Item>
+        <List.Item>
+        8'
+        </List.Item>
+        <List.Item>
+          16'
+          </List.Item>
+          <List.Item>
+          24'
+          </List.Item>
+        </List> 
+               
+        <Card.Content extra>
+          <a>
+        <Icon name='user' />
+        Ranked 22
+      </a>
+        </Card.Content>
+      </Card.Content>
+          </Card>
+
+          <Card>
+          <Card.Content>
+          <Card.Header>Contact Information</Card.Header>
+          <Card.Meta>Address of Business</Card.Meta>
+          <Divider></Divider>
+          <List relaxed>
+          <List.Item>
+        <List.Header>Person on Account </List.Header>
+        </List.Item>
+        <List.Item>
+        <List.Header>CEO</List.Header>
+        Donald Jones <strong>408-621-2416</strong>
+        </List.Item>
+        <List.Item>
+        <List.Header>Account Executive</List.Header>
+          Ron James  <strong>408-621-2416</strong>
+          </List.Item>
+          <List.Item>
+          <List.Header>CFO </List.Header>
+          Barney Smith  <strong>408-621-2416</strong>
+          </List.Item>
+        </List>
+          </Card.Content>
+          </Card>
+          <Card>
+            <Card.Content>
+          <Card.Header>Most Recent Orders</Card.Header>
+          </Card.Content>
+          <Card.Group>{this.state.orders}</Card.Group>
+          </Card>
+          <Card>
+            <Card.Content>
+              <Card.Header>
+                Create Invoice
+              </Card.Header>
+              <Form>
+    <Form.Field>
+      <label>Location</label>
+      <input  name='location' value={this.state.location} placeholder='Edgewood' onChange={this.handleChange}/>
+    </Form.Field>
+    <Form.Field>
+      <label>Grade</label>
+      <input name='grade' value={this.state.grade} placeholder='Platinum' onChange={this.handleChange}/>
+    </Form.Field>
+    <Form.Field>
+      <label>Size</label>
+      <input name='size' value={this.state.size} placeholder='2x4' onChange={this.handleChange}/>
+    </Form.Field>
+    <Form.Field>
+      <label>Length</label>
+      <input name='size' value={this.state.size} placeholder='2x4' onChange={this.handleChange}/>
+    </Form.Field>
+    <Button onClick={this.addGroup}>Add another entry</Button>
+  </Form>
+            </Card.Content>
+
+          </Card>
+        </Card.Group>
+        <div>   
         </div>
         <div  style={{marginLeft:"50px", marginTop:"50px"}}>
-            <Card.Group>{this.state.data}</Card.Group>
-            <AddData createData={this.createData}/>
-            <Button onClick={this.uploadData} style={{marginTop:"50px"}} type='submit'>Submit</Button>
             </div>
             <Portal
       open={this.state.open}
@@ -231,4 +340,4 @@ class Upload extends Component {
 )
 }
 }
-export default Upload;
+export default Invoice;
