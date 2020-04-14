@@ -14,6 +14,7 @@ import (
 	"os"
 	"reflect"
 	"time"
+
 	"github.com/gomodule/redigo/redis"
 	"github.com/google/uuid"
 	"github.com/tealeg/xlsx"
@@ -40,12 +41,14 @@ const collName = "users"
 const emailColName = "emails"
 const bundlesCollName = "bundles"
 const entryCollName = "entries"
+const customerCollName = "customer"
 
 // collection object/instance
 var collection *mongo.Collection
 var entryCollection *mongo.Collection
 var emailCollection *mongo.Collection
 var bundleCollection *mongo.Collection
+var customerCollection *mongo.Collection
 var cache redis.Conn
 var srv *sheets.Service
 var email *gmail.Service
@@ -230,6 +233,7 @@ func init() {
 	emailCollection = client.Database(dbName).Collection(emailColName)
 	bundleCollection = client.Database(dbName).Collection(bundlesCollName)
 	entryCollection = client.Database(dbName).Collection(entryCollName)
+	customerCollection = client.Database(dbName).Collection(customerCollName)
 	fmt.Println("Collection instance created!")
 }
 func AuthMiddle(next http.Handler) http.Handler {
@@ -472,6 +476,39 @@ func GetAddress(w http.ResponseWriter, r *http.Request) {
 	// we also want to update our users addresses if we need to
 	json.NewEncoder(w).Encode(result[len(result)-1].Value)
 }
+func AddCustomer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	fmt.Println(3)
+	var customer models.Customer
+	err := json.NewDecoder(r.Body).Decode(&customer)
+	if err != nil {
+		fmt.Println(err)
+	}
+	insertOneCustomer(customer)
+	fmt.Println("Creating Customer")
+	json.NewEncoder(w).Encode(customer)
+}
+func GetCustomers(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	customers := getCustomers()
+	fmt.Println("Creating Customers", customers)
+	json.NewEncoder(w).Encode(customers)
+}
+func GetEmails(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	customers := getEmails()
+	fmt.Println("Getting emails", customers)
+	json.NewEncoder(w).Encode(customers)
+}
 func DoCheckout(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "https://www.lumberio.com")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -600,12 +637,12 @@ func AddProjectEntries(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.Body)
 	var entries []models.Entry
 	err := json.NewDecoder(r.Body).Decode(&entries)
-	if (err != nil) {
+	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	err = insertEntries(entries)
-	if (err != nil) {
+	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -705,6 +742,117 @@ func updateProfileUser(userData models.User, user_id string) (primitive.D, error
 	fmt.Println("Updated a Single User Profile Woot Woot", result)
 	return result, nil
 }
+func getCustomers() []primitive.M {
+	cur, err := customerCollection.Find(context.Background(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var results []primitive.M
+	for cur.Next(context.Background()) {
+		var result bson.M
+		e := cur.Decode(&result)
+		if e != nil {
+			log.Fatal(e)
+		}
+		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+		results = append(results, result)
+	}
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("private method got called to fetch customerss")
+	cur.Close(context.Background())
+	return results
+}
+
+// this function returns our entries so we can iterate through them
+func getEntries() []primitive.M {
+	cur, err := entryCollection.Find(context.Background(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var results []primitive.M
+	for cur.Next(context.Background()) {
+		var result bson.M
+		e := cur.Decode(&result)
+		if e != nil {
+			log.Fatal(e)
+		}
+		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+		results = append(results, result)
+	}
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return results
+}
+
+// GENERAL TODO we need to figure out a way to track which one we matched with so we dont need to iterate over everything again
+func checkEqualData(customerData interface{}, entryData interface{}) bool {
+	tempEntryDataArray := entryData.(primitive.A)
+	tempCustData := customerData.(primitive.A)
+	for _, datum := range tempEntryDataArray {
+		tempDatum := datum.(primitive.M)
+		for _, userPref := range tempCustData {
+			tempUserPref := userPref.(primitive.A)
+			if tempDatum["length"].(string) == tempUserPref[0].(string) || (tempDatum["length"].(string)+"'") == tempUserPref[0].(string) && tempUserPref[1].(bool) {
+				return true
+			}
+		}
+	}
+	return false
+}
+func checkEqual(array interface{}, target interface{}) bool {
+	tempArray := array.(primitive.A)
+	for _, value := range tempArray {
+		tempValue := value.(primitive.A)
+		if tempValue[0].(string) == target.(string) && tempValue[1].(bool) {
+			return true
+		}
+	}
+	return false
+}
+func processEntries(filteredEntries []primitive.M) string {
+	if len(filteredEntries) == 0 {
+		return "Sorry none of our current entries looked like a great fit for you! We will ping you when we find a good fit."
+	}
+	template := "We think you will find the following entries a good fit for your business: \n"
+	for _, entry := range filteredEntries {
+		fmt.Println("FILTERED!!!!", entry)
+		location := entry["location"].(string)
+		grade := entry["grade"].(string)
+		size := entry["size"].(string)
+		// TODO doesnt work we cant convert data which is an array to a string
+		data := entry["data"].(primitive.A)[0].(primitive.M)
+		template += "The lumber mill at " + location + " with grade of " + grade + " and size of " + size + " at length of " + data["length"].(string) + "--> Tally of " + data["tally"].(string)
+		template += "\n"
+	}
+	return template
+}
+
+// this function calls getEntries() which returns entries, and getCustomers(), then we can iterate through both
+func getEmails() map[string]string {
+	entries := getEntries()
+	customers := getCustomers()
+	emails := make(map[string]string)
+	for _, customer := range customers {
+		// 6 corresponds to sawmills so does entries[1]
+		// 7 corresponds to grades so does entries [2]
+		// 8 corresponds to sizes so does entries [3]
+		// 9 corresponds to lengths so does entries
+		var offers []primitive.M
+		for _, entry := range entries {
+			// the last checkEqual should be reformed because it only checks if the first data entry is correct, this will need to be updated
+			if checkEqual(customer["sawmills"], entry["location"]) && checkEqual(customer["grades"], entry["grade"]) && checkEqual(customer["sizes"], entry["size"]) && checkEqualData(customer["lengths"], entry["data"]) {
+				offers = append(offers, entry)
+			}
+		}
+		companyName := customer["companyname"].(string)
+		emails[companyName] = processEntries(offers)
+	}
+	fmt.Println(999999999999, emails, 111111111)
+	return emails
+}
 
 // get all cars from the DB and return them
 func getMyOrders() []primitive.M {
@@ -790,25 +938,25 @@ func findOneUser(user models.User) (primitive.D, error) {
 	fmt.Println("Found a Single User", result)
 	return result, nil
 }
+
 // Insert Entries in the DB
 func insertEntries(entries []models.Entry) error {
 	fmt.Println(entries)
 	// We will encode more complex logic in here later after erics feedback
 	var ui []interface{}
-	for _, entry := range entries{
-		entry.Time = time.Now()   
+	for _, entry := range entries {
+		entry.Time = time.Now()
 		ui = append(ui, entry)
-	    }
+	}
 	//update := bson.M{"$set": bson.M{"status": true}}
 	insertResult, err := entryCollection.InsertMany(context.Background(), ui)
 	if err != nil {
 		log.Fatal(err)
 		return err
-	fmt.Println("Inserted the entries", insertResult)
-}
+		fmt.Println("Inserted the entries", insertResult)
+	}
 	return nil
 }
-
 
 // Insert one task in the DB
 func insertOneEmail(user models.Email) {
@@ -832,54 +980,11 @@ func insertOneUser(user models.User) {
 	fmt.Println("Inserted a Single User", insertResult.InsertedID)
 }
 
-// task complete method, update task's status to true
-func taskComplete(task string) {
-	fmt.Println(task)
-	id, _ := primitive.ObjectIDFromHex(task)
-	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"status": true}}
-	result, err := collection.UpdateOne(context.Background(), filter, update)
+// Insert one customer in the DB
+func insertOneCustomer(customer models.Customer) {
+	insertResult, err := customerCollection.InsertOne(context.Background(), customer)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("modified count: ", result.ModifiedCount)
-}
-
-// task undo method, update task's status to false
-func undoTask(task string) {
-	fmt.Println(task)
-	id, _ := primitive.ObjectIDFromHex(task)
-	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"status": false}}
-	result, err := collection.UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("modified count: ", result.ModifiedCount)
-}
-
-// delete one task from the DB, delete by ID
-func deleteOneCar(car string) {
-	fmt.Println(car)
-	id, _ := primitive.ObjectIDFromHex(car)
-	filter := bson.M{"_id": id}
-	d, err := collection.DeleteOne(context.Background(), filter)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Deleted Document", d.DeletedCount)
-}
-
-// delete all the tasks from the DB
-func deleteAllTask() int64 {
-	d, err := collection.DeleteMany(context.Background(), bson.D{{}}, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Deleted Document", d.DeletedCount)
-	return d.DeletedCount
+	fmt.Println("Inserted a Single User", insertResult.InsertedID)
 }

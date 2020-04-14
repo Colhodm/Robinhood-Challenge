@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { Link } from 'react-router-dom';
 import axios from "axios";
-import { Container, Image, Menu,Button,Portal,Header,Card ,Form ,Input,Divider,Icon,Dropdown} from 'semantic-ui-react';
+import { Menu,Button,Portal,Card ,Form ,Divider,Icon,Dropdown} from 'semantic-ui-react';
 import validator from 'validator';
 
-let endpoint = "https://lumberio.com";
+let endpoint = "http://35.227.147.196:8080/";
 
 // since menu has 10 margin
 const form_formatting = { marginLeft: "36px", marginRight: "32px",marginTop: "25px" };
 const pref_formatting = { marginLeft: "37px", marginRight: "20px",marginTop: "25px" };
+
 
 const submit = {
   background: "#3F691A",
@@ -16,30 +16,25 @@ const submit = {
   width: "120px",
   boxShadow: "0 2px 3px 0 rgba(0,0,0,0.2)"
 };
-const greenBut = {
-  background: "#759E33",
-  color: "white",
-};
 class NewCustomer extends Component {
   constructor(props) {
     super(props);
     this.state = {
     activeItem: "register",
-    name: "",
-    Location: "",
-    buyer: false,
-    seller: false,
-    // TEMPORARY FOR DEV LINK this with whatever page needs it?
-    emailOpen: false,
+    companyName: "",
+    location: "",
+    fullName:"",
+    position:"",
+    phoneNumber:"",
+    description:"",
     // TODO set these to the correct default values
     errCompany: false,
-    errContact: false,
-    // not answering these is acceptable
-   // errLumber: false,
-   // errLength: false,
+    errfullName: false,
+    errPhone: false,
+    errPosition: false,
     errLoc: false,
     errSubmit: false,
-
+    // TODO come up with a better way to create defaults/ decide on button vs search/ we should load these defaults from backend?
     sawmills:[["Dunkley",false],["West Fraser",false],["Mill 3",false],["Mill 4",false]],
     grades:[["Grade 1",false],["Grade 2",false],["Grade 3",false],["Grade 4",false]],
     //["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
@@ -52,21 +47,28 @@ class NewCustomer extends Component {
   this.loadCard = this.loadCard.bind(this)
   this.loadNext = this.loadNext.bind(this)
   this.validateForm = this.validateForm.bind(this)
-  this.registerUser= this.registerUser.bind(this)
+  this.addCustomer= this.addCustomer.bind(this)
   this.setButton=this.setButton.bind(this);
   this.closeEmail=this.closeEmail.bind(this);
   this.switchRegister=this.switchRegister.bind(this);
   }
-  registerUser = () => {
-    let email = this.state.company
-    let lumber = this.state.favorites
-    let length = this.state.lengths
+  addCustomer = () => {
+    let companyName = this.state.companyName
+    let fullName = this.state.fullName
+    let position = this.state.position
+    let phoneNumber = this.state.phoneNumber
+    let description = this.state.description
+    let sawmills = this.state.sawmills
+    let grades = this.state.grades
+    let sizes = this.state.sizes
+    let lengths = this.state.lengths
+
 
     axios
     .post(
-      endpoint + "/api/register",
+      endpoint + "api/addCustomer",
       {
-    email,lumber,length
+    companyName,fullName,position,phoneNumber,description,sawmills,grades,sizes,lengths
       },
       {
         headers: {
@@ -81,41 +83,33 @@ class NewCustomer extends Component {
 	    }
     });
   };
-  onEChange = (value) => {
+  handleChange = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
-    this.setState({ companyName: value.target.value });
-  };
-  onLChange = (value) => {
-    // TODO if its an invalid email we can prompt them for an error later
-    this.setState({ Location: value.target.value });
-  };
-  onPChange = (value) => {
-    // TODO if its an invalid email we can prompt them for an error later
-    this.setState({ contact: value.target.value });
+    let key = value.target.name
+    this.setState({ [key]: value.target.value });
   };
   loadNext(){
     this.setState({ activeItem: "prefer" });
   }
   validateForm(){
-      // this function makes a call to our backend with the current email in the box
-      // TODO call the backend from here
+      // TODO REWRITE THE VALIDATEFORM
       var validated = true
-      if (!(validator.isEmail(this.state.company))) {
+      if (this.state["companyName"].length === 0) {
         validated = false
         this.setState({
           errEmail: true
       });
       } 
-      if (this.state["Location"].length === 0){
+      if (this.state["location"].length === 0){
         validated = false
         this.setState({
           errLoc: true
       });
       }
       if (validated){
-        var response = this.registerUser()
         // if token not valid 
         // if response not valid throw an error on the page
+        this.addCustomer()
         this.setState({ 
           open: false,
         })
@@ -226,9 +220,10 @@ class NewCustomer extends Component {
       <Form.Field style={{marginTop:"0px"}}>
         <div class="email-address"  style={{marginBottom:"6.5px"}}>Company Name</div>
         <Form.Input  
-        error={this.state.errEmail}
-        value={this.state.company}
-        onChange={this.onEChange}
+        name="companyName"  
+        error={this.state.errCompany}
+        value={this.state.companyName}
+        onChange={this.handleChange}
         style={{color:"#595959",	fontFamily: "Rubik",
         fontSize: "13px",letterSpacing: ".46px",lineHeight: "17px",marginRight:"21px",width:"607px",marginBottom:"16px"}}/>
       </Form.Field>
@@ -237,39 +232,48 @@ class NewCustomer extends Component {
       <Form.Group widths='equal'  style={{color:"#595959",	fontFamily: "Rubik",
         fontSize: "13px",letterSpacing: ".46px",lineHeight: "17px",width:"607px",marginBottom:"16px"}}>
       <Form.Field>
-        <Form.Input label="Name"   
-          error={this.state.errContact}
-          value={this.state.contact}
-          onChange={this.onPChange}/>
+        <Form.Input 
+          label="Name" 
+          name="fullName"  
+          error={this.state.errfullName}
+          value={this.state.fullName}
+          onChange={this.handleChange}/>
       </Form.Field>
       <Form.Field>
       <Form.Input  
+          name="position"
           label="Position"
-          error={this.state.errContact}
-          value={this.state.contact}
-          onChange={this.onPChange}
+          error={this.state.errPosition}
+          value={this.state.position}
+          onChange={this.handleChange}
       />
       </Form.Field>
       <Form.Field>
       <Form.Input   
+          name="phoneNumber"
           label="Phone Number"
-          error={this.state.errContact}
-          value={this.state.contact}
-          onChange={this.onPChange}
+          error={this.state.errPhone}
+          value={this.state.phoneNumber}
+          onChange={this.handleChange}
        />
       </Form.Field>
       </Form.Group>
       
       <Form.Field style={{width:"607px",marginTop:"20px"}}>
       <div class="email-address"  style={{marginBottom:"6.5px"}}> About</div>
-      <Form.TextArea placeholder='Describe the company...' />
+      <Form.TextArea 
+      name="description"     
+      value={this.state.description} 
+      onChange={this.handleChange} 
+      placeholder='Describe the company...' />
       </Form.Field>
       <Form.Field style={{marginTop:"16px"}}>
         <div class="email-address"  style={{marginBottom:"6.5px"}}>Location</div>
         <Form.Input 
+             name="location"
              error={this.state.errLoc}
              value={this.state.Location}
-             onChange={this.onLChange}
+             onChange={this.handleChange}
          style={{color:"#595959",	fontFamily: "Rubik",
         fontSize: "13px",letterSpacing: ".46px",lineHeight: "17px",marginRight:"21px",width:"607px",marginBottom:"23.5px"}}/>
       </Form.Field>

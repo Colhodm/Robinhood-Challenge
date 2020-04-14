@@ -179,9 +179,9 @@ this.setStyle = this.setStyle.bind(this);
       </Menu.Item >
       <Menu.Item style={tabs}>
       <div style={this.border_profile_select}>
-      <Link to={"/customers"}>
+      <Link to={"/email"}>
         <div style={tabText}>
-            TBD
+            Email Composing
             </div>
             </Link>
             </div>

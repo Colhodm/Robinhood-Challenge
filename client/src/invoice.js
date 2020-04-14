@@ -2,13 +2,11 @@ import React, { Component,useReducer } from "react";
 import axios from "axios";
 import { Image,Grid,Card, Portal,Divider,Header, Search,Form, Input, Icon, Button,Menu,Table,Segment,List,Container,Accordion } from "semantic-ui-react";
 import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
-import Formx from "./Formx"
-import FormData from 'form-data';
-import AddData from './data_imputation';
 import CustOrder from "./custOrder"
 import Data from './data_source';
 import EntMenu from './entMenu';
 import NewCustomer from "./addCustomer";
+import SearchCustom from "./searchCustom"
 let endpoint = "http://35.227.147.196:8080/";
 function ExtraContentAccordionClosed({ onClick }) {
     return (
@@ -49,77 +47,48 @@ class Invoice extends Component {
         data:[<Data updateParent={this.updateParent} identifier={0}/>],
         orders:[<CustOrder/>,<CustOrder/>],
         expanded:[false,false],
-        name:"Project Name",
+        companyData:{
+          companyname:"Company Name",
+          description:"Describe this company with some words really strong words",
+          sizes:["1x3","2x4","3x6"],
+          lengths:["8'","16'","24'"],
+          sawmills:["West Fraser","Dunkley","Sawmill"],
+          grades:["Good","Bad","Sad"],
+          position:"CEO",
+          fullname: "Donald Jones",
+          phonenum: "408-621-2416",
+          rank: 22,
+        },
         upload:false,
         open:false,
         raw_data:[],
-
-
     };
-      this.join=this.join.bind(this);
       this.closeEmail=this.closeEmail.bind(this);
       this.createData=this.createData.bind(this);
-      this.uploadData=this.uploadData.bind(this);
       this.updateParent = this.updateParent.bind(this);
-
-
+  }
+  processData(){
+    return this.state.customers
   }
   closeEmail = () => {
     this.setState({ open: false })
   }
+
+  componentDidMount(){
+  }
   updateParent = (value) => {
       // 1. Make a shallow copy of the items
-      let temp_data = [...this.state.raw_data];
-      // 2. Make a shallow copy of the item you want to mutate
-      let item = {...temp_data[value.identifier]};
-      // 3. Replace the property you're intested in
-      Object.assign(item, value);
-      delete item["data"]; 
-      // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-      temp_data[value.identifier] = item;
-      // 5. Set the state to our new copy
-      this.setState({raw_data:temp_data},console.log(this.state.raw_data));
+      this.setState({companyData:value},console.log(this.state.value));
   }
   createData = () => {
         this.setState({
             data:this.state.data.concat([<Data updateParent={this.updateParent} identifier={this.state.data.length}/>])
         });
     };
-  uploadData =() => {
-    var group = this.state.raw_data
-    console.log(group,Object.keys(group))
-    axios.post(endpoint + "api/project/invoice", group,{
-      headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  }
-    ).then(result => {
-      // Handle result…
-      if (result.status == 200){
-        this.setState({upload: false,uploadErr : false,open:true})
-      } else {
-        this.setState({uploadErr: true })
-      }
-    });
-  }
-  toggleCard0(card) {
-    const temp_expand = this.state.expanded.slice()
-    temp_expand[0] = !temp_expand[0]
-    this.setState({expanded: temp_expand})
-  }
-  toggleCard1(card) {
-    const temp_expand = this.state.expanded.slice()
-    temp_expand[1] = !temp_expand[1]
-    this.setState({expanded: temp_expand})
-  }
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
   };
-  join(){
-      // this function makes a call to our backend with the current email in the box
-      // TODO call the backend from here
-  }
     sendData(data) {
         this.props.buttonClick(data);
     };
@@ -128,6 +97,7 @@ class Invoice extends Component {
    // <AddData createData={this.createData}/>
     //
     render() {
+      console.log(this.state.customers,77777)
     return (
         <div>
         <div class="info-top">
@@ -135,8 +105,7 @@ class Invoice extends Component {
         </div>
         <Grid verticalAlign="middle" columns={2} style={{marginTop:"0px"}}>
           <Grid.Column>
-        <Search      attached='right' defaultValue={"Company Name"} style={{marginTop:"40px",marginLeft:"60px"}}>
-        </Search>
+          <SearchCustom updateParent={this.updateParent} attached='right'  style={{marginTop:"40px",marginLeft:"60px",}}/>
         </Grid.Column>
         <Grid.Column>
           <NewCustomer></NewCustomer>
@@ -150,10 +119,10 @@ class Invoice extends Component {
           size='mini'
           src='/images/avatar/large/steve.jpg'
           />
-          <Card.Header>Company Name</Card.Header>
+          <Card.Header> {this.state.companyData.companyname} </Card.Header>
           <Card.Meta>Company Meta Data</Card.Meta>
           <Card.Description>
-          Describe this company with some words <strong>really strong words</strong>
+          <strong> {this.state.companyData.description} </strong>
         </Card.Description>
         <Card.Header style={{marginTop:"12px"}}>Lumber Preferences</Card.Header>
         <Divider></Divider>
@@ -163,13 +132,13 @@ class Invoice extends Component {
         <List.Header>Sawmill </List.Header>
         </List.Item>
         <List.Item>
-        West Fraser
+        {this.state.companyData.sawmills[0]}
         </List.Item>
         <List.Item>
-          Dunkley
+        {this.state.companyData.sawmills[1]}
           </List.Item>
           <List.Item>
-          Sawmill
+          {this.state.companyData.sawmills[2]}
           </List.Item>
         </List>
           <Divider></Divider>
@@ -178,13 +147,13 @@ class Invoice extends Component {
         <List.Header>Grade </List.Header>
         </List.Item>
         <List.Item>
-        Grade 1
+        {this.state.companyData.grades[0]}
         </List.Item>
         <List.Item>
-          Grade 2
+        {this.state.companyData.grades[1]}
           </List.Item>
           <List.Item>
-          Grade 3
+          {this.state.companyData.grades[2]}
           </List.Item>
         </List> 
         <Divider></Divider>
@@ -193,13 +162,13 @@ class Invoice extends Component {
         <List.Header>Size </List.Header>
         </List.Item>
         <List.Item>
-        1x3
+        {this.state.companyData.sizes[0]}
         </List.Item>
         <List.Item>
-          2x4
+        {this.state.companyData.sizes[1]}
           </List.Item>
           <List.Item>
-          3x6
+          {this.state.companyData.sizes[2]}
           </List.Item>
         </List> 
         <Divider></Divider>
@@ -208,20 +177,20 @@ class Invoice extends Component {
         <List.Header>Length </List.Header>
         </List.Item>
         <List.Item>
-        8'
+        {this.state.companyData.lengths[0]}
         </List.Item>
         <List.Item>
-          16'
+        {this.state.companyData.lengths[1]}
           </List.Item>
           <List.Item>
-          24'
+          {this.state.companyData.lengths[2]}
           </List.Item>
         </List> 
                
         <Card.Content extra>
           <a>
         <Icon name='user' />
-        Ranked 22
+        Ranked {this.state.companyData.rank}
       </a>
         </Card.Content>
       </Card.Content>
@@ -237,8 +206,8 @@ class Invoice extends Component {
         <List.Header>Person on Account </List.Header>
         </List.Item>
         <List.Item>
-        <List.Header>CEO</List.Header>
-        Donald Jones <strong>408-621-2416</strong>
+        <List.Header>{this.state.companyData.position}</List.Header>
+        {this.state.companyData.fullname} <strong>{this.state.companyData.phonenum}</strong>
         </List.Item>
         <List.Item>
         <List.Header>Account Executive</List.Header>

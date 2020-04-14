@@ -9,6 +9,8 @@ import Checkout from './checkout';
 import Cookies from 'js-cookie';
 import Upload from './upload';
 import Invoice from './invoice';
+import Email from './email';
+
 
 
 
@@ -55,6 +57,7 @@ class App extends Component {
       />
       <Route exact path ='/upload' render={(props) => <Upload {...props} />}/>
       <Route exact path ='/invoice' render={(props) => <Invoice {...props} />}/>
+      <Route exact path ='/email' render={(props) => <Email {...props} />}/>
       <Route component={NotFoundRedirect} />
       </Switch>
     } 
