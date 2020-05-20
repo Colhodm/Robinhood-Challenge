@@ -66,10 +66,10 @@ class CentralText extends Component {
             <Grid.Row columns={1}>
                 <Grid.Column>
                     <Header as='h1'style={mybigtext}>
-                        Everybody wins in an efficient lumber ecosystem.
+                        Listen to music as if you were live.
                         </Header>
                         <Header as= 'h1' style={mymidtext}>
-                        Skip the middlemen, buy lumber straight from the sawmill with logistics handled - the best price is just a bonus. 
+                        Jump in to your favorite artists anytime you want. 
                         </Header>
                     </Grid.Column>
             </Grid.Row>

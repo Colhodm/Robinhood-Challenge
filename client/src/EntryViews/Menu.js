@@ -10,7 +10,7 @@ let endpoint = "https://lumberio.com";
 const mynav = {
     background: "inherit",
     height: "75%",
-    color: "#759E33",
+    color: "#f47373"3,
     fontFamily: "Overpass",	
     fontSize: "16px",	
     fontWeight: 600,
@@ -25,10 +25,9 @@ const pref_formatting = { marginLeft: "37px", marginRight: "20px",marginTop: "45
 const submit = {
   marginRight: "519px",
   marginBottom: "42px",
-  background: "#3F691A"
-};
+  background: "#f47373"};
 const navbar = {
-  color: "#759E33",
+  color: "#f47373",
   fontFamily: "Overpass",	
   fontSize: "16px",	
   fontWeight: 600,
@@ -36,11 +35,11 @@ const navbar = {
   marginLeft: "100px",
 };
 const greenBut = {
-  background: "#759E33",
+  background: "#f47373",
   color: "white",
 };
 const lip = {
-  color: "#759E33",
+  color: "#f47373",
 };
 class NavBar extends Component {
   constructor(props) {
@@ -404,7 +403,7 @@ onClick={this.validateLoginForm} >
                 content="REGISTER">
                 </Button>
                 <Card.Content>
-                <div style={{marginLeft:"4px",marginBottom:"18px"}} className="register">By clicking Register, you agree to our <Link style={{color:"#3F691A"}}>
+                <div style={{marginLeft:"4px",marginBottom:"18px"}} className="register">By clicking Register, you agree to our <Link style={{color: "#f47373"}}>
                   Terms of Use and Privacy Policy</Link></div>
                 </Card.Content>
       </Form>
@@ -412,21 +411,21 @@ onClick={this.validateLoginForm} >
   loadBottom(){
     if (this.state.activeItem != "login"){
     return <div style={{display:"flex",height:"55px"}}>
-      <div class="sign-in"> Already have an account? <Link to='/' onClick={this.loginUser} style={{color:"#3F691A"}}><u>Sign in</u></Link></div>
+      <div class="sign-in"> Already have an account? <Link to='/' onClick={this.loginUser} style={{color: "#f47373"}}><u>Sign in</u></Link></div>
       <Button floated='right' size="large" 
       style={{background:"#FFFFFF",float:"right",height:"42px",width: "120px",marginBottom:"13px",	
       boxShadow: "0 2px 3px 0 rgba(0,0,0,0.2)"}}
       onClick={this.handleClose}>
-<div className="button-text" style={{color:"#3F691A"}}>CANCEL</div></Button>
+<div className="button-text" style={{color: "#f47373"}}>CANCEL</div></Button>
       </div>
   }
   return <div style={{display:"flex",height:"55px"}}>
-  <div class="sign-in"> Already have an account? <Link to='/' onClick={this.switchRegister} style={{color:"#3F691A"}}><u>Register</u></Link></div>
+  <div class="sign-in"> Already have an account? <Link to='/' onClick={this.switchRegister} style={{color: "#f47373"}}><u>Register</u></Link></div>
   <Button floated='right' size="large" 
   style={{background:"#FFFFFF",float:"right",height:"42px",width: "120px",marginBottom:"13px",	
   boxShadow: "0 2px 3px 0 rgba(0,0,0,0.2)"}}
   onClick={this.handleClose}>
-<div className="button-text" style={{color:"#3F691A"}}>CANCEL</div></Button>
+<div className="button-text" style={{color: "#f47373"}}>CANCEL</div></Button>
   </div>
 }
   loadMenu(){
