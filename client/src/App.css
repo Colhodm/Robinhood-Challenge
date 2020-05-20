@@ -21,7 +21,7 @@
 
   .not-registered-yet {	height: 34.67px;
       width: 201px;	
-      color: #3F691A;	
+      color: #F02121;	
       font-family: Rubik;	
       font-size: 14px;	
       padding-top: 25px;	
@@ -51,7 +51,7 @@
             line-height: 17px;}
 .learn-more {	height: 19px;	
   width: 103px;	
-  color: #3F691A;	
+  color: #F02121;	
   font-family: Rubik;	
   font-size: 16px;	
   letter-spacing: 0.57px;	
@@ -61,7 +61,7 @@
   line-height: 19px;}
   .sign-in {	height: 34.67px;	
     width: 129px;	
-    color: #3F691A;	
+    color: #F02121;	
     font-family: Rubik;	
     font-size: 20px;	
     letter-spacing: 0.71px;	
@@ -118,7 +118,7 @@
 .edit-profile {
           height: 35px;
           width: 129px;
-          color: #3F691A;
+          color: #F02121;
           font-family: Rubik;
           font-size: 20px;
           letter-spacing: 0.71px;
@@ -173,7 +173,7 @@
         }
 .ui.button.cancel {
   background: #FFFFFF;
-  color: #3F691A;
+  color: #F02121;
   font-family: Rubik;
           font-size: 14.22px;
           font-weight: 500;
@@ -226,7 +226,7 @@
 .change-copy {
           height: 19px;
           width: 61px;
-          color: #3F691A;
+          color: #F02121;
           font-family: Rubik;
           font-size: 16px;
           letter-spacing: 0.57px;
@@ -250,7 +250,7 @@
           box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
         }
 .ui.button.fail-check-wood {
-    color: #3F691A;
+    color: #F02121;
     font-family: Rubik;
     font-size: 16px;
     letter-spacing: 0.57px;
@@ -272,7 +272,7 @@ Order Page
   text-align: left;
 }
 .order-item {
-  color: #3F691A;
+  color: #F02121;
   font-family: Rubik;
 	font-size: 16px;
 	font-weight: 500;
@@ -301,7 +301,7 @@ extra info page attributes
   display: inline-block;
 	height: 59px;
 	width: 909px;
-	color: #3F691A;
+	color: #F02121;
 	font-family: Rubik;
 	font-size: 60px;
 	font-weight: 300;
@@ -312,7 +312,7 @@ extra info page attributes
 .info-exit {
 	height: 48px;
 	width: 48px;
-  color: #3F691A;
+  color: #F02121;
   margin-left: 500px;
   margin-right: 36px;
   margin-bottom: 31px;
@@ -347,7 +347,7 @@ extra info page attributes
   text-align: center;
 }
 .info-text {
-	color: #3F691A;
+	color: #F02121;
 	font-family: Rubik;
 	font-size: 20px;
 	font-weight: 500;
@@ -359,7 +359,7 @@ extra info page attributes
   text-align: left;
 }
 .info-expand {
-	color: #3F691A;
+	color: #F02121;
 	font-family: Rubik;
 	font-size: 20px;
 	font-weight: 500;
@@ -389,7 +389,7 @@ For the Checkout Page
   margin-top: 17px;
   margin-right: 189px;
   margin-bottom: 14px;
-	color: #3F691A;
+	color: #F02121;
 	font-family: Rubik;
 	font-size: 20px;
 	font-weight: 500;
@@ -424,7 +424,7 @@ For the Checkout Page
 .change-order{
 	height: 19px;
 	width: 61px;
-	color: #3F691A;
+	color: #F02121;
 	font-family: Rubik;
 	font-size: 16px;
 	letter-spacing: 0.57px;
@@ -520,7 +520,7 @@ For the Checkout Page
 }
 .total-cdn {
 	width: 232px;
-	color: #3F691A;
+	color: #F02121;
 	font-family: Rubik;
 	font-size: 36px;
 	font-weight: 300;
@@ -553,7 +553,7 @@ For the Checkout Page
 .ui.popup.pop-up {
 	height: 111px;
 	width: 259px;
-	color: #3F691A;
+	color: #F02121;
 	font-family: Rubik;
 	font-size: 16px;
 	letter-spacing: 0.57px;
@@ -588,7 +588,7 @@ Log in Pop over
 .ui.menu.menu-text {
 	height: 60px;
 	width: 224px;
-	color: #3F691A;
+  color:#f47373;
 	font-family: Rubik;
 	font-size: 16px;
 	letter-spacing: 0.57px;
@@ -596,7 +596,7 @@ Log in Pop over
 	text-align: center;
 }
 .ui.menu.two.item .item.menu-text {
-	color: #3F691A;
+  color:#f47373;
 	font-family: Rubik;
 	font-size: 16px;
 	letter-spacing: 0.57px;
@@ -604,7 +604,7 @@ Log in Pop over
 	text-align: center;
 }
 .ui.button.reg-choices {
-    color: #3F691A;
+  color:#f47373;
     font-family: Rubik;
     font-size: 13px;
     letter-spacing: 0.46px;
@@ -620,7 +620,7 @@ Log in Pop over
 	line-height: 15px;
   text-align: center;
   margin-bottom: 16px;
-  background-color: #0F4210;
+  background-color:#f47373;
   font-weight: 300;	
 
 }
@@ -631,7 +631,7 @@ Log in Pop over
   font-weight: 500;	
   letter-spacing: 1.25px;	
   line-height: 16px;	
-  background-color: #3F691A;
+  background-color:#f47373;
   text-align: center;
 }
 .register {
@@ -701,7 +701,7 @@ Log in Pop over
     letter-spacing: 1.25px;
     line-height: 16px;
     text-align: center;
-    background-color: #3F691A;
+    background-color: #F02121;
   }
 .ui.button.change-add {
     height: 17px;

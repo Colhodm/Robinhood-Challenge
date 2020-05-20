@@ -18,6 +18,12 @@ const mymidtext = {
     fontSize: "20px",
     fontWeight: "lighter"
 };
+const submit = {
+    width : "50%",
+    height: "180px",
+    margin: "0 auto",
+};
+
 class CentralText extends Component {
   constructor(props) {
     super(props);
@@ -60,10 +66,10 @@ class CentralText extends Component {
             <Grid.Row columns={1}>
                 <Grid.Column>
                     <Header as='h1'style={mybigtext}>
-                        Watch your favorite musicians live.
+                        Everybody wins in an efficient lumber ecosystem.
                         </Header>
                         <Header as= 'h1' style={mymidtext}>
-                        Forget about leaving your house, and sit back and enjoy the music.
+                        Skip the middlemen, buy lumber straight from the sawmill with logistics handled - the best price is just a bonus. 
                         </Header>
                     </Grid.Column>
             </Grid.Row>

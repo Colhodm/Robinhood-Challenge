@@ -3,7 +3,6 @@ import axios from "axios";
 import { Image,Grid,Card, Header, Form, Input, Icon, Button,Table,Segment,List,Container,Accordion } from "semantic-ui-react";
 import { BrowserRouter as Router, Switch, Route, Link ,Redirect } from 'react-router-dom';
 import Order from "./order_prim"
-import Formx from "./Formx"
 let endpoint = "http://35.227.147.196:8080/";
 const gridoffset = {
           textAlign:"center",

@@ -147,7 +147,8 @@ func saveToken(path string, token *oauth2.Token) {
 func Bundles(w http.ResponseWriter, r *http.Request) {
 	// Prints the names and majors of students in a sample spreadsheet:
 	// https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-	w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	fmt.Println("Routed.")
 	spreadsheetId := "1lPOGUVrbVUc0W2gdXbG7DdFSgBiSMvIZbz9vhOloxfA"
@@ -336,7 +337,8 @@ func Order(w http.ResponseWriter, r *http.Request) {
 }
 func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	//w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	//w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080/api/login")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
@@ -455,7 +457,8 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 func GetAddress(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
@@ -557,7 +560,8 @@ func DoCheckout(w http.ResponseWriter, r *http.Request) {
 
 }
 func UpdateProfile(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
@@ -581,7 +585,8 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 
 }
 func GetProfile(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
@@ -649,7 +654,8 @@ func AddProjectEntries(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 func AddProjectFile(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	//w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS,PUT")

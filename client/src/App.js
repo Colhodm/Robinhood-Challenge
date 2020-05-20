@@ -1,27 +1,19 @@
 import React, { Fragment, Component  } from 'react';
 import "./App.css";
-import { Button,Container, Menu } from "semantic-ui-react";
-import Profile from './Profile';
-import Footer from './footer'
+import { withRouter, BrowserRouter as Router, Switch, Route, Link, Redirect  } from 'react-router-dom';
+import Cookies from 'js-cookie';
+/* In App Views */
+import Profile from './InappViews/Profile';
+import Footer from './InappViews/footer'
 import Info from './Info';
 import Orders from './Order';
-import Checkout from './checkout';
-import Cookies from 'js-cookie';
-import Upload from './upload';
-import Invoice from './invoice';
-import Email from './email';
+import Checkout from './InappViews/checkout';
+import BestDeals from './InappViews/bestdeals';
+import InMenu from './InappViews/inMen';
+/* Entry Views */
+import CentralText from './EntryViews/CentralText';
+import NavBar from './EntryViews/Menu';
 
-
-
-
-
-import BestDeals from './bestdeals';
-
-import InMenu from './inMen';
-
-import CentralText from './CentralText';
-import { withRouter, BrowserRouter as Router, Switch, Route, Link, Redirect  } from 'react-router-dom';
-import NavBar from './Menu';
 const mydriverboundry = {
     margin: "auto",
 };
@@ -55,9 +47,6 @@ class App extends Component {
       </div>
       } 
       />
-      <Route exact path ='/upload' render={(props) => <Upload {...props} />}/>
-      <Route exact path ='/invoice' render={(props) => <Invoice {...props} />}/>
-      <Route exact path ='/email' render={(props) => <Email {...props} />}/>
       <Route component={NotFoundRedirect} />
       </Switch>
     } 

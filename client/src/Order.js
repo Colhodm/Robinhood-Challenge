@@ -4,8 +4,7 @@ import { Image,Grid,Card, Header, Form, Input, Icon, Button,Table,Segment,List,C
 import { BrowserRouter as Router, Switch, Route, Link ,Redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Order from "./order_prim"
-import Formx from "./Formx"
-let endpoint = "https://lumberio.com/";
+let endpoint = "http://35.227.147.196:8080/";
 const gridoffset = {
           marginTop: "19.5px",
           textAlign:"center",
@@ -14,24 +13,7 @@ const gridoffset = {
           paddingBottom: "40px",
           width: "1366px",
 };
-const mybigtext = {
-          fontSize: "50px",
-          fontWeight: "bold",
 
-};
-const mymidtext = {
-    fontSize: "20px",
-    fontWeight: "lighter"
-};
-const submit = {
-    width : "50%",
-    height: "180px",
-    margin: "0 auto",
-};
-const greenBut = {
-    background: "#759E33",
-    color: "white",
-  };
 const tableStyle = {
     width : "601px",
     height: "57px",

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Image,Grid,Card, Header, Form, Input, Icon, Button,Table,Segment,List,Container } from "semantic-ui-react";
 import { BrowserRouter as Router, Switch, Route, Link,Redirect  } from 'react-router-dom';
-import Type from "./InappViews/lumtype"
-let endpoint = "http://35.227.147.196:8080/";
+import Type from "./lumtype"
+let endpoint = "https://lumberio.com/";
 const gridoffset = {
           marginTop: "19.5px",
           textAlign:"center",
@@ -13,6 +13,24 @@ const gridoffset = {
           width: "1366px",
 
 };
+const mybigtext = {
+          fontSize: "50px",
+          fontWeight: "bold",
+
+};
+const mymidtext = {
+    fontSize: "20px",
+    fontWeight: "lighter"
+};
+const submit = {
+    width : "50%",
+    height: "180px",
+    margin: "0 auto",
+};
+const greenBut = {
+    background: "#759E33",
+    color: "white",
+  };
 const tableStyle = {
     width : "481px",
     height: "57px",
