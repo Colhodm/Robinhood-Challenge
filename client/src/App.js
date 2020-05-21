@@ -10,6 +10,8 @@ import Orders from './Order';
 import Checkout from './InappViews/checkout';
 import BestDeals from './InappViews/bestdeals';
 import InMenu from './InappViews/inMen';
+import Stream from './InappViews/stream';
+
 /* Creator Views */
 import CreatorMenu from './CreatorViews/createMenu';
 import Performances from './CreatorViews/performance';
@@ -93,6 +95,15 @@ class App extends Component {
     <CreatorMenu {...props} />
     <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
     <Config {...props}  />
+    <Footer/>
+    </div>
+    </div>
+    }/>
+    <Route path ='/watch:id' render={(props) => 
+    <div>
+    <InMenu {...props} />
+    <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
+    <Stream {...props}  />
     <Footer/>
     </div>
     </div>

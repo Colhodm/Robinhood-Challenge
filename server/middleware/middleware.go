@@ -391,6 +391,38 @@ func AddCustomer(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Creating Customer")
 	json.NewEncoder(w).Encode(customer)
 }
+func Watch(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	var performance_id models.ID
+	err := json.NewDecoder(r.Body).Decode(&performance_id)
+	if err != nil {
+		fmt.Println(err)
+	}
+	metadata := getWatch(performance_id.Performance_id).Map()
+	fmt.Println("Got stream metadata", metadata)
+	json.NewEncoder(w).Encode(metadata)
+}
+func Count(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	var performance_id models.ID
+	err := json.NewDecoder(r.Body).Decode(&performance_id)
+	if err != nil {
+		fmt.Println(err)
+	}
+	user_id := string(r.Context().Value("user_id").([]uint8))
+	updateCount(performance_id.Performance_id, user_id)
+	fmt.Println("Updated stream metadata")
+	w.WriteHeader(http.StatusOK)
+
+}
 func GetPerformances(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
@@ -399,8 +431,18 @@ func GetPerformances(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	user_id := string(r.Context().Value("user_id").([]uint8))
 	customers := getPerformances(user_id)
-	fmt.Println("Getting Performances for our user", customers)
+	fmt.Println("Getting Performances for our creator", customers)
 	json.NewEncoder(w).Encode(customers)
+}
+func PullPerformances(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	w.Header().Set("Access-Control-Allow-Methods", "GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	performances := pullPerformances()
+	fmt.Println("Getting Performances for our user", performances)
+	json.NewEncoder(w).Encode(performances)
 }
 func DoCheckout(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "https://www.lumberio.com")
@@ -694,6 +736,69 @@ func getPerformances(user_id string) []primitive.M {
 		log.Fatal(err)
 	}
 	fmt.Println("Found Clients", result)
+	cur.Close(context.Background())
+	return performanceResults
+}
+
+// get all cars from the DB and return them
+func getWatch(performance_id string) primitive.D {
+	id, err := primitive.ObjectIDFromHex(performance_id)
+	if err != nil {
+		fmt.Println("ObjectIDFromHex ERROR", err)
+	}
+	result := bson.D{}
+	query := &bson.M{"_id": id}
+	err = performanceCollection.FindOne(context.Background(), query).Decode(&result)
+	if err != nil {
+		fmt.Println("Werd ERROR", err)
+		return nil
+	}
+	return result
+}
+
+// get all cars from the DB and return them
+func updateCount(performance_id string, user_id string) (primitive.D, error) {
+	result := bson.D{}
+	id, err := primitive.ObjectIDFromHex(performance_id)
+	if err != nil {
+		fmt.Println("ObjectIDFromHex ERROR", err)
+	}
+	user_adjusted_id, err := primitive.ObjectIDFromHex(user_id)
+	if err != nil {
+		fmt.Println("ObjectIDFromHex ERROR", err)
+	}
+	filter := bson.M{"_id": id}
+	update := bson.M{"$push": bson.M{"viewers": user_adjusted_id}, "$inc": bson.M{"count": 1}}
+	_, err = performanceCollection.UpdateOne(
+		context.Background(),
+		filter,
+		update,
+	)
+	fmt.Println("Updated a View on the stream", result)
+	return result, nil
+}
+
+func pullPerformances() []primitive.M {
+	performanceQuery := bson.M{}
+	cur, err := performanceCollection.Find(context.Background(), performanceQuery)
+	if err != nil {
+		log.Fatal(err)
+		return nil
+	}
+	var performanceResults []primitive.M
+	for cur.Next(context.Background()) {
+		var result bson.M
+		e := cur.Decode(&result)
+		if e != nil {
+			log.Fatal(e)
+		}
+		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+		performanceResults = append(performanceResults, result)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
 	cur.Close(context.Background())
 	return performanceResults
 }

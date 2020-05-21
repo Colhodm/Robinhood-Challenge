@@ -13,110 +13,40 @@ const gridoffset = {
 };
 const friendOptions = [
     {
-      key: '1x3',
-      text: '1 x 3',
-      value: '1 x 3',
+      key: '30',
+      text: '30',
+      value: '30',
       image: { avatar: true, src: '/images/avatar/small/jenny.jpg' },
     },
     {
-        key: '1x4',
-        text: '1 x 4',
-        value: '1 x 4',
+        key: '60',
+        text: '60',
+        value: '60',
         image: { avatar: true, src: '/images/avatar/small/elliot.jpg' },
     },
     {
-        key: '1x6',
-        text: '1 x 6',
-        value: '1 x 6',
+        key: '90',
+        text: '90',
+        value: '90',
       image: { avatar: true, src: '/images/avatar/small/stevie.jpg' },
     },
     {
-        key: '1x8',
-        text: '1 x 8',
-        value: '1 x 8',
+        key: '120',
+        text: '120',
+        value: '120',
       image: { avatar: true, src: '/images/avatar/small/christian.jpg' },
     },
-    {
-        key: '2x2',
-        text: '2 x 2',
-        value: '2 x 2',
-      image: { avatar: true, src: '/images/avatar/small/matt.jpg' },
-    },
-    {
-        key: '2x4',
-        text: '2 x 4',
-        value: '2 x 4',
-      image: { avatar: true, src: '/images/avatar/small/justen.jpg' },
-    },
-    {
-        key: '2x6',
-        text: '2 x 6',
-        value: '2 x 6',
-      image: { avatar: true, src: '/images/avatar/small/justen.jpg' },
-    },
   ]
-const mybigtext = {
-          fontSize: "50px",
-          fontWeight: "bold",
-
-};
-const mymidtext = {
-    fontSize: "20px",
-    fontWeight: "lighter"
-};
-const submit = {
-    width : "50%",
-    height: "180px",
-    margin: "0 auto",
-};
-const greenBut = {
-    background: "#759E33",
-    color: "white",
-  };
-const tableStyle = {
-    width : "481px",
-    height: "57px",
-    marginLeft: "34.5px",
-    marginRight: "842.5",
-};
-const leftTable = {
-    width : "135px",
-    height: "19px",
-    color: "#595959",
-    fontFamily: "Rubik",
-    fontSize: "16px",
-    letterSpacing: "0.57px",
-    lineHeight: "19px",
-};
-const rightTable = {
-    width : "201px",
-    height: "31px",
-    color: "#BBBBBB",
-    fontFamily: "Rubik",
-    fontSize: "12px",
-    letterSpacing: "0.57px",
-    lineHeight: "14px",
-    textAlign: "center",
-    marginLeft: "19px",
-    marginRight: "19.5",
-    marginTop: "13.5",
-    marginRight: "12.5",
-};
-class Profile extends Component {
+class Config extends Component {
   constructor(props) {
     super(props);
     this.state = {
         //cars:[<Car identifier={0} stateLink={this.updateState.bind(this)} />],
         types:[],
-        favorites:[["SPF",false],["Douglas Green",false],["Southern Pine",false],["Other",false]],
-	//["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
-	lengths:[["2 x 4",false],["2 x 6",false],["2 x 8",false],["2 x 8",false],
-	   ["1 x 2",false],["1 x 3",false],["1 x 4",false],["Other",false]],
-	// fix to be ful default
-        //favorites:[["Hardwood",false],["Softwood",false],["Maple",false],["Oak",false],
+        favorites:[["Hip-Hop",false],["Pop",false],["Alternative",false],["Indie",false]],
         //["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
-        //lengths:[["1 x 3",false],["1 x 4",false],["1 x 6",false],["1 x 8",false],
-        //["2 x 2",false],["2 x 4",false],["2 x 6",false]],
+        lengths:[["15",false],["30",false],["60",false],["90",false],
+        ["120",false],["Other",false]],
         auth: true,
 
     };
@@ -220,7 +150,7 @@ class Profile extends Component {
           var margin_left = i == 0? "24px":"16px"
           //console.log(favorites[i][1])
           if (favorites[i][1]){
-            result.push(<Button style={{marginBottom:"8px",marginLeft:margin_left,background:"#3F691A"}} index={i} onClick={this.setButton} className="success-check-wood" icon='check circle outline' content={favorites[i][0]} />);
+            result.push(<Button style={{marginBottom:"8px",marginLeft:margin_left,background:"#f47373"}} index={i} onClick={this.setButton} className="success-check-wood" icon='check circle outline' content={favorites[i][0]} />);
           } else {
             result.push(<Button style={{marginLeft:margin_left,background:"#FFFFFF"}} index={i} onClick={this.setButton} className="fail-check-wood"  content={favorites[i][0]}  /> );
           }
@@ -244,29 +174,28 @@ class Profile extends Component {
 <Grid fluid divided='vertically' style={gridoffset}>
             <Grid.Row columns={2}>
                 <Grid.Column>
-                    <h1  style={{marginLeft: "46px",marginBottom: "0px",width: "129px",height: "35px"}} class='edit-profile'>Edit Profile</h1>
-                    <h2  style={{marginLeft: "46px",marginTop: "0px"}} class='short-description'>Short Description</h2>
+                    <h1  style={{marginLeft: "46px",marginBottom: "0px",width: "350px",height: "35px"}} class='edit-profile'>Edit Performance Configuration</h1>
                     <Card style={{marginLeft:"46px",width:"637px",height:"467px"}}>
                         <h1 class="details" style={{marginLeft:"10px",marginTop:"16px",marginBottom:"16px"}}>Details</h1>
                       <Form>
                       <Form.Field>
-                          <div class="email-address" style={{marginLeft:"10px",marginBottom:"7.5px"}}>Name:</div>
+                          <div class="email-address" style={{marginLeft:"10px",marginBottom:"7.5px"}}>Zoom Link:</div>
                           <input style={{marginLeft:"10px",marginRight:"21px",width:"607px"}}/>
                         </Form.Field>
                         <Form.Field style={{marginTop:"16px"}}>
-                          <div class="email-address"  style={{marginLeft:"10px",marginBottom:"7.5px"}}>Email Address</div>
+                          <div class="email-address"  style={{marginLeft:"10px",marginBottom:"7.5px"}}>Name</div>
                           <input style={{marginLeft:"10px",marginRight:"21px",width:"607px"}}/>
                         </Form.Field>
                         <Form.Field style={{marginTop:"16px"}}>
-                          <div class="email-address"  style={{marginLeft:"10px",marginBottom:"7.5px"}}>Password</div>
+                          <div class="email-address"  style={{marginLeft:"10px",marginBottom:"7.5px"}}>Date</div>
                           <input style={{marginLeft:"10px",marginRight:"21px",width:"607px"}}/>
                         </Form.Field>
                         <Form.Field style={{marginTop:"16px"}}>
-                          <div class="email-address"  style={{marginLeft:"10px",marginBottom:"7.5px"}}>Street address and/or postal code (postal)</div>
+                          <div class="email-address"  style={{marginLeft:"10px",marginBottom:"7.5px"}}>Price</div>
                           <input style={{marginLeft:"10px",marginRight:"21px",width:"607px"}}/>
                         </Form.Field>
                         <Form.Field style={{marginTop:"16px",marginBottom:"31px"}}>
-                          <div class="email-address"  style={{marginLeft:"10px",marginBottom:"7.5px"}}> Phone number (optional) </div>
+                          <div class="email-address"  style={{marginLeft:"10px",marginBottom:"7.5px"}}> Max Audience </div>
                           <input style={{marginLeft:"10px",marginRight:"21px",width:"607px"}}/>
                         </Form.Field>
                       </Form>
@@ -283,20 +212,20 @@ class Profile extends Component {
                     </Form>
                     </Grid.Column>
                     <Grid.Column>
-                    <Card style={{marginTop:"84px",marginLeft:"16px",marginRight:"29px",width:"637px",marginBottom:"0px",height:"268px"}}>
+                    <Card style={{marginTop:"50px",marginLeft:"16px",marginRight:"29px",width:"637px",marginBottom:"0px",height:"268px"}}>
                     <Form style={{marginLeft:"24px",marginTop:"16px",marginBottom:"16.5px"}}>
                     <div class="lumber-preferences" style={{marginBottom:"8px"}}> 
-                        Genre
+                        Stream Preference #1
                     </div>
                     <div>
                       {return_array}
                     </div>
         <Form.Field>
             <div class="lumber-preferences" style={{marginBottom:"6.83px"}}> 
-                Concert Length Preferred
+                Stream preference #2
             </div>
         <Form.Dropdown style={{marginLeft:".5px",marginBottom:"16.5px",marginRight:"394.5px",width:"308px"}}
-        placeholder='Select Length(ft)'
+        placeholder='Select favored concert length (mins)'
         fluid
 	clearable={true}
         multiple selection
@@ -336,4 +265,4 @@ class Profile extends Component {
 
 }
 }
-export default Profile;
+export default Config;

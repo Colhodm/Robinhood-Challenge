@@ -16,7 +16,10 @@ func Router() *mux.Router {
 
 	s := router.PathPrefix("/auth").Methods("GET", "POST", "OPTIONS").Subrouter()
 	s.Use(middleware.AuthMiddle)
+	s.HandleFunc("/api/watch", middleware.Watch).Methods("POST", "OPTIONS")
+	s.HandleFunc("/api/count", middleware.Count).Methods("POST", "OPTIONS")
 	s.HandleFunc("/api/performances", middleware.GetPerformances).Methods("GET", "OPTIONS")
+	s.HandleFunc("/api/fetchperformances", middleware.PullPerformances).Methods("GET", "OPTIONS")
 	s.HandleFunc("/api/register/performance", middleware.AddPerformance).Methods("POST", "OPTIONS")
 
 	// Profile Routes

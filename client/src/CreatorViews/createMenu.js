@@ -194,25 +194,25 @@ this.setStyle = this.setStyle.bind(this);
   border: "none",marginBottom: '0px',	height: "60px"}}>
       <Menu.Item style={tabs}>
       <div style={this.border_lumber_select}>
-        <Link to={"/feed"}>
+        <Link to={"/creator"}>
         <div style={tabText}>
-            FEED
+            PERFORMANCES
             </div>
             </Link>
             </div>
       </Menu.Item >
       <Menu.Item style={tabs}>
       <div style={this.border_order_select}>
-      <Link to={"/artists"}>
+      <Link to={"/fans"}>
         <div style={tabText}>
-            ARTISTS
+            FANS
             </div>
             </Link>
             </div>
       </Menu.Item >
       <Menu.Item style={tabs}>
       <div style={this.border_profile_select}>
-      <Link to={"/profile"}>
+      <Link to={"/createconfig"}>
         <div style={tabText}>
             PROFILE
             </div>
@@ -221,17 +221,6 @@ this.setStyle = this.setStyle.bind(this);
       </Menu.Item >
 
       <Grid.Column style={rightText} fluid >
-        <table style={boxedText}>
-        <tr>
-
-        <td style={insideTextL}>
-            Drake is queued to perform in 
-            </td>
-            <td style={insideTextR}>
-            {this.state.hours}: {this.state.minutes}: {this.state.seconds}
-            </td>
-            </tr>
-            </table>
             <Link to={"/"}>
           <Button style={buttonStyle}>
             Log Out

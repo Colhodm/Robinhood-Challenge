@@ -28,7 +28,7 @@ const  header = {
   fontFamily: "Rubik",
   color: "#595959",
   height: "24px",	
-  width: "125px",
+  width: "95px",
   letterSpacing: "0.71px",
   lineHeight: "24px",
   textDecoration: "underline",
@@ -40,39 +40,45 @@ const  header = {
 
 
 };
-let endpoint = "http://35.227.147.196:8080/";
+const  headline = {
+  marginLeft: "13px",
+  marginRight: "36px",
+  marginTop: "6px",
+  marginBottom: "0px",
+  height: "85px",	
+  width: "318px",
+  color: "#3F691A",
+  fontFamily: "Rubik",
+  fontSize: "42px",
+  fontWeight: "300",
+  letterSpacing: "1.5px",
+  lineHeight: "42px",
+    textAlign: "left",
+
+};
+const description_formatting = {
+  marginLeft: "13px",
+  marginRight: "15px",
+  marginTop: "2px",
+  textAlign: "left",
+
+  // Get this padding bottom precisely
+  paddingBottom: "30px",
+  height: "88px",	
+  width: "339px",
+};
 class Type extends Component {
   constructor(props) {
     super(props);
     this.state = {
     };
-    this.updateCount=this.updateCount.bind(this);
+    this.sendData=this.sendData.bind(this);
+
   }
 
-    updateCount = () => {
-      let performance_id = this.props.id
-      axios
-      .post(
-        endpoint + "auth/api/count",
-        {
-      performance_id
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          }
-        }
-      )
-      .then(res => {
-        // if fails indicate to user that the performance upload failed 
-        if (res.status === 200){
-          console.log(this.props)
-          this.props.updateState(this.state.id)
-        }
-      });
-    };
-
+  sendData(value){
+    this.props.sendBundle(this.props)
+  }
   handleChange = (e, { value }) => {
     this.setState({ carYear: value });
     this.props.stateLink(this.props.identifier, this.state);
@@ -95,7 +101,12 @@ class Type extends Component {
           </div>
        
           <Divider section style={{marginTop:"0px",marginBottom:"0px"}}/>
-          <Button onClick={this.updateCount} style={{paddingLeft:"16px",paddingTop:"13px",paddingBottom:"13px",paddingRight:"16px",marginLeft:"24px",marginTop:"15px",marginRight:"24px",marginBottom:"16px",width:"319px",height:"42px",background:"#f47373",color:"#FFFFFF"}}> WATCH </Button>
+          <Link to={`/analytics` + this.props.id}>
+          <Button style={{paddingLeft:"16px",paddingTop:"13px",paddingBottom:"13px",paddingRight:"16px",marginLeft:"24px",marginTop:"15px",marginRight:"24px",marginBottom:"16px",width:"319px",height:"42px",background:"#f47373",color:"#FFFFFF"}}> ANALYZE </Button>
+          </Link>
+
+
+
     </Card>
     );
   }

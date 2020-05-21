@@ -19,14 +19,14 @@ var style = {
   position: "fixed",
   left: "0",
   bottom: "0",
-  height: "60px",
+  height: "0px",
   width: "100%",
 }
 
 var phantom = {
 display: 'block',
 padding: '20px',
-height: '60px',
+height: '0px',
 width: '100%',
 }
 class Footer extends Component {
@@ -38,13 +38,13 @@ class Footer extends Component {
     return (
       <div>
       <div style={phantom} />
-      <Segment vertical style={{ width: '1366px',marginTop: '0px',marginBottom: '0px',height: '244px',background: '#f47373' }}>
+      <Segment vertical style={{ width: '100%',marginTop: '0px',marginBottom: '0px',height: '244px',background: '#f47373' }}>
         <Container>
           <Grid divided inverted stackable>
             <Grid.Row>
               <Grid.Column width={3}>
                 <div  class='lumber-io' >
-                Parity
+                Tour
                     </div>
                 <List link inverted>
                   <List.Item as='a' style={footer}> About </List.Item>
@@ -85,8 +85,6 @@ class Footer extends Component {
         Copyright 2019. All rights reserved
         </div>
       </Segment>
-      <div style={style}>
-      </div>
   </div>
     )
 

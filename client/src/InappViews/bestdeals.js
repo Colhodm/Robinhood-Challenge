@@ -3,7 +3,7 @@ import axios from "axios";
 import { Image,Grid,Card, Header, Form, Input, Icon, Button,Table,Segment,List,Container } from "semantic-ui-react";
 import { BrowserRouter as Router, Switch, Route, Link,Redirect  } from 'react-router-dom';
 import Type from "./lumtype"
-let endpoint = "https://lumberio.com/";
+let endpoint = "http://35.227.147.196:8080/";
 const gridoffset = {
           marginTop: "19.5px",
           textAlign:"center",
@@ -11,26 +11,7 @@ const gridoffset = {
           background: "#F6F7F6",
           paddingBottom: "40px",
           width: "1366px",
-
 };
-const mybigtext = {
-          fontSize: "50px",
-          fontWeight: "bold",
-
-};
-const mymidtext = {
-    fontSize: "20px",
-    fontWeight: "lighter"
-};
-const submit = {
-    width : "50%",
-    height: "180px",
-    margin: "0 auto",
-};
-const greenBut = {
-    background: "#759E33",
-    color: "white",
-  };
 const tableStyle = {
     width : "481px",
     height: "57px",
@@ -70,33 +51,35 @@ class BestDeals extends Component {
         types:[],
 
     };
-      this.join=this.join.bind(this);
+      this.join=this.join.bind(this);      
+      this.updateState=this.updateState.bind(this);
+
 
   }
   componentDidMount() {
-    this.getBundles();
+    this.getPerformances();
   }
-  getBundles = () => {
+  updateState(id){
+    const { history } = this.props;
+    history.push(`/watch` + id)
+  }
+  getPerformances = () => {
     //console.log("called the function")
-    axios.get(endpoint + "auth/api/lumberbundles",{
+    axios.get(endpoint + "auth/api/fetchperformances",{
         withCredentials: true,
     }).then(res => {
     //console.log(res);
     if (res.data) {
       this.setState({
-        types: res.data.map(driver => {
+        types: res.data.map(performance => {
           return (
-              <Type id={driver._id} type={driver.type} owner={driver.woodName} location={driver.location}
-              price={driver.price} traits={driver.traits} sendBundle={this.props.sendBundle} date={driver.date}
-              itemcost={driver.itemcost} shipcost={driver.shipcost} pretax={driver.pretax} 
-              gst={driver.gst} pst={driver.pst} saving={driver.saving}
-              />
+            <Type updateState={this.updateState}date={performance.date} name={performance.name} url={performance.zoomurl} id={performance._id}/>
           );
         })
       });
     } else {
       this.setState({
-        types: [<Type/>]
+        types: []
       });
     }
   });
@@ -121,24 +104,6 @@ class BestDeals extends Component {
     <Grid.Row columns={1}>
             <Grid.Row columns={1}>
                 <Grid.Column>
-                    <Table celled columns style={tableStyle}>
-                        <Table.Body>
-                            <Table.Row>
-                            <Table.Cell className='bundle-purchase'>
-                                <div style={leftTable}>
-                                Bundle Purchase
-                                    </div>
-                            </Table.Cell>
-                            <Table.Cell>
-                            <Link to='/info-individual'>
-                            <div style={rightTable}>
-                                 Individual Purchase (coming soon, click to learn more) 
-                                </div>
-                                </Link>
-                            </Table.Cell>
-                            </Table.Row>
-                </Table.Body>
-  </Table>
                     <Card.Group>{this.state.types}</Card.Group>
                     </Grid.Column>
             </Grid.Row>
