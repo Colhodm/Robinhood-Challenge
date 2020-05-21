@@ -1,18 +1,8 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 import { Container, Image, Menu,Button, Grid,Label,Icon,List  } from 'semantic-ui-react';
-const mynav = {
-    background: "inherit",
-    height: "75%",
-    color: "#759E33",
-    fontFamily: "Overpass",	
-    fontSize: "16px",	
-    fontWeight: 600,
-    lineHeight: "25px",
-    
-};
 const navbar = {
-  color: "#759E33",
+  color: "#f47373",
   fontFamily: "Overpass",	
   fontSize: "16px",	
   fontWeight: 600,
@@ -116,7 +106,7 @@ const buttonStyle = {
   fontWeight: "400",
 };
 const phone= {
-  color: "#3F691A",
+  color: "#f47373",
 };
 
 
@@ -170,7 +160,7 @@ this.setStyle = this.setStyle.bind(this);
     }
     setStyle(){
       this.border_lumber_select = {
-        borderBottom: this.props.location.pathname =='/lumber' ? "2px solid #3F691A" : "",
+        borderBottom: this.props.location.pathname =='/feed' ? "2px solid #3F691A" : "",
         marginLeft: "32px",
       };
       this.border_profile_select = {
@@ -178,7 +168,7 @@ this.setStyle = this.setStyle.bind(this);
         marginLeft: "32px",
       };
       this.border_order_select = {
-        borderBottom: this.props.location.pathname =='/orders' ? "2px solid #3F691A" : "",
+        borderBottom: this.props.location.pathname =='/artists' ? "2px solid #3F691A" : "",
         marginLeft: "32px",
       };
     }
@@ -190,12 +180,12 @@ this.setStyle = this.setStyle.bind(this);
           <Grid.Row fluid stye={greenBut}>
           <Grid.Column>
           <Link to={"/lumber"} style={navbar}>
-        Lumber.io
+        Parity
         </Link>
         </Grid.Column>
         <Grid.Column >
           <div style={call}>              
-          Call <span style={phone}>778-321-0233</span> for assistance </div>
+          Call <span style={phone}>408-621-2416</span> for assistance </div>
               </Grid.Column>
 
       </Grid.Row>
@@ -204,18 +194,18 @@ this.setStyle = this.setStyle.bind(this);
   border: "none",marginBottom: '0px',	height: "60px"}}>
       <Menu.Item style={tabs}>
       <div style={this.border_lumber_select}>
-        <Link to={"/lumber"}>
+        <Link to={"/feed"}>
         <div style={tabText}>
-            My best deals
+            FEED
             </div>
             </Link>
             </div>
       </Menu.Item >
       <Menu.Item style={tabs}>
       <div style={this.border_order_select}>
-      <Link to={"/orders"}>
+      <Link to={"/artists"}>
         <div style={tabText}>
-            My Orders
+            ARTISTS
             </div>
             </Link>
             </div>
@@ -224,7 +214,7 @@ this.setStyle = this.setStyle.bind(this);
       <div style={this.border_profile_select}>
       <Link to={"/profile"}>
         <div style={tabText}>
-            Edit Profile
+            PROFILE
             </div>
             </Link>
             </div>
@@ -235,7 +225,7 @@ this.setStyle = this.setStyle.bind(this);
         <tr>
 
         <td style={insideTextL}>
-            These deals end in
+            Drake is queued to perform in 
             </td>
             <td style={insideTextR}>
             {this.state.hours}: {this.state.minutes}: {this.state.seconds}

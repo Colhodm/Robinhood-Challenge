@@ -3,7 +3,7 @@ import axios from "axios";
 import { Image,Grid,Card, Header, Form, Input, Icon, Button } from "semantic-ui-react";
 import { BrowserRouter as Router, Switch, Route, Link  } from 'react-router-dom';
 
-let endpoint = "http://localhost:8080";
+let endpoint = "http://35.227.147.196:8080/";
 const gridoffset = {
           marginTop: "150px",
           textAlign:"center",

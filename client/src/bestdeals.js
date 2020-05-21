@@ -11,7 +11,6 @@ const gridoffset = {
           background: "#F6F7F6",
           paddingBottom: "40px",
           width: "1366px",
-
 };
 const tableStyle = {
     width : "481px",
@@ -108,13 +107,13 @@ class BestDeals extends Component {
                             <Table.Row>
                             <Table.Cell className='bundle-purchase'>
                                 <div style={leftTable}>
-                                Bundle Purchase
+                                USE ME
                                     </div>
                             </Table.Cell>
                             <Table.Cell>
                             <Link to='/info-individual'>
                             <div style={rightTable}>
-                                 Individual Purchase (coming soon, click to learn more) 
+                                 USE ME
                                 </div>
                                 </Link>
                             </Table.Cell>

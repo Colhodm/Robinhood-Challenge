@@ -2,7 +2,7 @@ import React, { Fragment, Component  } from 'react';
 import "./App.css";
 import { withRouter, BrowserRouter as Router, Switch, Route, Link, Redirect  } from 'react-router-dom';
 import Cookies from 'js-cookie';
-/* In App Views */
+/* Fan Views */
 import Profile from './InappViews/Profile';
 import Footer from './InappViews/footer'
 import Info from './Info';
@@ -10,13 +10,16 @@ import Orders from './Order';
 import Checkout from './InappViews/checkout';
 import BestDeals from './InappViews/bestdeals';
 import InMenu from './InappViews/inMen';
+/* Creator Views */
+import CreatorMenu from './CreatorViews/createMenu';
+import Performances from './CreatorViews/performance';
+import Config from './CreatorViews/configPerformance';
+
+
 /* Entry Views */
 import CentralText from './EntryViews/CentralText';
 import NavBar from './EntryViews/Menu';
 
-const mydriverboundry = {
-    margin: "auto",
-};
 const NotFound = () => <div>Not found</div>
 
 const NotFoundRedirect = () => <div />
@@ -58,7 +61,16 @@ class App extends Component {
     </div>
     } 
     />
-    <Route exact path ='/lumber' render={(props) => 
+      <Route exact path ='/creator' render={(props) => 
+    <div >
+    <CreatorMenu {...props} />
+    <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
+    <Performances {...props} sendBundle={this.updateCurrentBundle.bind(this)} />
+    <Footer/>
+    </div>
+    </div>
+    }/>
+    <Route exact path ='/feed' render={(props) => 
     <div >
     <InMenu {...props} />
     <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
@@ -76,7 +88,25 @@ class App extends Component {
     </div>
     </div>
     }/>
-      <Route exact path ='/orders' render={(props) => 
+    <Route path ='/analytics:id' render={(props) => 
+    <div>
+    <CreatorMenu {...props} />
+    <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
+    <Config {...props}  />
+    <Footer/>
+    </div>
+    </div>
+    }/>
+     <Route exact path ='/createconfig' render={(props) => 
+    <div>
+    <CreatorMenu {...props} />
+    <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>
+    <Profile {...props}  />
+    <Footer/>
+    </div>
+    </div>
+    }/>
+      <Route exact path ='/artists' render={(props) => 
     <div>
     <InMenu {...props} />
     <div style={{ marginTop: "0px",marginRight: "0px", background: "#F6F7F6",width: "1450px"}}>

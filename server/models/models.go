@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -86,11 +84,8 @@ type Customer struct {
 	Sizes       []interface{}      `json:"sizes,omitempty"`
 	Lengths     []interface{}      `json:"lengths,omitempty"`
 }
-type Entry struct {
-	Location string
-	Grade    string        `json:"grade,omitempty"`
-	Size     string        `json:"size,omitempty"`
-	Data     []interface{} `json:"raw_data,omitempty"`
-	Time     time.Time     `json:"time,omitempty"`
-	//Data      []map[string]string      `json:"raw_data,omitempty"`
+type Performance struct {
+	ZoomUrl string `json:"zoom,omitempty"`
+	Name    string `json:"performance,omitempty"`
+	Date    string `json:"date,omitempty"`
 }

@@ -2,12 +2,10 @@ package middleware
 
 import (
 	"Ozone-Dev/server/models"
-	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,7 +15,6 @@ import (
 
 	"github.com/gomodule/redigo/redis"
 	"github.com/google/uuid"
-	"github.com/tealeg/xlsx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -34,12 +31,12 @@ import (
 const connectionString = "mongodb+srv://arjun:mishra@cluster0-9jlvf.mongodb.net/admin?retryWrites=true&w=majority"
 
 // Database Name
-const dbName = "test"
+const dbName = "music"
 
 // Collection name
 const collName = "users"
 const emailColName = "emails"
-const bundlesCollName = "bundles"
+const performanceCollName = "performances"
 const entryCollName = "entries"
 const customerCollName = "customer"
 
@@ -47,7 +44,7 @@ const customerCollName = "customer"
 var collection *mongo.Collection
 var entryCollection *mongo.Collection
 var emailCollection *mongo.Collection
-var bundleCollection *mongo.Collection
+var performanceCollection *mongo.Collection
 var customerCollection *mongo.Collection
 var cache redis.Conn
 var srv *sheets.Service
@@ -144,46 +141,6 @@ func saveToken(path string, token *oauth2.Token) {
 	json.NewEncoder(f).Encode(token)
 }
 
-func Bundles(w http.ResponseWriter, r *http.Request) {
-	// Prints the names and majors of students in a sample spreadsheet:
-	// https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
-
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	fmt.Println("Routed.")
-	spreadsheetId := "1lPOGUVrbVUc0W2gdXbG7DdFSgBiSMvIZbz9vhOloxfA"
-	readRange := "A2:N4"
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
-	if err != nil {
-		log.Fatalf("Unable to retrieve data from sheet: %v", err)
-	}
-
-	if len(resp.Values) == 0 {
-		fmt.Println("No data found.")
-	} else {
-		fmt.Println("Bundle Printed")
-		bundles := make([]models.Bundle, len(resp.Values))
-		for index, row := range resp.Values {
-			// Print columns A and E, which correspond to indices 0 and 4.
-			fmt.Println(row)
-			var bundle models.Bundle
-			bundle.Name = row[0].(string)
-			bundle.Price = row[1].(string)
-			bundle.Traits = []string{row[2].(string), row[3].(string), row[4].(string)}
-			bundle.Location = row[5].(string)
-			bundle.Owner = row[6].(string)
-			bundle.Date = row[7].(string)
-			bundle.ItemCost = row[8].(string)
-			bundle.ShipCost = row[9].(string)
-			bundle.PreTax = row[10].(string)
-			bundle.GST = row[11].(string)
-			bundle.PST = row[12].(string)
-			bundle.Saving = row[13].(string)
-			bundles[index] = bundle
-		}
-		fmt.Println(json.NewEncoder(w).Encode(bundles))
-	}
-}
 func initGoogleSheets() {
 	// this function deals with google sheets intialization
 	b, err := ioutil.ReadFile("credentials.json")
@@ -232,7 +189,7 @@ func init() {
 
 	collection = client.Database(dbName).Collection(collName)
 	emailCollection = client.Database(dbName).Collection(emailColName)
-	bundleCollection = client.Database(dbName).Collection(bundlesCollName)
+	performanceCollection = client.Database(dbName).Collection(performanceCollName)
 	entryCollection = client.Database(dbName).Collection(entryCollName)
 	customerCollection = client.Database(dbName).Collection(customerCollName)
 	fmt.Println("Collection instance created!")
@@ -272,68 +229,6 @@ func AuthMiddle(next http.Handler) http.Handler {
 		log.Println("Finishing Auth")
 	})
 
-}
-func GetBundle(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	// TODO later we will build some filtering on server side which is why we have this
-	fetched := getAllBundles()
-	//TODO loop through mongo and convert them to our json for safety?
-	if fetched == nil {
-		fmt.Println(6)
-	}
-	//TODO add logic to hash the password and give the user some unique token so we ensure hes logged in
-	fmt.Println("Fetched the card")
-	json.NewEncoder(w).Encode(fetched)
-}
-func Order(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "https://www.lumberio.com")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	fmt.Println("Routed.")
-	spreadsheetId := "1lPOGUVrbVUc0W2gdXbG7DdFSgBiSMvIZbz9vhOloxfA"
-	readRange := "Orders!A2:H"
-	resp, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
-	if err != nil {
-		log.Fatalf("Unable to retrieve data from sheet: %v", err)
-	}
-	user_id := string(r.Context().Value("user_id").([]uint8))
-	result, err := findUserByID(user_id)
-	if err != nil {
-		log.Fatalf("Unable to retrieve data from mongo: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-	fmt.Println(result[1].Value)
-	fetchedemail := result[1].Value
-	fmt.Println(688888, fetchedemail)
-	if len(resp.Values) == 0 {
-		fmt.Println("No data found.")
-	} else {
-		fmt.Println("Order Printed")
-		orders := make([]models.Order, len(resp.Values))
-		for index, row := range resp.Values {
-			// Print columns A and E, which correspond to indices 0 and 4.
-			fmt.Println(row)
-			if len(row) != 8 {
-				fmt.Println("Error")
-				continue
-				// THROW Error
-			}
-			temp_email := row[7].(string)
-			if temp_email != fetchedemail {
-				continue
-			}
-			var order models.Order
-			order.Name = row[0].(string)
-			order.Total = row[1].(string)
-			order.Date = row[2].(string)
-			order.Location = row[3].(string)
-			order.Buyer = row[4].(string)
-			order.Seller = row[5].(string)
-			order.Status = row[6].(string)
-			orders[index] = order
-		}
-		fmt.Println(json.NewEncoder(w).Encode(orders))
-	}
 }
 func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
@@ -396,27 +291,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	})
 	//TODO add logic to hash the password and give the user some unique token so we ensure hes logged in
 	fmt.Println("Login User to Lumber", sessionToken, user.ID)
-	w.WriteHeader(http.StatusOK)
+	user.Buyer = fetched[4].Value.(interface{}).(bool)
 	//http.Redirect(w, r, "/", http.StatusFound)
-	//json.NewEncoder(w).Encode(fetched)
-}
-
-// Create create task route
-func AddEmail(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	var user models.Email
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(6, user, r.Body)
-	insertOneEmail(user)
-	//TODO add logic to hash the password and give the user some unique token so we ensure hes logged in
-	fmt.Println("User joined now")
-	json.NewEncoder(w).Encode(user)
+	fmt.Println(user.Buyer)
+	json.NewEncoder(w).Encode(user.Buyer)
+	// w.WriteHeader(http.StatusOK)
 }
 
 // Create create task route
@@ -444,7 +323,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	insertOneUser(user)
 	var message gmail.Message
 	messageStr := []byte(
-		"From: hello@lumberio.com\r\n" + "To: " + user.Email + "\r\n" + "Subject: Welcome from Lumber.io\r\n\r\n" + "We have received a Lumber Bundle Order from you. We will reach out promptly to determine payment and logistics. ")
+		"From: hello@lumberio.com\r\n" + "To: " + user.Email + "\r\n" + "Subject: Welcome to Parity\r\n\r\n" + "We're excited to connect you with your favorite artists!")
 	message.Raw = base64.URLEncoding.EncodeToString(messageStr)
 	_, err = email.Users.Messages.Send("me", &message).Do()
 	if err != nil {
@@ -479,6 +358,24 @@ func GetAddress(w http.ResponseWriter, r *http.Request) {
 	// we also want to update our users addresses if we need to
 	json.NewEncoder(w).Encode(result[len(result)-1].Value)
 }
+func AddPerformance(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	var performance models.Performance
+	err := json.NewDecoder(r.Body).Decode(&performance)
+	fmt.Println(performance.ZoomUrl)
+	if err != nil {
+		fmt.Println(err)
+	}
+	performance_id := insertOnePerformance(performance)
+	user_id := string(r.Context().Value("user_id").([]uint8))
+	updateUserPerformance(performance_id, user_id)
+	fmt.Println("Creating Performance")
+	json.NewEncoder(w).Encode(performance)
+}
 func AddCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -494,22 +391,15 @@ func AddCustomer(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Creating Customer")
 	json.NewEncoder(w).Encode(customer)
 }
-func GetCustomers(w http.ResponseWriter, r *http.Request) {
+func GetPerformances(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	customers := getCustomers()
-	fmt.Println("Creating Customers", customers)
-	json.NewEncoder(w).Encode(customers)
-}
-func GetEmails(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	customers := getEmails()
-	fmt.Println("Getting emails", customers)
+	user_id := string(r.Context().Value("user_id").([]uint8))
+	customers := getPerformances(user_id)
+	fmt.Println("Getting Performances for our user", customers)
 	json.NewEncoder(w).Encode(customers)
 }
 func DoCheckout(w http.ResponseWriter, r *http.Request) {
@@ -603,92 +493,6 @@ func GetProfile(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 
 }
-func storeData(cell *xlsx.Cell) {
-	value, _ := cell.FormattedValue()
-	if cell.GetStyle().Font.Bold && value == "2&btr" {
-		fmt.Println("I found a special one ", value, " at position ", globRow, globCol)
-		// I now located the Header for the Type of the Lumber, now I want to populate the rest of my data
-		// We can assume the column width is always 5 but sometimes we get the headers and sometimes we do not
-		// We should iterate through the rows from this position untill we reach the black borderline
-		tempCell, _ := cell.Row.Sheet.Cell(globRow+1, globCol+4)
-		tempValue, _ := tempCell.FormattedValue()
-		fmt.Println(tempValue, tempCell.GetStyle().Border)
-		rowIterator := globRow
-		//colIterator := globCol
-		if tempValue == "Cdn$" {
-			rowIterator += 2
-		}
-		// We are now aligned with the data portion of the entry
-		//var tempSize size
-	}
-}
-func processCell(cell *xlsx.Cell) error {
-	storeData(cell)
-	globCol += 1
-	return nil
-}
-func processRow(row *xlsx.Row) error {
-	row.ForEachCell(processCell)
-	globRow += 1
-	globCol = 0
-	return nil
-}
-func AddProjectEntries(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS,PUT")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	fmt.Println("FINISH UPLOAD TO CLOUD")
-	fmt.Println(r.Body)
-	var entries []models.Entry
-	err := json.NewDecoder(r.Body).Decode(&entries)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	err = insertEntries(entries)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-}
-func AddProjectFile(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
-	//w.Header().Set("Access-Control-Allow-Origin", "https://lumberio.com")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Methods", "POST,OPTIONS,PUT")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	globRow = 0
-	globCol = 0
-	read_form, err := r.MultipartReader()
-	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	buf := new(bytes.Buffer)
-	for {
-		part, err_part := read_form.NextPart()
-		if err_part == io.EOF {
-			break
-		}
-		if part.FormName() == "file" {
-			buf.ReadFrom(part)
-			fmt.Println("LOOP")
-		}
-		fmt.Println("Creating Project Upload PART 1 XSLX")
-		xlsxFile, err := xlsx.OpenBinary(buf.Bytes())
-		if err != nil {
-			fmt.Println(err)
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-		xlsxFile.Sheets[0].ForEachRow(processRow)
-	}
-	fmt.Println("FINISH UPLOAD TO CLOUD")
-	w.WriteHeader(http.StatusOK)
-}
 func fetchProfileUser(user_id string) (primitive.D, error) {
 	result := bson.D{}
 	id, err := primitive.ObjectIDFromHex(user_id)
@@ -748,6 +552,27 @@ func updateProfileUser(userData models.User, user_id string) (primitive.D, error
 	fmt.Println("Updated a Single User Profile Woot Woot", result)
 	return result, nil
 }
+func updateUserPerformance(performance_id interface{}, user_id string) (primitive.D, error) {
+	result := bson.D{}
+	id, err := primitive.ObjectIDFromHex(user_id)
+	if err != nil {
+		fmt.Println("ObjectIDFromHex ERROR", err)
+	}
+	filter := bson.M{"_id": id}
+	update := bson.M{"$push": bson.M{"performances": performance_id}}
+	_, err = collection.UpdateOne(
+		context.Background(),
+		filter,
+		update,
+	)
+	if err != nil {
+		fmt.Println(err)
+		return result, err
+		//log.Fatal(err)
+	}
+	fmt.Println("Updated a Single User Profile Woot Woot", result)
+	return result, nil
+}
 func getCustomers() []primitive.M {
 	cur, err := customerCollection.Find(context.Background(), bson.D{{}})
 	if err != nil {
@@ -793,79 +618,9 @@ func getEntries() []primitive.M {
 	return results
 }
 
-// GENERAL TODO we need to figure out a way to track which one we matched with so we dont need to iterate over everything again
-func checkEqualData(customerData interface{}, entryData interface{}) bool {
-	tempEntryDataArray := entryData.(primitive.A)
-	tempCustData := customerData.(primitive.A)
-	for _, datum := range tempEntryDataArray {
-		tempDatum := datum.(primitive.M)
-		for _, userPref := range tempCustData {
-			tempUserPref := userPref.(primitive.A)
-			if tempDatum["length"].(string) == tempUserPref[0].(string) || (tempDatum["length"].(string)+"'") == tempUserPref[0].(string) && tempUserPref[1].(bool) {
-				return true
-			}
-		}
-	}
-	return false
-}
-func checkEqual(array interface{}, target interface{}) bool {
-	tempArray := array.(primitive.A)
-	for _, value := range tempArray {
-		tempValue := value.(primitive.A)
-		if tempValue[0].(string) == target.(string) && tempValue[1].(bool) {
-			return true
-		}
-	}
-	return false
-}
-func processEntries(filteredEntries []primitive.M) string {
-	if len(filteredEntries) == 0 {
-		return "Sorry none of our current entries looked like a great fit for you! We will ping you when we find a good fit."
-	}
-	template := "We think you will find the following entries a good fit for your business: \n"
-	for _, entry := range filteredEntries {
-		fmt.Println("FILTERED!!!!", entry)
-		location := entry["location"].(string)
-		grade := entry["grade"].(string)
-		size := entry["size"].(string)
-		// TODO doesnt work we cant convert data which is an array to a string
-		data := entry["data"].(primitive.A)[0].(primitive.M)
-		template += "The lumber mill at " + location + " with grade of " + grade + " and size of " + size + " at length of " + data["length"].(string) + "--> Tally of " + data["tally"].(string)
-		template += "\n"
-	}
-	return template
-}
-
-// this function calls getEntries() which returns entries, and getCustomers(), then we can iterate through both
-func getEmails() map[string]string {
-	entries := getEntries()
-	customers := getCustomers()
-	emails := make(map[string]string)
-	for _, customer := range customers {
-		// 6 corresponds to sawmills so does entries[1]
-		// 7 corresponds to grades so does entries [2]
-		// 8 corresponds to sizes so does entries [3]
-		// 9 corresponds to lengths so does entries
-		var offers []primitive.M
-		for _, entry := range entries {
-			// the last checkEqual should be reformed because it only checks if the first data entry is correct, this will need to be updated
-			if checkEqual(customer["sawmills"], entry["location"]) && checkEqual(customer["grades"], entry["grade"]) && checkEqual(customer["sizes"], entry["size"]) && checkEqualData(customer["lengths"], entry["data"]) {
-				offers = append(offers, entry)
-			}
-		}
-		companyName := customer["companyname"].(string)
-		emails[companyName] = processEntries(offers)
-	}
-	fmt.Println(999999999999, emails, 111111111)
-	return emails
-}
-
 // get all cars from the DB and return them
 func getMyOrders() []primitive.M {
-	// How do we fetch data about our current user? to get his current order_ids
-	// TODO figure out by looking at the docs
-	// Prior to fetching the orders from the orders collections we get the proper query_ids
-	cur, err := bundleCollection.Find(context.Background(), bson.D{{}})
+	cur, err := performanceCollection.Find(context.Background(), bson.D{{}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -890,13 +645,41 @@ func getMyOrders() []primitive.M {
 }
 
 // get all cars from the DB and return them
-func getAllBundles() []primitive.M {
-	cur, err := bundleCollection.Find(context.Background(), bson.D{{}})
+func getPerformances(user_id string) []primitive.M {
+	id, err := primitive.ObjectIDFromHex(user_id)
+	if err != nil {
+		fmt.Println("ObjectIDFromHex ERROR", err)
+	}
+	result := bson.D{}
+	query := &bson.M{"_id": id}
+	err = collection.FindOne(context.Background(), query).Decode(&result)
+	if err != nil {
+		fmt.Println("Werd ERROR", err)
+		return nil
+	}
+	// if they dont have any projects yet
+	if len(result) < 8 {
+		return nil
+	}
+	fmt.Println(result[7].Value, 69696969)
+	query_array := result[7].Value.(primitive.A)
+	fmt.Println(result[7].Value)
+	oids := make([]primitive.ObjectID, len(query_array))
+	for i := range query_array {
+		temp := query_array[i].(primitive.ObjectID)
+		if err != nil {
+			fmt.Println("ObjectIDFromHex ERROR", err)
+		}
+		oids[i] = temp
+	}
+	performanceQuery := bson.M{"_id": bson.M{"$in": oids}}
+	// AT THIS POINT we have retrieved the correct filtering client ids and now we just need to match them
+	cur, err := performanceCollection.Find(context.Background(), performanceQuery)
 	if err != nil {
 		log.Fatal(err)
+		return nil
 	}
-
-	var results []primitive.M
+	var performanceResults []primitive.M
 	for cur.Next(context.Background()) {
 		var result bson.M
 		e := cur.Decode(&result)
@@ -904,15 +687,15 @@ func getAllBundles() []primitive.M {
 			log.Fatal(e)
 		}
 		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
-		results = append(results, result)
+		performanceResults = append(performanceResults, result)
 	}
 
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("private method got called to fetch drivers")
+	fmt.Println("Found Clients", result)
 	cur.Close(context.Background())
-	return results
+	return performanceResults
 }
 func findUserByID(user_id string) (primitive.D, error) {
 	id, err := primitive.ObjectIDFromHex(user_id)
@@ -945,35 +728,6 @@ func findOneUser(user models.User) (primitive.D, error) {
 	return result, nil
 }
 
-// Insert Entries in the DB
-func insertEntries(entries []models.Entry) error {
-	fmt.Println(entries)
-	// We will encode more complex logic in here later after erics feedback
-	var ui []interface{}
-	for _, entry := range entries {
-		entry.Time = time.Now()
-		ui = append(ui, entry)
-	}
-	//update := bson.M{"$set": bson.M{"status": true}}
-	insertResult, err := entryCollection.InsertMany(context.Background(), ui)
-	if err != nil {
-		log.Fatal(err)
-		return err
-		fmt.Println("Inserted the entries", insertResult)
-	}
-	return nil
-}
-
-// Insert one task in the DB
-func insertOneEmail(user models.Email) {
-	fmt.Println(user)
-	insertResult, err := emailCollection.InsertOne(context.Background(), user)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Inserted a Single Email", insertResult.InsertedID)
-}
-
 // Insert one task in the DB
 func insertOneUser(user models.User) {
 	fmt.Println(user)
@@ -993,4 +747,14 @@ func insertOneCustomer(customer models.Customer) {
 		log.Fatal(err)
 	}
 	fmt.Println("Inserted a Single User", insertResult.InsertedID)
+}
+
+// Insert one customer in the DB
+func insertOnePerformance(performance models.Performance) interface{} {
+	insertResult, err := performanceCollection.InsertOne(context.Background(), performance)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Inserted a Single User", insertResult.InsertedID)
+	return insertResult.InsertedID
 }

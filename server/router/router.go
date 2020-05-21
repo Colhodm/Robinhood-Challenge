@@ -9,20 +9,15 @@ import (
 // Router is exported and used in main.go
 func Router() *mux.Router {
 	router := mux.NewRouter()
-	router.HandleFunc("/api/joinnow", middleware.AddEmail).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/register", middleware.AddUser).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/login", middleware.Login).Methods("POST", "OPTIONS")
 	// Upload
-	router.HandleFunc("/api/project/upload", middleware.AddProjectFile).Methods("POST", "OPTIONS")
-	router.HandleFunc("/api/project/uploadData", middleware.AddProjectEntries).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/addCustomer", middleware.AddCustomer).Methods("POST", "OPTIONS")
-	router.HandleFunc("/api/getCustomers", middleware.GetCustomers).Methods("GET", "OPTIONS")
-	router.HandleFunc("/api/getEmails", middleware.GetEmails).Methods("GET", "OPTIONS")
 
 	s := router.PathPrefix("/auth").Methods("GET", "POST", "OPTIONS").Subrouter()
 	s.Use(middleware.AuthMiddle)
-	s.HandleFunc("/api/lumberbundles", middleware.Bundles).Methods("GET", "OPTIONS")
-	s.HandleFunc("/api/orders", middleware.Order).Methods("GET", "OPTIONS")
+	s.HandleFunc("/api/performances", middleware.GetPerformances).Methods("GET", "OPTIONS")
+	s.HandleFunc("/api/register/performance", middleware.AddPerformance).Methods("POST", "OPTIONS")
 
 	// Profile Routes
 	s.HandleFunc("/api/profilefetch", middleware.GetProfile).Methods("GET", "OPTIONS")

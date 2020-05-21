@@ -5,12 +5,12 @@ import { Container, Image, Menu,Button,Portal,Header,Card ,Form ,Input,Divider,I
 import PasswordStrengthBar from 'react-password-strength-bar';
 import validator from 'validator';
 
-let endpoint = "https://lumberio.com";
+let endpoint = "http://35.227.147.196:8080/";
 
 const mynav = {
     background: "inherit",
     height: "75%",
-    color: "#f47373"3,
+    color: "#f47373",
     fontFamily: "Overpass",	
     fontSize: "16px",	
     fontWeight: 600,
@@ -66,10 +66,10 @@ class NavBar extends Component {
     errSeller: false,
     errBuyer: false,
 
-    favorites:[["SPF",false],["Douglas Green",false],["Southern Pine",false],["Other",false]],
+    favorites:[["Hip-Hop",false],["Pop",false],["Alternative",false],["Indie",false]],
     //["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
-    lengths:[["2 x 4",false],["2 x 6",false],["2 x 8",false],["2 x 8",false],
-    ["1 x 2",false],["1 x 3",false],["1 x 4",false],["Other",false]],
+    lengths:[["15",false],["30",false],["60",false],["90",false],
+    ["120",false],["Other",false]],
 
   };
   this.loadCard = this.loadCard.bind(this)
@@ -95,7 +95,7 @@ class NavBar extends Component {
 
     axios
     .post(
-      endpoint + "/api/register",
+      endpoint + "api/register",
       {
     email,password,buyer,lumber,length
       },
@@ -179,7 +179,7 @@ class NavBar extends Component {
     let password = this.state.password
     axios
     .post(
-      endpoint + "/api/login",
+      endpoint + "api/login",
       {
     email,password
       },
@@ -191,15 +191,14 @@ class NavBar extends Component {
       }
     )
     .then(res => {
-      ////console.log(res.status);
-      ////console.log(res);
+      console.log(res.data.buyer,res.data,res);
       if (res.status == 200){
-      this.props.update()
-      this.props.history.push('lumber')
+      if(res.data){
+        this.props.history.push('creator')
       } else {
-        // throw an error for the program //TODO TEST THIS works
-        // TODO when logout, clear the cookie from cache and browser..
+        this.props.history.push('feed')
       }
+      } 
     });
   };
   validateForm(){
@@ -362,7 +361,7 @@ class NavBar extends Component {
         fontSize: "13px",letterSpacing: ".46px",lineHeight: "17px",
         marginRight:"21px",width:"607px"}}/>
       </Form.Field>
-      <Form.Button color="blue" size="large" style={{marginRight: "519px",marginTop: "22px",marginBottom: "42px",background: "#3F691A"}} 
+      <Form.Button color="blue" size="large" style={{marginRight: "519px",marginTop: "22px",marginBottom: "42px",background: "#f47373"}} 
 onClick={this.validateLoginForm} >
 <div className="button-text">LOGIN</div>
 </Form.Button>
@@ -378,7 +377,7 @@ onClick={this.validateLoginForm} >
                 name={'buyer'}
                 value={this.state.buyer}
                 onChange={this.onTypeChange}
-                label='Buyer' />
+                label='Artist' />
                 </Form.Input>
                 <Form.Input
                 error={this.state.errSeller}
@@ -387,15 +386,15 @@ onClick={this.validateLoginForm} >
                 name={'seller'}
                 value={this.state.seller}
                 onChange={this.onTypeChange}
-                label='Seller' />
+                label='Fan' />
                 </Form.Input>
                 </Form.Group>
                 <Form.Field style={{marginTop:"16px",marginLeft:"3px"}}>
-                <div class="email-address"  style={{marginBottom:"6.5px"}}>Preferred Lumber:</div>
+                <div class="email-address"  style={{marginBottom:"6.5px"}}>Favorite Genres:</div>
                 {return_lum}
                 </Form.Field>
                 <Form.Field style={{marginTop:"16px"}}>
-                <div class="email-address"  style={{marginBottom:"6.5px"}}>Preferred Length:</div>
+                <div class="email-address"  style={{marginBottom:"6.5px"}}>Favorite Concert Lengths:</div>
                 {return_len}
                 </Form.Field>
                 <Button  className="button-text"
@@ -457,9 +456,6 @@ onClick={this.validateLoginForm} >
           <Menu.Menu position="right">
             <Menu.Item style={navbar}>
             Product
-            </Menu.Item>
-            <Menu.Item style={navbar}>
-            Testimonials
             </Menu.Item>
             <Menu.Item style={navbar}>
             Contact

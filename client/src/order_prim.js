@@ -164,12 +164,12 @@ class Order extends Component {
         <Menu.Item>
           <div class="order-placed">Total
             <br/>
-            CDN ${this.props.total}
+            USD ${this.props.total}
           </div>
         </Menu.Item>
         <Menu.Item>
           <div>
-          <div class="order-placed"> Ship to </div>
+          <div class="order-placed"> Billed Address to </div>
           <div class="order-item"> {this.props.buyer}<Icon name='question circle outline' /> </div>
           </div>
         </Menu.Item>
@@ -177,13 +177,13 @@ class Order extends Component {
         <Grid>
           <Grid.Row columns={2}>
             <Grid.Column>
-        <div class="arriving" style={description_formatting} > Arriving Wednesday </div>
+        <div class="arriving" style={description_formatting} > The concert is on Thursday </div>
     <div  style={headline}> {this.props.type}</div>
     <div  style={seller}>Sold by {this.props.seller}</div>
         </Grid.Column>
         <Grid.Column>
           <Button style={assist}>GET ASSISTANCE</Button>
-          <Button style={second_assist}>CANCEL ORDER</Button>
+          <Button style={second_assist}>CANCEL TICKET</Button>
           </Grid.Column>
         </Grid.Row>
         </Grid>
