@@ -320,7 +320,6 @@ class Profile extends Component {
                 style={{ marginLeft: "46px", marginTop: "0px" }}
                 class="short-description"
               >
-                Short Description
               </h2>
               <Card
                 style={{ marginLeft: "46px", width: "637px", height: "467px" }}
@@ -479,7 +478,7 @@ class Profile extends Component {
                   style={{ marginLeft: "32px", marginBottom: "18px" }}
                 >
                   <Icon size="large" name="cc visa"></Icon>
-                  <span class="ending-card">Ending in 0001</span>
+                  <span class="ending-card">Ending in 0001 (Not available yet) </span>
                 </Card.Description>
               </Card>
             </Grid.Column>

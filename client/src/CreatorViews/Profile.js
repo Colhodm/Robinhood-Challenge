@@ -142,7 +142,6 @@ class Profile extends Component {
                 style={{ marginLeft: "46px", marginTop: "0px" }}
                 class="short-description"
               >
-                Short Description
               </h2>
               <Card
                 style={{ marginLeft: "46px", width: "637px", height: "467px" }}

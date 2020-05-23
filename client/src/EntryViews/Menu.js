@@ -243,8 +243,8 @@ class NavBar extends Component {
           } else {
             this.props.history.push("feed");
           }
-        } else {
-        }
+        } 
+        this.props.update()
       })
       .catch(function (error) {});
   };

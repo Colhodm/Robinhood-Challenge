@@ -48,9 +48,13 @@ class App extends Component {
       bundle: value,
     });
   }
+  otherauth(){
+    this.setState({
+      bundle: 2,
+    });
+  }
   auth() {
     let value = Cookies.get("session_token");
-    ////console.log(value)
     if (!value) {
       return (
         <Switch>
@@ -59,7 +63,7 @@ class App extends Component {
             path="/"
             render={(props) => (
               <div>
-                <NavBar {...props} update={this.auth.bind(this)} />{" "}
+                <NavBar {...props} update={this.otherauth.bind(this)} />{" "}
                 <CentralText {...props} />{" "}
               </div>
             )}

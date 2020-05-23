@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"reflect"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -132,7 +131,7 @@ func tokenFromFile(file string) (*oauth2.Token, error) {
 
 // Saves a token to a file path.
 func saveToken(path string, token *oauth2.Token) {
-	fmt.Printf("Saving credential file to: %s\n", path)
+	//fmt.Printf("Saving credential file to: %s\n", path)
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		log.Fatalf("Unable to cache oauth token: %v", err)
@@ -180,14 +179,14 @@ func init() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Connected to MongoDB!")
+	//fmt.Println("Connected to MongoDB!")
 
 	collection = client.Database(dbName).Collection(collName)
 	emailCollection = client.Database(dbName).Collection(emailColName)
 	performanceCollection = client.Database(dbName).Collection(performanceCollName)
 	entryCollection = client.Database(dbName).Collection(entryCollName)
 	customerCollection = client.Database(dbName).Collection(customerCollName)
-	fmt.Println("Collection instance created!")
+	//fmt.Println("Collection instance created!")
 }
 func AuthMiddle(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -220,7 +219,7 @@ func AuthMiddle(next http.Handler) http.Handler {
 		}
 		ctx := context.WithValue(r.Context(), "user_id", response)
 		next.ServeHTTP(w, r.WithContext(ctx))
-		fmt.Println(string(response.([]uint8)), "CACHE ACCESS")
+		//fmt.Println(string(response.([]uint8)), "CACHE ACCESS")
 		log.Println("Finishing Auth")
 	})
 
@@ -237,11 +236,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 	}
 	fetched, err := findOneUser(user)
 	if err != nil {
-		fmt.Println("Error0", err)
+		//fmt.Println("Error0", err)
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("500 - Something bad happened!"))
 		return
@@ -250,15 +249,15 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	//TODO extract the password from fetched
 	//fetched[3].Value
 	if len(fetched) < 3 {
-		fmt.Println("Error1")
+		//fmt.Println("Error1")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	fmt.Println("FETCHED SUCCESFULLY", fetched)
+	//fmt.Println("FETCHED SUCCESFULLY", fetched)
 	password := []byte(fmt.Sprintf("%v", fetched[3].Value.(interface{})))
 	if err = bcrypt.CompareHashAndPassword(password, []byte(user.Password)); err != nil {
 		// If the two passwords don't match, return a 401 status
-		fmt.Println("Error1")
+		//fmt.Println("Error1")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -271,7 +270,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	_, err = cache.Do("SETEX", sessionToken, "3600", fetched[0].Value.(primitive.ObjectID).Hex())
 	if err != nil {
 		// If there is an error in setting the cache, return an internal server error
-		fmt.Println("Error2")
+		//fmt.Println("Error2")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -285,10 +284,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Expires:  time.Now().Add(12000 * time.Second),
 	})
 	//TODO add logic to hash the password and give the user some unique token so we ensure hes logged in
-	fmt.Println("Login User to Lumber", sessionToken, user.ID)
+	//fmt.Println("Login User to Lumber", sessionToken, user.ID)
 	user.Buyer = fetched[4].Value.(interface{}).(bool)
 	//http.Redirect(w, r, "/", http.StatusFound)
-	fmt.Println(user.Buyer)
+	//fmt.Println(user.Buyer)
 	json.NewEncoder(w).Encode(user.Buyer)
 	// w.WriteHeader(http.StatusOK)
 }
@@ -299,35 +298,35 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	fmt.Println(3)
+	//fmt.Println(3)
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
-	fmt.Println(user.Bio, 66666)
+	//fmt.Println(user.Bio, 66666)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 	}
 	_, err = findOneUser(user)
 	if err == nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Println(err)
+		//fmt.Println(err)
 		return
 	}
-	fmt.Println(user, r.Body)
+	//fmt.Println(user, r.Body)
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 8)
 	user.Password = string(hashedPassword)
 	insertOneUser(user)
 	var message gmail.Message
 	messageStr := []byte(
-		"From: welcome@artisttourbus.com\r\n" + "To: " + user.Email + "\r\n" + "Subject: Welcome to Tour\r\n\r\n" + "We're excited to connect you with your favorite artists!")
+		"From: welcome@artisttourbus.com\r\n" + "To: " + user.Email + "\r\n" + "Subject: Welcome to Tour\r\n\r\n" + "We're excited to connect you with your favorite artists! You can go to artisttourbus.com to login!")
 	message.Raw = base64.URLEncoding.EncodeToString(messageStr)
 	_, err = email.Users.Messages.Send("me", &message).Do()
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Println(err)
+		//fmt.Println(err)
 		return
 	}
 	//TODO add logic to hash the password and give the user some unique token so we ensure hes logged in
-	fmt.Println("Creating User")
+	//fmt.Println("Creating User")
 	json.NewEncoder(w).Encode(user)
 }
 func GetAddress(w http.ResponseWriter, r *http.Request) {
@@ -341,15 +340,15 @@ func GetAddress(w http.ResponseWriter, r *http.Request) {
 	result, err := findUserByID(user_id)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Println(err)
+		//fmt.Println(err)
 		return
 	}
 	if result[len(result)-1].Key != "address" {
 		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Println("schema error")
+		//fmt.Println("schema error")
 		return
 	}
-	fmt.Println(result[len(result)-1].Value, 9999999999, result[len(result)-1].Key)
+	//fmt.Println(result[len(result)-1].Value, 9999999999, result[len(result)-1].Key)
 	// we also want to update our users addresses if we need to
 	json.NewEncoder(w).Encode(result[len(result)-1].Value)
 }
@@ -361,9 +360,9 @@ func AddPerformance(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	var performance models.Performance
 	err := json.NewDecoder(r.Body).Decode(&performance)
-	fmt.Println(performance.ZoomUrl)
+	//fmt.Println(performance.ZoomUrl)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 	}
 	if performance.Goal == "" {
 		performance.Goal = "0"
@@ -371,7 +370,7 @@ func AddPerformance(w http.ResponseWriter, r *http.Request) {
 	}
 	user_id := string(r.Context().Value("user_id").([]uint8))
 	user_data, _ := fetchProfileUser(user_id)
-	fmt.Println(user_data)
+	//fmt.Println(user_data)
 	performance.FullName = user_data.Map()["fullname"].(string)
 	performance.Bio = user_data.Map()["bio"].(string)
 	performance_id := insertOnePerformance(performance)
@@ -383,14 +382,14 @@ func AddCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	fmt.Println(3)
+	//fmt.Println(3)
 	var customer models.Customer
 	err := json.NewDecoder(r.Body).Decode(&customer)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 	}
 	insertOneCustomer(customer)
-	fmt.Println("Creating Customer")
+	//fmt.Println("Creating Customer")
 	json.NewEncoder(w).Encode(customer)
 }
 func Watch(w http.ResponseWriter, r *http.Request) {
@@ -402,10 +401,10 @@ func Watch(w http.ResponseWriter, r *http.Request) {
 	var performance_id models.ID
 	err := json.NewDecoder(r.Body).Decode(&performance_id)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 	}
 	metadata := getWatch(performance_id.Performance_id).Map()
-	fmt.Println("Got stream metadata", metadata)
+	//fmt.Println("Got stream metadata", metadata)
 	json.NewEncoder(w).Encode(metadata)
 }
 func Count(w http.ResponseWriter, r *http.Request) {
@@ -417,11 +416,11 @@ func Count(w http.ResponseWriter, r *http.Request) {
 	var performance_id models.ID
 	err := json.NewDecoder(r.Body).Decode(&performance_id)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 	}
 	user_id := string(r.Context().Value("user_id").([]uint8))
 	updateCount(performance_id.Performance_id, user_id)
-	fmt.Println("Updated stream metadata")
+	//fmt.Println("Updated stream metadata")
 	w.WriteHeader(http.StatusOK)
 
 }
@@ -434,10 +433,10 @@ func UpdateConfig(w http.ResponseWriter, r *http.Request) {
 	var performance_id models.Performance
 	err := json.NewDecoder(r.Body).Decode(&performance_id)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 	}
 	updateConfig(performance_id)
-	fmt.Println("Updated stream metadata")
+	//fmt.Println("Updated stream metadata")
 	w.WriteHeader(http.StatusOK)
 }
 func GetPerformances(w http.ResponseWriter, r *http.Request) {
@@ -448,7 +447,7 @@ func GetPerformances(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	user_id := string(r.Context().Value("user_id").([]uint8))
 	customers := getPerformances(user_id)
-	fmt.Println("Getting Performances for our creator", customers)
+	//fmt.Println("Getting Performances for our creator", customers)
 	json.NewEncoder(w).Encode(customers)
 }
 func GetArtists(w http.ResponseWriter, r *http.Request) {
@@ -458,7 +457,7 @@ func GetArtists(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	artists := getArtists()
-	fmt.Println("Getting Performances for our creator", artists)
+	//fmt.Println("Getting Performances for our creator", artists)
 	json.NewEncoder(w).Encode(artists)
 }
 func PullPerformances(w http.ResponseWriter, r *http.Request) {
@@ -468,55 +467,8 @@ func PullPerformances(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	performances := pullPerformances()
-	fmt.Println("Getting Performances for our user", performances)
+	//fmt.Println("Getting Performances for our user", performances)
 	json.NewEncoder(w).Encode(performances)
-}
-func DoCheckout(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "https://www.lumberio.com")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	user_id := string(r.Context().Value("user_id").([]uint8))
-	result, err := findUserByID(user_id)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Println(err)
-		return
-	}
-	// we also want to update our users addresses if we need to
-	var checkout models.Checkout
-	err = json.NewDecoder(r.Body).Decode(&checkout)
-	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	fmt.Println(3333333, checkout.Addy, checkout.Bundle)
-	err = updateUserAddress(user_id, checkout.Addy)
-	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	fmt.Println(result)
-	tempEmail := result[1].Value.(string)
-	var message gmail.Message
-	messageStr := []byte(
-		"From: hello@lumberio.com\r\n" +
-			"To: " + tempEmail + "\r\n" +
-			"Subject: Checkout from Lumber.io\r\n\r\n" +
-			"You checked out from Lumber.io! You purchased a " + checkout.Bundle["type"].(string) + " from " + checkout.Bundle["owner"].(string) + " for a price of " + checkout.Bundle["price"].(string) + ". Please enjoy the other bundles we have on offer!" + " We are shipping it to " + checkout.Addy.Unit + " " + checkout.Addy.Street + " " + checkout.Addy.City + " " + checkout.Addy.State + ". If needed, we can reach you at " + checkout.Addy.Phone)
-	message.Raw = base64.URLEncoding.EncodeToString(messageStr)
-	_, err = email.Users.Messages.Send("me", &message).Do()
-	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	fmt.Println("Email Sent!")
-	w.WriteHeader(http.StatusOK)
-
 }
 func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
@@ -534,7 +486,7 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	result, err := updateProfileUser(user, user_id)
 	if err != nil {
 		http.Redirect(w, r, "http://35.233.168.169:3000", http.StatusSeeOther)
-		fmt.Println("Error0")
+		//fmt.Println("Error0")
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("500 - Something bad happened!"))
 		return
@@ -553,7 +505,7 @@ func GetProfile(w http.ResponseWriter, r *http.Request) {
 	result, err := fetchProfileUser(user_id)
 	if err != nil {
 		http.Redirect(w, r, "http://35.233.168.169:3000", http.StatusSeeOther)
-		fmt.Println("Error0")
+		//fmt.Println("Error0")
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("500 - Something bad happened!"))
 		return
@@ -570,18 +522,17 @@ func fetchProfileUser(user_id string) (primitive.D, error) {
 	query := &bson.M{"_id": id}
 	err = collection.FindOne(context.Background(), query).Decode(&result)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return result, err
 		//log.Fatal(err)
 	}
-	fmt.Println("Found a Single User Profile Woot Woot", result)
+	//fmt.Println("Found a Single User Profile Woot Woot", result)
 	return result, nil
 }
 func updateUserAddress(user_id string, address models.Address) error {
-	result := bson.D{}
 	id, err := primitive.ObjectIDFromHex(user_id)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return err
 	}
 	filter := bson.M{"_id": id}
@@ -592,18 +543,18 @@ func updateUserAddress(user_id string, address models.Address) error {
 		update,
 	)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return err
 		//log.Fatal(err)
 	}
-	fmt.Println("Updated a Single User Address  Woot Woot", result)
+	//fmt.Println("Updated a Single User Address  Woot Woot", result)
 	return nil
 }
 func updateProfileUser(userData models.User, user_id string) (primitive.D, error) {
 	result := bson.D{}
 	id, err := primitive.ObjectIDFromHex(user_id)
 	if err != nil {
-		fmt.Println("ObjectIDFromHex ERROR", err)
+		//fmt.Println("ObjectIDFromHex ERROR", err)
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": bson.M{"bio": userData.Bio, "name": userData.Name, "fullname": userData.FullName, "email": userData.Email}}
@@ -614,18 +565,18 @@ func updateProfileUser(userData models.User, user_id string) (primitive.D, error
 	)
 
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return result, err
 		//log.Fatal(err)
 	}
-	fmt.Println("Updated a Single User Profile Woot Woot", result)
+	//fmt.Println("Updated a Single User Profile Woot Woot", result)
 	return result, nil
 }
 func updateUserPerformance(performance_id interface{}, user_id string) (primitive.D, error) {
 	result := bson.D{}
 	id, err := primitive.ObjectIDFromHex(user_id)
 	if err != nil {
-		fmt.Println("ObjectIDFromHex ERROR", err)
+		//fmt.Println("ObjectIDFromHex ERROR", err)
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{"$push": bson.M{"performances": performance_id}}
@@ -635,11 +586,11 @@ func updateUserPerformance(performance_id interface{}, user_id string) (primitiv
 		update,
 	)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return result, err
 		//log.Fatal(err)
 	}
-	fmt.Println("Updated a Single User Profile Woot Woot", result)
+	//fmt.Println("Updated a Single User Profile Woot Woot", result)
 	return result, nil
 }
 func getArtists() []primitive.M {
@@ -655,13 +606,13 @@ func getArtists() []primitive.M {
 		if e != nil {
 			log.Fatal(e)
 		}
-		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+		//fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
 		results = append(results, result)
 	}
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("private method got called to fetch artists")
+	//fmt.Println("private method got called to fetch artists")
 	cur.Close(context.Background())
 	return results
 }
@@ -679,7 +630,7 @@ func getEntries() []primitive.M {
 		if e != nil {
 			log.Fatal(e)
 		}
-		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+		//fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
 		results = append(results, result)
 	}
 	if err := cur.Err(); err != nil {
@@ -702,14 +653,14 @@ func getMyOrders() []primitive.M {
 		if e != nil {
 			log.Fatal(e)
 		}
-		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+		//fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
 		results = append(results, result)
 	}
 
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("private method got called to fetch drivers")
+	//fmt.Println("private method got called to fetch drivers")
 	cur.Close(context.Background())
 	return results
 }
@@ -718,27 +669,27 @@ func getMyOrders() []primitive.M {
 func getPerformances(user_id string) []primitive.M {
 	id, err := primitive.ObjectIDFromHex(user_id)
 	if err != nil {
-		fmt.Println("ObjectIDFromHex ERROR", err)
+		//fmt.Println("ObjectIDFromHex ERROR", err)
 	}
 	result := bson.D{}
 	query := &bson.M{"_id": id}
 	err = collection.FindOne(context.Background(), query).Decode(&result)
 	if err != nil {
-		fmt.Println("Werd ERROR", err)
+		//fmt.Println("Werd ERROR", err)
 		return nil
 	}
 	// if they dont have any projects yet
 	if len(result) < 10 {
 		return nil
 	}
-	fmt.Println(result[9].Value, 69696969)
+	//fmt.Println(result[9].Value, 69696969)
 	query_array := result[9].Value.(primitive.A)
-	fmt.Println(result[9].Value)
+	//fmt.Println(result[9].Value)
 	oids := make([]primitive.ObjectID, len(query_array))
 	for i := range query_array {
 		temp := query_array[i].(primitive.ObjectID)
 		if err != nil {
-			fmt.Println("ObjectIDFromHex ERROR", err)
+			//fmt.Println("ObjectIDFromHex ERROR", err)
 		}
 		oids[i] = temp
 	}
@@ -756,14 +707,14 @@ func getPerformances(user_id string) []primitive.M {
 		if e != nil {
 			log.Fatal(e)
 		}
-		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+		//fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
 		performanceResults = append(performanceResults, result)
 	}
 
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Found Clients", result)
+	//fmt.Println("Found Clients", result)
 	cur.Close(context.Background())
 	return performanceResults
 }
@@ -772,13 +723,13 @@ func getPerformances(user_id string) []primitive.M {
 func getWatch(performance_id string) primitive.D {
 	id, err := primitive.ObjectIDFromHex(performance_id)
 	if err != nil {
-		fmt.Println("ObjectIDFromHex ERROR", err)
+		//fmt.Println("ObjectIDFromHex ERROR", err)
 	}
 	result := bson.D{}
 	query := &bson.M{"_id": id}
 	err = performanceCollection.FindOne(context.Background(), query).Decode(&result)
 	if err != nil {
-		fmt.Println("Werd ERROR", err)
+		//fmt.Println("Werd ERROR", err)
 		return nil
 	}
 	return result
@@ -789,11 +740,11 @@ func updateCount(performance_id string, user_id string) (primitive.D, error) {
 	result := bson.D{}
 	id, err := primitive.ObjectIDFromHex(performance_id)
 	if err != nil {
-		fmt.Println("ObjectIDFromHex ERROR", err)
+		//fmt.Println("ObjectIDFromHex ERROR", err)
 	}
 	user_adjusted_id, err := primitive.ObjectIDFromHex(user_id)
 	if err != nil {
-		fmt.Println("ObjectIDFromHex ERROR", err)
+		//fmt.Println("ObjectIDFromHex ERROR", err)
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{"$push": bson.M{"viewers": user_adjusted_id}, "$inc": bson.M{"count": 1}}
@@ -802,7 +753,7 @@ func updateCount(performance_id string, user_id string) (primitive.D, error) {
 		filter,
 		update,
 	)
-	fmt.Println("Updated a View on the stream", result)
+	//fmt.Println("Updated a View on the stream", result)
 	return result, nil
 }
 
@@ -820,7 +771,7 @@ func pullPerformances() []primitive.M {
 		if e != nil {
 			log.Fatal(e)
 		}
-		fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
+		//fmt.Println("cur..>", cur, "result", reflect.TypeOf(result), reflect.TypeOf(result["_id"]))
 		performanceResults = append(performanceResults, result)
 	}
 
@@ -833,7 +784,7 @@ func pullPerformances() []primitive.M {
 func findUserByID(user_id string) (primitive.D, error) {
 	id, err := primitive.ObjectIDFromHex(user_id)
 	if err != nil {
-		fmt.Println(err)
+		//fmt.Println(err)
 		return nil, err
 	}
 	result := bson.D{}
@@ -844,7 +795,7 @@ func findUserByID(user_id string) (primitive.D, error) {
 		//log.Fatal(err)
 	}
 	//TODO we might need check to ensure that a username is unique when you register
-	fmt.Println("Found a Single User", result)
+	//fmt.Println("Found a Single User", result)
 	return result, nil
 }
 
@@ -857,29 +808,29 @@ func findOneUser(user models.User) (primitive.D, error) {
 		//log.Fatal(err)
 	}
 	//TODO we might need check to ensure that a username is unique when you register
-	fmt.Println("Found a Single User", result)
+	//fmt.Println("Found a Single User", result)
 	return result, nil
 }
 
 // Insert one task in the DB
 func insertOneUser(user models.User) {
-	fmt.Println(user)
-	insertResult, err := collection.InsertOne(context.Background(), user)
+	//fmt.Println(user)
+	_, err := collection.InsertOne(context.Background(), user)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Inserted a Single User", insertResult.InsertedID)
+	//fmt.Println("Inserted a Single User", insertResult.InsertedID)
 }
 
 // Insert one customer in the DB
 func insertOneCustomer(customer models.Customer) {
-	insertResult, err := customerCollection.InsertOne(context.Background(), customer)
+	_, err := customerCollection.InsertOne(context.Background(), customer)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Inserted a Single User", insertResult.InsertedID)
+	//fmt.Println("Inserted a Single User", insertResult.InsertedID)
 }
 
 // Insert one customer in the DB
@@ -888,14 +839,13 @@ func insertOnePerformance(performance models.Performance) interface{} {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Inserted a Single User", insertResult.InsertedID)
+	//fmt.Println("Inserted a Single User", insertResult.InsertedID)
 	return insertResult.InsertedID
 }
 func updateConfig(performance models.Performance) error {
-	result := bson.D{}
 	id, err := primitive.ObjectIDFromHex(performance.Performance_id)
 	if err != nil {
-		fmt.Println("ObjectIDFromHex ERROR", err)
+		//fmt.Println("ObjectIDFromHex ERROR", err)
 	}
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": performance}
@@ -904,6 +854,6 @@ func updateConfig(performance models.Performance) error {
 		filter,
 		update,
 	)
-	fmt.Println("Updated a View on the stream", result)
+	//fmt.Println("Updated a View on the stream", result)
 	return nil
 }

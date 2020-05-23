@@ -17,12 +17,12 @@
   width: 392px;	
   background-color: #FFFFFF;	
   box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);}
-  register-now-to-buy {	height: 53px;	width: 338px;	color: #707070;	font-family: Rubik;	font-size: 12px;	letter-spacing: 0.43px;	line-height: 17px;}
+  register-now-to-buy {	height: 53px;	width: 338px;	color: #707070;	font-family: Lato;	font-size: 12px;	letter-spacing: 0.43px;	line-height: 17px;}
 
   .not-registered-yet {	height: 34.67px;
       width: 201px;	
-      color: #F02121;	
-      font-family: Rubik;	
+      color: #f47373;	
+      font-family: Lato;	
       font-size: 14px;	
       padding-top: 25px;	
       padding-bottom: 30px;	
@@ -33,7 +33,7 @@
       .did-you-know {	
         height: 34.67px;	
         width: 201px;	color: #595959;	
-        font-family: Rubik;	font-size: 16px;	
+        font-family: Lato;	font-size: 16px;	
         margin-top: 23.5px;
         margin-bottom: 12px;
         margin-left: 33.5px;
@@ -45,14 +45,14 @@
           margin-bottom: 58px;
           margin-left: 34.5px;
           margin-right: 40.5px;
-            color: #707070;	font-family: Rubik;	
+            color: #707070;	font-family: Lato;	
             font-size: 12px;	
             letter-spacing: 0.43px;	
             line-height: 17px;}
 .learn-more {	height: 19px;	
   width: 103px;	
-  color: #F02121;	
-  font-family: Rubik;	
+  color: #f47373;	
+  font-family: Lato;	
   font-size: 16px;	
   letter-spacing: 0.57px;	
   margin-bottom: 16.5px;
@@ -61,8 +61,8 @@
   line-height: 19px;}
   .sign-in {	height: 34.67px;	
     width: 129px;	
-    color: #F02121;	
-    font-family: Rubik;	
+    color: #f47373;	
+    font-family: Lato;	
     font-size: 20px;	
     letter-spacing: 0.71px;	
     line-height: 34px;}
@@ -70,7 +70,7 @@
     height: 24px;	
     width: 333px;	
     color: #BBBBBB;	
-    font-family: Rubik;	
+    font-family: Lato;	
     font-size: 20px;	
     letter-spacing: 0.71px;	
     margin-top: 29px;
@@ -118,8 +118,8 @@
 .edit-profile {
           height: 35px;
           width: 129px;
-          color: #F02121;
-          font-family: Rubik;
+          color: #f47373;
+          font-family: Lato;
           font-size: 20px;
           letter-spacing: 0.71px;
           line-height: 34px;
@@ -128,7 +128,7 @@
           height: 36px;
           width: 616px;
           color: #595959;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 16px;
           letter-spacing: 0.57px;
           line-height: 34px;
@@ -138,7 +138,7 @@
           height: 35px;
           width: 129px;
           color: #000000;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 20px;
           letter-spacing: 0.71px;
           line-height: 34px;
@@ -147,14 +147,14 @@
           height: 17px;
           width: 479.87px;
           color: #595959;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 16px;
           letter-spacing: 0.57px;
           line-height: 17px;
         }
 .email-checkout {
           color: #595959;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 16px;
           letter-spacing: 0.57px;
           line-height: 17px;
@@ -164,7 +164,7 @@
     width: 172px;
     background: #1F370E;
     color: #FFFFFF;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 14.22px;
     font-weight: 500;
     letter-spacing: 1.25px;
@@ -173,8 +173,8 @@
         }
 .ui.button.cancel {
   background: #FFFFFF;
-  color: #F02121;
-  font-family: Rubik;
+  color: #f47373;
+  font-family: Lato;
           font-size: 14.22px;
           font-weight: 500;
           letter-spacing: 1.25px;
@@ -188,7 +188,7 @@
           height: 35px;
           width: 236px;
           color: #000000;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 20px;
           letter-spacing: 0.71px;
           line-height: 34px;
@@ -198,7 +198,7 @@
           height: 35px;
           width: 129px;
           color: #000000;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 20px;
           letter-spacing: 0.71px;
           line-height: 34px;
@@ -210,14 +210,14 @@
           height: 47px;
           width: 580px;
           color: #595959;
-          font-family: Rubik;
+          font-family: Lato;
           letter-spacing: 0.57px;
         }
 .payment-method {
           height: 24px;
           width: 169px;
           color: #595959;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 20px;
           letter-spacing: 0.71px;
           line-height: 24px;
@@ -226,22 +226,22 @@
 .change-copy {
           height: 19px;
           width: 61px;
-          color: #F02121;
-          font-family: Rubik;
+          color: #f47373;
+          font-family: Lato;
           font-size: 16px;
           letter-spacing: 0.57px;
           line-height: 19px;
         }
 .ending-card{
           color: #595959;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 16px;
           letter-spacing: 0.57px;
           line-height: 19px;
         }
 .ui.button.success-check-wood {
           color: #FFFFFF;
-          font-family: Rubik;
+          font-family: Lato;
           font-size: 16px;
           letter-spacing: 0.57px;
           line-height: 19px;
@@ -250,8 +250,8 @@
           box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
         }
 .ui.button.fail-check-wood {
-    color: #F02121;
-    font-family: Rubik;
+    color: #f47373;
+    font-family: Lato;
     font-size: 16px;
     letter-spacing: 0.57px;
     line-height: 19px;
@@ -264,7 +264,7 @@ Order Page
 */ 
 .order-placed {
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 16px;
 	font-weight: 500;
 	letter-spacing: 0.57px;
@@ -272,8 +272,8 @@ Order Page
   text-align: left;
 }
 .order-item {
-  color: #F02121;
-  font-family: Rubik;
+  color: #f47373;
+  font-family: Lato;
 	font-size: 16px;
 	font-weight: 500;
 	letter-spacing: 0.57px;
@@ -281,7 +281,7 @@ Order Page
 }
 .arriving {
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 20px;
 	font-weight: 500;
 	letter-spacing: 0.71px;
@@ -289,7 +289,7 @@ Order Page
 }
 .rearriving {
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 14px;
 	font-weight: 500;
 	letter-spacing: 0.51px;
@@ -301,8 +301,8 @@ extra info page attributes
   display: inline-block;
 	height: 59px;
 	width: 909px;
-	color: #F02121;
-	font-family: Rubik;
+	color: #f47373;
+	font-family: Lato;
 	font-size: 60px;
 	font-weight: 300;
 	letter-spacing: 2.14px;
@@ -312,7 +312,7 @@ extra info page attributes
 .info-exit {
 	height: 48px;
 	width: 48px;
-  color: #F02121;
+  color: #f47373;
   margin-left: 500px;
   margin-right: 36px;
   margin-bottom: 31px;
@@ -331,7 +331,7 @@ extra info page attributes
 	height: 42px;
 	width: 240px;
   background: #3F691A;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 60px;
 	font-weight: 300;
 	letter-spacing: 2.14px;
@@ -339,7 +339,7 @@ extra info page attributes
   margin-left: 43px;
   margin-bottom: 39px;
   color: #FFFFFF;
-  font-family: Rubik;
+  font-family: Lato;
   font-size: 14.22px;
   font-weight: 500;
   letter-spacing: 1.25px;
@@ -347,8 +347,8 @@ extra info page attributes
   text-align: center;
 }
 .info-text {
-	color: #F02121;
-	font-family: Rubik;
+	color: #f47373;
+	font-family: Lato;
 	font-size: 20px;
 	font-weight: 500;
 	letter-spacing: 0.71px;
@@ -359,8 +359,8 @@ extra info page attributes
   text-align: left;
 }
 .info-expand {
-	color: #F02121;
-	font-family: Rubik;
+	color: #f47373;
+	font-family: Lato;
 	font-size: 20px;
 	font-weight: 500;
 	letter-spacing: 0.71px;
@@ -372,7 +372,7 @@ extra info page attributes
 }
 .info-describe {
 	color: #3F3F3F;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 20px;
 	letter-spacing: 0.71px;
   line-height: 24px;
@@ -389,8 +389,8 @@ For the Checkout Page
   margin-top: 17px;
   margin-right: 189px;
   margin-bottom: 14px;
-	color: #F02121;
-	font-family: Rubik;
+	color: #f47373;
+	font-family: Lato;
 	font-size: 20px;
 	font-weight: 500;
 	letter-spacing: 0.71px;
@@ -404,7 +404,7 @@ For the Checkout Page
     height: 40px;
     width: 606px;
     color: #595959;
-    font-family: Rubik Regular;
+    font-family: Lato Regular;
     font-size: 36px;
     letter-spacing: 1.29px;
     line-height: 36px;
@@ -415,7 +415,7 @@ For the Checkout Page
     margin-left: 23px;
     width: 382px;
     color: #BBBBBB;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 16px;
     letter-spacing: 1.29px;
     line-height: 19px;
@@ -424,8 +424,8 @@ For the Checkout Page
 .change-order{
 	height: 19px;
 	width: 61px;
-	color: #F02121;
-	font-family: Rubik;
+	color: #f47373;
+	font-family: Lato;
 	font-size: 16px;
 	letter-spacing: 0.57px;
   line-height: 19px;
@@ -437,7 +437,7 @@ For the Checkout Page
 .shipping-details {
 	height: 24px;
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 20px;
 	letter-spacing: 0.71px;
   line-height: 24px;
@@ -450,7 +450,7 @@ For the Checkout Page
 	height: 191px;
 	width: 367px;
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 16px;
 	letter-spacing: 0.57px;
   line-height: 19px;
@@ -463,7 +463,7 @@ For the Checkout Page
 	height: 36px;
 	width: 221px;
   background: #3F691A;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 60px;
 	font-weight: 300;
 	letter-spacing: 2.14px;
@@ -473,7 +473,7 @@ For the Checkout Page
   margin-bottom: 18px;
   margin-top: 15px;
   color: #FFFFFF;
-  font-family: Rubik;
+  font-family: Lato;
   font-size: 14.22px;
   font-weight: 500;
   letter-spacing: 1.25px;
@@ -482,7 +482,7 @@ For the Checkout Page
 }
 .checkout-info {
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 16px;
 	letter-spacing: 0.57px;
   line-height: 19px;
@@ -491,7 +491,7 @@ For the Checkout Page
 }
 .checkout-header {
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
   font-size: 16px;
   font-weight: 800;
 	letter-spacing: 0.57px;
@@ -507,7 +507,7 @@ For the Checkout Page
 .total-header {
 	width: 232px;
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 20px;
 	font-weight: 800;
 	letter-spacing: 0.71px;
@@ -520,8 +520,8 @@ For the Checkout Page
 }
 .total-cdn {
 	width: 232px;
-	color: #F02121;
-	font-family: Rubik;
+	color: #f47373;
+	font-family: Lato;
 	font-size: 36px;
 	font-weight: 300;
 	letter-spacing: 1.29px;
@@ -532,8 +532,8 @@ For the Checkout Page
 .savings-checkout {
 	height: 29px;
 	width: 356px;
-	color: #F02121;
-	font-family: Rubik;
+	color: #f47373;
+	font-family: Lato;
 	font-size: 16px;
 	letter-spacing: 0.57px;
   line-height: 19px;
@@ -553,8 +553,8 @@ For the Checkout Page
 .ui.popup.pop-up {
 	height: 111px;
 	width: 259px;
-	color: #F02121;
-	font-family: Rubik;
+	color: #f47373;
+	font-family: Lato;
 	font-size: 16px;
 	letter-spacing: 0.57px;
   line-height: 19px;
@@ -564,7 +564,7 @@ For the Checkout Page
 }
 .log-out {
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 16px;
 	letter-spacing: 0.57px;
 	line-height: 19px;
@@ -577,7 +577,7 @@ Log in Pop over
 	height: 34.67px;
 	width: 346px;
 	color: #595959;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 13px;
 	letter-spacing: 0.46px;
   line-height: 34px;
@@ -589,7 +589,7 @@ Log in Pop over
 	height: 60px;
 	width: 224px;
   color:#f47373;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 16px;
 	letter-spacing: 0.57px;
 	line-height: 34px;
@@ -597,7 +597,7 @@ Log in Pop over
 }
 .ui.menu.two.item .item.menu-text {
   color:#f47373;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 16px;
 	letter-spacing: 0.57px;
 	line-height: 34px;
@@ -605,7 +605,7 @@ Log in Pop over
 }
 .ui.button.reg-choices {
   color:#f47373;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 13px;
     letter-spacing: 0.46px;
     line-height: 15px;
@@ -614,7 +614,7 @@ Log in Pop over
 }
 .ui.button.cho-reg-choices {
 	color: #FFFFFF;
-	font-family: Rubik;
+	font-family: Lato;
 	font-size: 13px;
 	letter-spacing: 0.46px;
 	line-height: 15px;
@@ -626,7 +626,7 @@ Log in Pop over
 }
 .ui.button.button-text {	
   color: #FFFFFF;	
-  font-family: Rubik;	
+  font-family: Lato;	
   font-size: 14.22px;	
   font-weight: 500;	
   letter-spacing: 1.25px;	
@@ -638,7 +638,7 @@ Log in Pop over
     height: 17px;
     width: 432px;
     color:#707070;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 12px;
     letter-spacing: 0.43px;
     line-height: 17px;
@@ -647,7 +647,7 @@ Log in Pop over
     height: 34.67px;
     width: 258px;
     color: #444444;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 20px;
     letter-spacing: 1px;
     line-height: 34px;
@@ -661,7 +661,7 @@ Log in Pop over
     height: 60px;
     width: 385.6px;
     color: #888888;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 12.67px;
     letter-spacing: 1px;
     line-height: 20px;
@@ -674,7 +674,7 @@ Log in Pop over
     height: 16px;
     width: 64px;
     color: #FFFFFF;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 14.22px;
     font-weight: 500;
     letter-spacing: 1.25px;
@@ -685,7 +685,7 @@ Log in Pop over
     height: 24px;
     width: 276px;
     color: #595959;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 20px;
     font-weight: 500;
     letter-spacing: 0.71px;
@@ -695,19 +695,19 @@ Log in Pop over
     height: 16px;
     width: 238px;
     color: #FFFFFF;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 14.22px;
     font-weight: 500;
     letter-spacing: 1.25px;
     line-height: 16px;
     text-align: center;
-    background-color: #F02121;
+    background-color: #f47373;
   }
 .ui.button.change-add {
     height: 17px;
     width: 224px;
     color: #595959;
-    font-family: Rubik;
+    font-family: Lato;
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.5px;
