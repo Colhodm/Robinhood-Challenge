@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import Moment from "react-moment";
+
 import {
   CheckBox,
   Button,
@@ -16,180 +18,82 @@ import {
   Container,
   Label,
   Divider,
-  List
+  List,
+  Popup,
 } from "semantic-ui-react";
-const style = {
-  hang: {
-    fontFamily: "Akkurat",
-    background: "inherit",
-    fontWeight: "lighter",
-    borderColor: "white"
-  }
-};
-const  header = {
-  fontWeight: "500",
-  fontSize: "20px",
-  fontFamily: "Rubik",
-  color: "#595959",
-  height: "24px",	
-  width: "95px",
-  letterSpacing: "0.71px",
-  lineHeight: "24px",
-  textDecoration: "underline",
-  marginTop: "20px",
-  marginLeft: "17px",
-  marginRight: "255px",
-
-
-
-
-};
-const  headline = {
-  marginLeft: "32px",
-  marginRight: "848px",
-  marginTop: "6px",
-  marginBottom: "0px",
-  height: "57px",	
-  width: "410px",
-  color: "#3F691A",
-  fontFamily: "Rubik",
-  fontSize: "48px",
-  fontWeight: "300",
-  letterSpacing: "1.71px",
-  lineHeight: "42px",
-  textAlign: "left",
-
-};
-const  icon_style = {
-  color: "#3F691A",
-};
-const description_formatting = {
-  marginLeft: "32px",
-  marginRight: "1053px",
-  marginTop: "24px",
-  textAlign: "left",
-  width: "205px",
-};
-const  seller = {
-  marginLeft: "32px",
-  marginRight: "1017px",
-  marginTop: "0px",
-  marginBottom: "33px",
-  width: "241px",
-  color: "#BBBBBB",
-  fontFamily: "Rubik",
-  fontSize: "20px",
-  fontWeight: "500",
-  letterSpacing: "0.71px",
-  lineHeight: "24px",
-  textAlign: "left",
-
-};
-//232 left is the margin when its at 876
-// should be 425 normally
-const  assist = {
-  marginLeft: "425px",
-  marginRight: "38px",
-  marginTop: "33px",
-  marginBottom: "16px",
-  width: "183px",
-  color: "#FFFFFF",
-  background: "#3F691A",
-  fontFamily: "Rubik",
-  fontSize: "14.22px",
-  fontWeight: "500",
-  letterSpacing: "0.71px",
-  lineHeight: "16px",
-  textAlign: "center",
-};
-const  second_assist = {
-  marginLeft: "425px",
-  marginRight: "38px",
-  marginTop: "0px",
-  marginBottom: "29px",
-  width: "183px",
-  color: "#595959",
-  background: "#",
-  fontFamily: "Rubik",
-  fontSize: "14.22px",
-  fontWeight: "500",
-  letterSpacing: "0.71px",
-  lineHeight: "16px",
-  textAlign: "center",
-  boxShadow: "0 2px 4px 0 rgba(0,0,0,0.2)",
-};
-class Order extends Component {
+import { Link } from "react-router-dom";
+let endpoint = "http://35.227.147.196:8080/";
+class Artist extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      carYear: "",
-      carMake: "",
-      carModel: "",
-      carStyle: ""
-    };
+    this.state = {};
+    this.updateCount = this.updateCount.bind(this);
   }
 
-  //<div style={{marginLeft:"13px",marginTop:"10px",marginRight:"36px",width:"318px",height:"49px"}}>
-  //Selling for 10,000
-//</div>
-  //TODO friend options should after the first dropdown be dynamically rendered from our backend, because we know what brands had cars in 2020 or 2019, and keep narrowing
-  //more and more
-  yearError() {
-    // If they made a selection it wouldn't be none
-    if (this.state.carYear == "") {
-      //console.log("I detected an error in the year");
-    }
-  }
+  updateCount = () => {
+    let performance_id = this.props.id;
+    axios
+      .post(
+        endpoint + "auth/api/count",
+        {
+          performance_id,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      )
+      .then((res) => {
+        // if fails indicate to user that the performance upload failed
+        if (res.status === 200) {
+          //console.log(this.props);
+          this.props.updateState(this.props.id);
+        }
+      });
+  };
+
   handleChange = (e, { value }) => {
     this.setState({ carYear: value });
     this.props.stateLink(this.props.identifier, this.state);
   };
-  checkError() {
-    //console.log("I got called!!");
-  }
-  // fix right margin for the first column formatting since now with respect to the column boundry
-  // as opposed to card boundry
+  // Later fix encode the id in the url variable parameter so it looks nicer
+  // The link from the View more info should be a variable link later...
   render() {
-    //TODO fix the arriving Wednesday, so that it gets the right day of the week
     return (
-    
-      <Card style={{marginLeft:"43px",width:"1290px",height:"234px"}}>
-          <Menu borderless>
-        <Menu.Item>
-          <div class="order-placed" >Order Placed
-            <br/>
-            {this.props.date}
-         </div>
-        </Menu.Item>
-        <Menu.Item>
-          <div class="order-placed">Total
-            <br/>
-            USD ${this.props.total}
-          </div>
-        </Menu.Item>
-        <Menu.Item>
-          <div>
-          <div class="order-placed"> Billed Address to </div>
-          <div class="order-item"> {this.props.buyer}<Icon name='question circle outline' /> </div>
-          </div>
-        </Menu.Item>
-        </Menu>
-        <Grid>
-          <Grid.Row columns={2}>
-            <Grid.Column>
-        <div class="arriving" style={description_formatting} > The concert is on Thursday </div>
-    <div  style={headline}> {this.props.type}</div>
-    <div  style={seller}>Sold by {this.props.seller}</div>
-        </Grid.Column>
-        <Grid.Column>
-          <Button style={assist}>GET ASSISTANCE</Button>
-          <Button style={second_assist}>CANCEL TICKET</Button>
-          </Grid.Column>
-        </Grid.Row>
-        </Grid>
-
-    </Card>
+      <Card style={{ marginLeft: "43px", width: "367px", height: "600px" }}>
+        <Image
+          src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
+          wrapped
+          ui={false}
+        />
+        <Card.Header as="h3"> {this.props.name} </Card.Header>
+        <Card.Content>
+          <Card.Meta>{this.props.info}</Card.Meta>
+        </Card.Content>
+        <Divider section style={{ marginTop: "0px", marginBottom: "0px" }} />
+        <Button
+          style={{
+            paddingLeft: "16px",
+            paddingTop: "13px",
+            paddingBottom: "13px",
+            paddingRight: "16px",
+            marginLeft: "24px",
+            marginTop: "15px",
+            marginRight: "24px",
+            marginBottom: "16px",
+            width: "319px",
+            height: "42px",
+            background: "#f47373",
+            color: "#FFFFFF",
+          }}
+        >
+          {" "}
+          Learn More{" "}
+        </Button>
+      </Card>
     );
   }
 }
-export default Order;
+export default Artist;

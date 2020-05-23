@@ -148,7 +148,7 @@ func initGoogleSheets() {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
 	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, "https://www.googleapis.com/auth/spreadsheets.readonly"+" "+gmail.GmailComposeScope)
+	config, err := google.ConfigFromJSON(b, gmail.GmailComposeScope)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
@@ -156,11 +156,6 @@ func initGoogleSheets() {
 	email, err = gmail.New(client)
 	if err != nil {
 		log.Fatalf("Unable to retrieve Gmail client: %v", err)
-	}
-
-	srv, err = sheets.New(client)
-	if err != nil {
-		log.Fatalf("Unable to retrieve Sheets client: %v", err)
 	}
 }
 
@@ -287,7 +282,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Value:    sessionToken,
 		HttpOnly: false,
 		Path:     "/",
-		Expires:  time.Now().Add(1200 * time.Second),
+		Expires:  time.Now().Add(12000 * time.Second),
 	})
 	//TODO add logic to hash the password and give the user some unique token so we ensure hes logged in
 	fmt.Println("Login User to Lumber", sessionToken, user.ID)
@@ -307,7 +302,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(3)
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
-	fmt.Println(user.Lumber)
+	fmt.Println(user.Bio, 66666)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -323,7 +318,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	insertOneUser(user)
 	var message gmail.Message
 	messageStr := []byte(
-		"From: hello@lumberio.com\r\n" + "To: " + user.Email + "\r\n" + "Subject: Welcome to Parity\r\n\r\n" + "We're excited to connect you with your favorite artists!")
+		"From: welcome@artisttourbus.com\r\n" + "To: " + user.Email + "\r\n" + "Subject: Welcome to Tour\r\n\r\n" + "We're excited to connect you with your favorite artists!")
 	message.Raw = base64.URLEncoding.EncodeToString(messageStr)
 	_, err = email.Users.Messages.Send("me", &message).Do()
 	if err != nil {
@@ -370,11 +365,18 @@ func AddPerformance(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	performance_id := insertOnePerformance(performance)
+	if performance.Goal == "" {
+		performance.Goal = "0"
+		performance.Merch = "https://www.artisttourbus.com"
+	}
 	user_id := string(r.Context().Value("user_id").([]uint8))
+	user_data, _ := fetchProfileUser(user_id)
+	fmt.Println(user_data)
+	performance.FullName = user_data.Map()["fullname"].(string)
+	performance.Bio = user_data.Map()["bio"].(string)
+	performance_id := insertOnePerformance(performance)
 	updateUserPerformance(performance_id, user_id)
-	fmt.Println("Creating Performance")
-	json.NewEncoder(w).Encode(performance)
+	json.NewEncoder(w).Encode(performance_id.(primitive.ObjectID).Hex())
 }
 func AddCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
@@ -423,6 +425,21 @@ func Count(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 }
+func UpdateConfig(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	var performance_id models.Performance
+	err := json.NewDecoder(r.Body).Decode(&performance_id)
+	if err != nil {
+		fmt.Println(err)
+	}
+	updateConfig(performance_id)
+	fmt.Println("Updated stream metadata")
+	w.WriteHeader(http.StatusOK)
+}
 func GetPerformances(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
@@ -433,6 +450,16 @@ func GetPerformances(w http.ResponseWriter, r *http.Request) {
 	customers := getPerformances(user_id)
 	fmt.Println("Getting Performances for our creator", customers)
 	json.NewEncoder(w).Encode(customers)
+}
+func GetArtists(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+	w.Header().Set("Access-Control-Allow-Origin", "http://35.227.147.196:3000")
+	w.Header().Set("Access-Control-Allow-Methods", "GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	artists := getArtists()
+	fmt.Println("Getting Performances for our creator", artists)
+	json.NewEncoder(w).Encode(artists)
 }
 func PullPerformances(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -504,7 +531,6 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	// Then we can update the current_user record
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
-	fmt.Println(3333333, user.Lumber, user.Length)
 	result, err := updateProfileUser(user, user_id)
 	if err != nil {
 		http.Redirect(w, r, "http://35.233.168.169:3000", http.StatusSeeOther)
@@ -532,7 +558,7 @@ func GetProfile(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("500 - Something bad happened!"))
 		return
 	}
-	json.NewEncoder(w).Encode(result)
+	json.NewEncoder(w).Encode(result.Map())
 
 }
 func fetchProfileUser(user_id string) (primitive.D, error) {
@@ -580,12 +606,13 @@ func updateProfileUser(userData models.User, user_id string) (primitive.D, error
 		fmt.Println("ObjectIDFromHex ERROR", err)
 	}
 	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"lumber": userData.Lumber, "length": userData.Length}}
+	update := bson.M{"$set": bson.M{"bio": userData.Bio, "name": userData.Name, "fullname": userData.FullName, "email": userData.Email}}
 	_, err = collection.UpdateOne(
 		context.Background(),
 		filter,
 		update,
 	)
+
 	if err != nil {
 		fmt.Println(err)
 		return result, err
@@ -615,8 +642,9 @@ func updateUserPerformance(performance_id interface{}, user_id string) (primitiv
 	fmt.Println("Updated a Single User Profile Woot Woot", result)
 	return result, nil
 }
-func getCustomers() []primitive.M {
-	cur, err := customerCollection.Find(context.Background(), bson.D{{}})
+func getArtists() []primitive.M {
+	filter := bson.M{"buyer": true}
+	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -633,7 +661,7 @@ func getCustomers() []primitive.M {
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("private method got called to fetch customerss")
+	fmt.Println("private method got called to fetch artists")
 	cur.Close(context.Background())
 	return results
 }
@@ -700,12 +728,12 @@ func getPerformances(user_id string) []primitive.M {
 		return nil
 	}
 	// if they dont have any projects yet
-	if len(result) < 8 {
+	if len(result) < 10 {
 		return nil
 	}
-	fmt.Println(result[7].Value, 69696969)
-	query_array := result[7].Value.(primitive.A)
-	fmt.Println(result[7].Value)
+	fmt.Println(result[9].Value, 69696969)
+	query_array := result[9].Value.(primitive.A)
+	fmt.Println(result[9].Value)
 	oids := make([]primitive.ObjectID, len(query_array))
 	for i := range query_array {
 		temp := query_array[i].(primitive.ObjectID)
@@ -862,4 +890,20 @@ func insertOnePerformance(performance models.Performance) interface{} {
 	}
 	fmt.Println("Inserted a Single User", insertResult.InsertedID)
 	return insertResult.InsertedID
+}
+func updateConfig(performance models.Performance) error {
+	result := bson.D{}
+	id, err := primitive.ObjectIDFromHex(performance.Performance_id)
+	if err != nil {
+		fmt.Println("ObjectIDFromHex ERROR", err)
+	}
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": performance}
+	_, err = performanceCollection.UpdateOne(
+		context.Background(),
+		filter,
+		update,
+	)
+	fmt.Println("Updated a View on the stream", result)
+	return nil
 }

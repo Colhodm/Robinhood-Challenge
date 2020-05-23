@@ -7,6 +7,7 @@
     "html-react-parser": "^0.10.0",
     "js-cookie": "^2.2.1",
     "moment": "^2.26.0",
+    "prettier": "^2.0.5",
     "react": "^16.8.6",
     "react-datepicker": "^2.16.0",
     "react-dom": "^16.8.6",
@@ -21,6 +22,7 @@
     "watchman": "^1.0.0"
   },
   "scripts": {
+    "pretty": "prettier --write \"./**/*.{js,jsx,json}\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

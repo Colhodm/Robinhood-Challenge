@@ -66,11 +66,13 @@ type Car struct {
 type User struct {
 	ID       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	Email    string             `json:"email,omitempty"`
-	Name     bool               `json:"name,omitempty"`
+	Name     string             `json:"name,omitempty"`
 	Password string             `json:"password,omitempty"`
 	Buyer    bool               `json:"buyer,omitempty"`
 	Lumber   []interface{}      `json:"lumber,omitempty"`
 	Length   []interface{}      `json:"length,omitempty"`
+	FullName string             `json:"fullname,omitempty"`
+	Bio      string             `json:"artistbio,omitempty"`
 }
 type Customer struct {
 	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
@@ -85,11 +87,20 @@ type Customer struct {
 	Lengths     []interface{}      `json:"lengths,omitempty"`
 }
 type Performance struct {
-	ZoomUrl string `json:"zoom,omitempty"`
-	Name    string `json:"performance,omitempty"`
-	Date    string `json:"date,omitempty"`
+	Performance_id string `json:"performance_id,omitempty"`
+	ZoomUrl        string `json:"zoom,omitempty"`
+	Name           string `json:"performance,omitempty"`
+	Merch          string `json:"merch,omitempty"`
+	Goal           string `json:"goal,omitempty"`
+	Date           string `json:"date,omitempty"`
+	Facebook       string `json:"facebook,omitempty"`
+	Youtube        string `json:"youtube,omitempty"`
+	Twitter        string `json:"twitter,omitempty"`
+	Insta          string `json:"insta,omitempty"`
+	Paypal         string `json:"paypal,omitempty"`
+	FullName       string `json:"fullname,omitempty"`
+	Bio            string `json:"artistbio,omitempty"`
 }
 type ID struct {
 	Performance_id string `json:"performance_id,omitempty"`
 }
-

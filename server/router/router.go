@@ -26,9 +26,12 @@ func Router() *mux.Router {
 	s.HandleFunc("/api/profilefetch", middleware.GetProfile).Methods("GET", "OPTIONS")
 	s.HandleFunc("/api/profileupdate", middleware.UpdateProfile).Methods("POST", "OPTIONS")
 
-	// Checkout Route, we send an email to them
-	s.HandleFunc("/api/checkout", middleware.DoCheckout).Methods("POST", "OPTIONS")
-	s.HandleFunc("/api/address", middleware.GetAddress).Methods("GET", "OPTIONS")
+	// Performance Editing Routes
+	s.HandleFunc("/api/configfetch", middleware.Watch).Methods("POST", "OPTIONS")
+	s.HandleFunc("/api/configupdate", middleware.UpdateConfig).Methods("POST", "OPTIONS")
+
+	// Fetch Artists Route, we send an email to themå
+	s.HandleFunc("/api/fetchartists", middleware.GetArtists).Methods("GET", "OPTIONS")
 
 	return router
 }

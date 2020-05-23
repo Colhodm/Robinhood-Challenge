@@ -33,147 +33,31 @@ const gridoffset = {
   paddingBottom: "40px",
   width: "1366px",
 };
-const friendOptions = [
-  {
-    key: "1x3",
-    text: "1 x 3",
-    value: "1 x 3",
-    image: { avatar: true, src: "/images/avatar/small/jenny.jpg" },
-  },
-  {
-    key: "1x4",
-    text: "1 x 4",
-    value: "1 x 4",
-    image: { avatar: true, src: "/images/avatar/small/elliot.jpg" },
-  },
-  {
-    key: "1x6",
-    text: "1 x 6",
-    value: "1 x 6",
-    image: { avatar: true, src: "/images/avatar/small/stevie.jpg" },
-  },
-  {
-    key: "1x8",
-    text: "1 x 8",
-    value: "1 x 8",
-    image: { avatar: true, src: "/images/avatar/small/christian.jpg" },
-  },
-  {
-    key: "2x2",
-    text: "2 x 2",
-    value: "2 x 2",
-    image: { avatar: true, src: "/images/avatar/small/matt.jpg" },
-  },
-  {
-    key: "2x4",
-    text: "2 x 4",
-    value: "2 x 4",
-    image: { avatar: true, src: "/images/avatar/small/justen.jpg" },
-  },
-  {
-    key: "2x6",
-    text: "2 x 6",
-    value: "2 x 6",
-    image: { avatar: true, src: "/images/avatar/small/justen.jpg" },
-  },
-];
-const mybigtext = {
-  fontSize: "50px",
-  fontWeight: "bold",
-};
-const mymidtext = {
-  fontSize: "20px",
-  fontWeight: "lighter",
-};
-const submit = {
-  width: "50%",
-  height: "180px",
-  margin: "0 auto",
-};
-const greenBut = {
-  background: "#759E33",
-  color: "white",
-};
-const tableStyle = {
-  width: "481px",
-  height: "57px",
-  marginLeft: "34.5px",
-  marginRight: "842.5",
-};
-const leftTable = {
-  width: "135px",
-  height: "19px",
-  color: "#595959",
-  fontFamily: "Rubik",
-  fontSize: "16px",
-  letterSpacing: "0.57px",
-  lineHeight: "19px",
-};
-const rightTable = {
-  width: "201px",
-  height: "31px",
-  color: "#BBBBBB",
-  fontFamily: "Rubik",
-  fontSize: "12px",
-  letterSpacing: "0.57px",
-  lineHeight: "14px",
-  textAlign: "center",
-  marginLeft: "19px",
-  marginRight: "19.5",
-  marginTop: "13.5",
-  marginRight: "12.5",
-};
 class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       //cars:[<Car identifier={0} stateLink={this.updateState.bind(this)} />],
       types: [],
-      favorites: [
-        ["SPF", false],
-        ["Douglas Green", false],
-        ["Southern Pine", false],
-        ["Other", false],
-      ],
-      //["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
-      lengths: [
-        ["2 x 4", false],
-        ["2 x 6", false],
-        ["2 x 8", false],
-        ["2 x 8", false],
-        ["1 x 2", false],
-        ["1 x 3", false],
-        ["1 x 4", false],
-        ["Other", false],
-      ],
-      // fix to be ful default
-      //favorites:[["Hardwood",false],["Softwood",false],["Maple",false],["Oak",false],
-      //["Spruce",false],["Pine",false],["Fir",false],["Cedar",false],["Other",false]],
-      //lengths:[["1 x 3",false],["1 x 4",false],["1 x 6",false],["1 x 8",false],
-      //["2 x 2",false],["2 x 4",false],["2 x 6",false]],
       auth: true,
     };
-    this.setStyle = this.setStyle.bind(this);
     this.join = this.join.bind(this);
     this.setButton = this.setButton.bind(this);
-    this.updatePref = this.updatePref.bind(this);
-    this.updateLength = this.updateLength.bind(this);
-    this.deleteLength = this.deleteLength.bind(this);
-    //////console.log(this.state.favorites)
+    ////console.log(this.state.favorites)
   }
   componentDidMount() {
     this.getPreferences();
   }
   updatePref = () => {
-    //////console.log(66)
+    let fullname = this.state.name;
+    let artistbio = this.state.bio;
     let email = this.state.email;
     let name = this.state.username;
-    let lumber = this.state.favorites;
-    let length = this.state.lengths;
+    let buyer = true;
     axios
       .post(
         endpoint + "auth/api/profileupdate",
-        { email, name, lumber, length },
+        { fullname, artistbio, email, name, buyer },
         {
           withCredentials: true,
           headers: {
@@ -193,113 +77,51 @@ class Profile extends Component {
         withCredentials: true,
       })
       .then((res) => {
-        ////console.log(res.data)
         this.setState({
+          bio: res.data.bio,
+          name: res.data.fullname,
           email: res.data.email,
           username: res.data.name,
-          favorites: res.data.lumber || this.state.favorites,
-          lengths: res.data.length || this.state.lengths,
         });
       });
-  };
-  deleteLength = (event, { value }) => {
-    let selection_name = value;
-    var temp = this.state.lengths;
-    this.state.lengths.forEach(function (item, index) {
-      //////console.log(item,selection_name)
-      if (item[0] == selection_name) {
-        //////console.log(36789314159)
-        temp[index][1] = !temp[index][1];
-      }
-    });
-    this.setState({
-      lengths: temp,
-    });
-  };
-  updateLength = (event, { value }) => {
-    //////console.log(event.target,value)
-    let selection_name = event.target.textContent;
-    var temp = this.state.lengths;
-    this.state.lengths.forEach(function (item, index) {
-      //////console.log(item,selection_name)
-      if (item[0] == selection_name) {
-        //////console.log(36789314159)
-        temp[index][1] = !temp[index][1];
-      }
-    });
-    this.setState({
-      lengths: temp,
-    });
   };
   updateEmail = (value) => {
     // TODO if its an invalid email we can prompt them for an error later
     this.setState({ email: value.target.value });
-    //////console.log(value.target.value)
+    ////console.log(value.target.value)
   };
   join() {
     // this function makes a call to our backend with the current email in the box
     // TODO call the backend from here
-    //////console.log(this.state["email"])
+    ////console.log(this.state["email"])
   }
   sendData(data) {
     this.props.buttonClick(data);
   }
   setButton = (e, data) => {
     // access to e.target here
-    //////console.log(data,data.index);
+    ////console.log(data,data.index);
     const fav = this.state.favorites.slice();
     fav[data.index][1] = !fav[data.index][1];
     this.setState({ favorites: fav });
   };
-  setStyle() {
-    //TODO ensure first guys margin is effectively 24
-    const favorites = this.state.favorites;
-    //////console.log(favorites,favorites[0])
-    var result = [];
-    for (var i = 0; i < favorites.length; ++i) {
-      var margin_left = i == 0 ? "24px" : "16px";
-      //////console.log(favorites[i][1])
-      if (favorites[i][1]) {
-        result.push(
-          <Button
-            style={{
-              marginBottom: "8px",
-              marginLeft: margin_left,
-              background: "#3F691A",
-            }}
-            index={i}
-            onClick={this.setButton}
-            className="success-check-wood"
-            icon="check circle outline"
-            content={favorites[i][0]}
-          />
-        );
-      } else {
-        result.push(
-          <Button
-            style={{ marginLeft: margin_left, background: "#FFFFFF" }}
-            index={i}
-            onClick={this.setButton}
-            className="fail-check-wood"
-            content={favorites[i][0]}
-          />
-        );
-      }
-    }
-    return result;
-  }
-  setDefault() {
-    var my_lst = [];
-    this.state.lengths.forEach(function (item, index) {
-      if (item[1]) {
-        my_lst.push(String(item[0]));
-      }
-    });
-    return my_lst;
-  }
+  onEChange = (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ email: value.target.value });
+  };
+  onUChange = (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ username: value.target.value });
+  };
+  onNameChange = (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ name: value.target.value });
+  };
+  onBioChange = (value) => {
+    // TODO if its an invalid email we can prompt them for an error later
+    this.setState({ bio: value.target.value });
+  };
   render() {
-    let return_array = this.setStyle();
-    let default_val = this.setDefault();
     return (
       <div>
         <Grid fluid divided="vertically" style={gridoffset}>
@@ -382,14 +204,64 @@ class Profile extends Component {
                       }}
                     />
                   </Form.Field>
+                  <Form.Field style={{ marginTop: "16px" }}>
+                    <div
+                      class="email-address"
+                      style={{ marginLeft: "10px", marginBottom: "7.5px" }}
+                    >
+                      Full Name
+                    </div>
+                    <Form.Input
+                      error={this.state.errName}
+                      value={this.state.name}
+                      onChange={this.onNameChange}
+                      style={{
+                        color: "#595959",
+                        fontFamily: "Rubik",
+                        fontSize: "13px",
+                        letterSpacing: ".46px",
+                        lineHeight: "17px",
+                        marginRight: "21px",
+                        width: "607px",
+                        marginBottom: "0px",
+                      }}
+                    />{" "}
+                  </Form.Field>
+                  <div
+                    class="email-address"
+                    style={{ marginLeft: "10px", marginBottom: "7.5px" }}
+                  >
+                    Artist Bio
+                  </div>
+                  <Form.TextArea
+                    value={this.state.bio}
+                    onChange={this.onBioChange}
+                    style={{
+                      marginLeft: "10px",
+                      width: "550px",
+                      marginTop: "16px",
+                      marginBottom: "31px",
+                    }}
+                  ></Form.TextArea>
                 </Form>
               </Card>
               <Form style={{ marginLeft: "46px", width: "372px" }}>
                 <Form.Field>
                   <div style={{ marginBottom: "7.5px" }} class="email-address">
-                    Verify your current password to save changes
+                    Verify your current username to save changes
                   </div>
-                  <input />
+                  <Form.Input
+                    style={{
+                      color: "#595959",
+                      fontFamily: "Rubik",
+                      fontSize: "13px",
+                      letterSpacing: ".46px",
+                      lineHeight: "17px",
+                      marginRight: "21px",
+                      width: "607px",
+                      marginBottom: "0px",
+                    }}
+                  />{" "}
                 </Form.Field>
                 <div>
                   <Button onClick={this.updatePref} className="group">
@@ -410,21 +282,9 @@ class Profile extends Component {
                   height: "268px",
                 }}
               >
-                <Form
-                  style={{
-                    marginLeft: "24px",
-                    marginTop: "16px",
-                    marginBottom: "16.5px",
-                  }}
-                >
-                  <div
-                    class="lumber-preferences"
-                    style={{ marginBottom: "8px" }}
-                  >
-                    Genre
-                  </div>
-                  <div>{return_array}</div>
-                </Form>
+                <Card.Content>
+                  <Card.Header>Picture Upload ( Coming Soon )</Card.Header>
+                </Card.Content>
               </Card>
               <Card
                 style={{
