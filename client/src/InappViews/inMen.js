@@ -1,7 +1,12 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, {
+  Component
+} from "react";
 import {
-  Menu,Grid
+  Link
+} from "react-router-dom";
+import {
+  Menu,
+  Grid
 } from "semantic-ui-react";
 const navbar = {
   color: "#f47373",
@@ -40,41 +45,73 @@ const tabText = {
 class InMenu extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
   render() {
-    return (
-      <div>
-        <Grid fluid padded={false} columns={2} style={gridS}>
-          <Grid.Row fluid stye={greenBut}>
-            <Grid.Column>
-              <Link to={"/feed"} style={navbar}>
-              </Link>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-        <Menu
-          size="none"
-          style={{
-            marginTop: "19px",
-            paddingBottom: "0px",
-            boxShadow: "none",
-            border: "none",
-            marginBottom: "0px",
-            height: "60px",
-          }}
-        >
-          <Menu.Item style={tabs}>
-            <div style={this.border_lumber_select}>
-              <Link to={"/feed"}>
-                <div style={tabText}>FEED</div>
-              </Link>
-            </div>
-          </Menu.Item>
-  
-        </Menu>
-      </div>
+    return ( <
+      div >
+      <
+      Grid fluid padded = {
+        false
+      }
+      columns = {
+        2
+      }
+      style = {
+        gridS
+      } >
+      <
+      Grid.Row fluid stye = {
+        greenBut
+      } >
+      <
+      Grid.Column >
+      <
+      Link to = {
+        "/feed"
+      }
+      style = {
+        navbar
+      } >
+      <
+      /Link> <
+      /Grid.Column> <
+      /Grid.Row> <
+      /Grid> <
+      Menu size = "none"
+      style = {
+        {
+          marginTop: "19px",
+          paddingBottom: "0px",
+          boxShadow: "none",
+          border: "none",
+          marginBottom: "0px",
+          height: "60px",
+        }
+      } >
+      <
+      Menu.Item style = {
+        tabs
+      } >
+      <
+      div style = {
+        this.border_lumber_select
+      } >
+      <
+      Link to = {
+        "/feed"
+      } >
+      <
+      div style = {
+        tabText
+      } > FEED < /div> <
+      /Link> <
+      /div> <
+      /Menu.Item>
+
+      <
+      /Menu> <
+      /div>
     );
   }
 }

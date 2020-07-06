@@ -1,4 +1,6 @@
-import React, { Component } from "react";
+import React, {
+  Component
+} from "react";
 import axios from "axios";
 import {
   Grid,
@@ -17,27 +19,24 @@ const gridoffset = {
 class BestDeals extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
     // set to 1000 for production
-    this.timer = setInterval(()=> this.getPerformances(), 1000)
+    this.timer = setInterval(() => this.getPerformances(), 1000)
     this.moreData = this.moreData.bind(this);
   }
   componentDidMount() {
     this.getPerformances();
   }
-  moreData(ticker){
+  moreData(ticker) {
     this.props.history.push(ticker)
   }
   getPerformances = () => {
-    let tickers = ["TSLA","GOOGL","BOX","AAPL","COP"];
+    let tickers = ["TSLA", "GOOGL", "BOX", "AAPL", "COP"];
     axios
       .post(
-        endpoint + "api/fetchtickers",
-        {
+        endpoint + "api/fetchtickers", {
           tickers
-        },
-        {
+        }, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -48,11 +47,16 @@ class BestDeals extends Component {
         this.setState({
           //TODO fix this design pattern where we're recreating components, we probably want to have the children update their set async)
           tickers: res.data.map((performance) => {
-            return (
-              <Stock
-                change={this.moreData}
-                name={performance.Name}
-                price={performance.Price.toFixed(2)}
+            return ( <
+              Stock change = {
+                this.moreData
+              }
+              name = {
+                performance.Name
+              }
+              price = {
+                performance.Price.toFixed(2)
+              }
               />
             );
           }),
@@ -63,18 +67,32 @@ class BestDeals extends Component {
     this.props.buttonClick(data);
   }
   render() {
-    return (
-      <div>
-        <Grid divided="vertically" style={gridoffset}>
-          <Grid.Row columns={1}>
-            <Grid.Row columns={1}>
-              <Grid.Column>
-                <Card.Group>{this.state.tickers}</Card.Group>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid.Row>
-        </Grid>
-      </div>
+    return ( <
+      div >
+      <
+      Grid divided = "vertically"
+      style = {
+        gridoffset
+      } >
+      <
+      Grid.Row columns = {
+        1
+      } >
+      <
+      Grid.Row columns = {
+        1
+      } >
+      <
+      Grid.Column >
+      <
+      Card.Group > {
+        this.state.tickers
+      } < /Card.Group> <
+      /Grid.Column> <
+      /Grid.Row> <
+      /Grid.Row> <
+      /Grid> <
+      /div>
     );
   }
 }

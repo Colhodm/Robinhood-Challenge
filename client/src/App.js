@@ -1,4 +1,6 @@
-import React, {Component } from "react";
+import React, {
+  Component
+} from "react";
 import "./App.css";
 import {
   withRouter,
@@ -11,7 +13,7 @@ import {
 import Tickers from "./InappViews/tickers";
 import InMenu from "./InappViews/inMen";
 import Graph from "./InappViews/Graph";
-const NotFoundRedirect = () => <div />;
+const NotFoundRedirect = () => < div / > ;
 class App extends Component {
   constructor(props) {
     super(props);
@@ -20,45 +22,68 @@ class App extends Component {
     };
   }
   auth() {
-    return (
-      <Switch>
-      <Route
-          exact
-          path="/"
-          render={(props) => (
-            <div>
-              <InMenu {...props} />{" "}
-              <div
-                style={{
-                  marginTop: "0px",
-                  marginRight: "0px",
-                  background: "#F6F7F6",
-                  width: "1450px",
-                }}
-              >
-                <Tickers
-                  {...props}
-                  sendBundle={this.updateCurrentBundle.bind(this)}
-                />{" "}
-              </div>{" "}
-            </div>
-          )}
-        />{" "}
-          <Route path ='/:ticker' render={(props) => 
-        <div >
-            <Graph {...props}/>
-        </div>
-    }/>
-        <Route component={NotFoundRedirect} />{" "}
-      </Switch>
+    return ( <
+      Switch >
+      <
+      Route exact path = "/"
+      render = {
+        (props) => ( <
+          div >
+          <
+          InMenu {
+            ...props
+          }
+          />{" "} <
+          div style = {
+            {
+              marginTop: "0px",
+              marginRight: "0px",
+              background: "#F6F7F6",
+              width: "1450px",
+            }
+          } >
+          <
+          Tickers {
+            ...props
+          }
+          sendBundle = {
+            this.updateCurrentBundle.bind(this)
+          }
+          />{" "} <
+          /div>{" "} <
+          /div>
+        )
+      }
+      />{" "} <
+      Route path = '/:ticker'
+      render = {
+        (props) =>
+        <
+        div >
+        <
+        Graph {
+          ...props
+        }
+        /> <
+        /div>
+      }
+      /> <
+      Route component = {
+        NotFoundRedirect
+      }
+      />{" "} <
+      /Switch>
     );
   }
   render() {
     const login = this.auth();
-    return (
-      <Router>
-        <div className="myroot"> {login} </div>{" "}
-      </Router>
+    return ( <
+      Router >
+      <
+      div className = "myroot" > {
+        login
+      } < /div>{" "} <
+      /Router>
     );
   }
 }
