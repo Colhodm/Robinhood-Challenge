@@ -29,31 +29,9 @@ class Type extends Component {
     this.state = {};
     this.updateCount = this.updateCount.bind(this);
   }
-
-  updateCount = () => {
-    let performance_id = this.props.id;
-    axios
-      .post(
-        endpoint + "auth/api/count",
-        {
-          performance_id,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      )
-      .then((res) => {
-        // if fails indicate to user that the performance upload failed
-        if (res.status === 200) {
-          ////console.log(this.props);
-          this.props.updateState(this.props.id);
-        }
-      });
-  };
-
+updateCount(){
+  this.props.change(this.props.name)
+}
   handleChange = (e, { value }) => {
     this.setState({ carYear: value });
     this.props.stateLink(this.props.identifier, this.state);
@@ -69,12 +47,7 @@ class Type extends Component {
           ui={false}
         />
         <Card.Header as="h3"> {this.props.name} </Card.Header>
-        <Card.Content>
-          <Card.Meta>
-            <Moment local>{this.props.date}</Moment>
-          </Card.Meta>
-        </Card.Content>
-
+       
         <div
           class="lumber-text"
           style={{
@@ -87,7 +60,7 @@ class Type extends Component {
             textAlign: "left",
           }}
         >
-          Selling for
+          Price:
           <div
             style={{
               color: "#GGFFF",
@@ -98,12 +71,7 @@ class Type extends Component {
               lineHeight: "24px",
             }}
           >
-            $ FREE
-            <Popup
-              className="pop-up"
-              content="You save by using Tour"
-              trigger={<Icon color={"grey"} name="question circle outline" />}
-            />
+            {this.props.price}
           </div>
         </div>
 
@@ -126,7 +94,7 @@ class Type extends Component {
           }}
         >
           {" "}
-          WATCH{" "}
+          Historical Data{" "}
         </Button>
       </Card>
     );

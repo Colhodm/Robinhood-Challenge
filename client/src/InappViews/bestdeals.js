@@ -1,26 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
 import {
-  Image,
   Grid,
   Card,
-  Header,
-  Form,
-  Input,
-  Icon,
-  Button,
-  Table,
-  Segment,
-  List,
-  Container,
 } from "semantic-ui-react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-} from "react-router-dom";
 import Type from "./lumtype";
 let endpoint = "http://35.227.147.196:8080/";
 const gridoffset = {
@@ -31,92 +14,51 @@ const gridoffset = {
   paddingBottom: "40px",
   width: "1366px",
 };
-const tableStyle = {
-  width: "481px",
-  height: "57px",
-  marginLeft: "34.5px",
-  marginRight: "842.5",
-};
-const leftTable = {
-  width: "135px",
-  height: "19px",
-  color: "#595959",
-  fontFamily: "Rubik",
-  fontSize: "16px",
-  letterSpacing: "0.57px",
-  lineHeight: "19px",
-  marginLeft: "10px",
-};
-const rightTable = {
-  width: "201px",
-  height: "31px",
-  color: "#BBBBBB",
-  fontFamily: "Rubik",
-  fontSize: "12px",
-  letterSpacing: "0.57px",
-  lineHeight: "14px",
-  textAlign: "center",
-  marginLeft: "19px",
-  marginRight: "19.5",
-  marginTop: "13.5",
-  marginRight: "12.5",
-};
 class BestDeals extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //cars:[<Car identifier={0} stateLink={this.updateState.bind(this)} />],
-      types: [],
     };
-    this.join = this.join.bind(this);
-    this.updateState = this.updateState.bind(this);
+    // set to 1000 for production
+    this.timer = setInterval(()=> this.getPerformances(), 1000)
+    this.moreData = this.moreData.bind(this);
   }
   componentDidMount() {
     this.getPerformances();
   }
-  updateState(id) {
-    const { history } = this.props;
-    history.push(`/watch` + id);
+  moreData(ticker){
+    this.props.history.push(ticker)
   }
   getPerformances = () => {
-    ////console.log("called the function")
+    let tickers = ["TSLA","GOOGL","BOX","AAPL","COP"];
     axios
-      .get(endpoint + "auth/api/fetchperformances", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        ////console.log(res);
-        if (res.data) {
-          this.setState({
-            types: res.data.map((performance) => {
-              return (
-                <Type
-                  updateState={this.updateState}
-                  date={performance.date}
-                  name={performance.name}
-                  url={performance.zoomurl}
-                  id={performance._id}
-                />
-              );
-            }),
-          });
-        } else {
-          this.setState({
-            types: [],
-          });
+      .post(
+        endpoint + "api/fetchtickers",
+        {
+          tickers
+        },
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
         }
+      )
+      .then((res) => {
+        // if fails indicate to user that the performance upload failed
+        this.setState({
+          //TODO fix this design pattern where we're recreating components, we probably want to have the children update their set async)
+          tickers: res.data.map((performance) => {
+            return (
+              <Type
+                change={this.moreData}
+                name={performance.Name}
+                price={performance.Price.toFixed(2)}
+              />
+            );
+          }),
+        });
       });
   };
-  updateEmail = (value) => {
-    // TODO if its an invalid email we can prompt them for an error later
-    this.setState({ email: value.target.value });
-    ////console.log(value.target.value)
-  };
-  join() {
-    // this function makes a call to our backend with the current email in the box
-    // TODO call the backend from here
-    ////console.log(this.state["email"])
-  }
   sendData(data) {
     this.props.buttonClick(data);
   }
@@ -127,7 +69,7 @@ class BestDeals extends Component {
           <Grid.Row columns={1}>
             <Grid.Row columns={1}>
               <Grid.Column>
-                <Card.Group>{this.state.types}</Card.Group>
+                <Card.Group>{this.state.tickers}</Card.Group>
               </Grid.Column>
             </Grid.Row>
           </Grid.Row>

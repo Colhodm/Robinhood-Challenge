@@ -5,33 +5,12 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  Redirect,
+
 } from "react-router-dom";
-import Cookies from "js-cookie";
 /* Fan Views */
-import Profile from "./InappViews/Profile";
-import Footer from "./InappViews/footer";
-import Info from "./Info";
-import Artists from "./Order";
-import Checkout from "./InappViews/checkout";
 import BestDeals from "./InappViews/bestdeals";
 import InMenu from "./InappViews/inMen";
-import Stream from "./InappViews/stream";
-
-/* Creator Views */
-import CreatorMenu from "./CreatorViews/createMenu";
-import Performances from "./CreatorViews/performance";
-import Config from "./CreatorViews/configPerformance";
-import CreatorProfile from "./CreatorViews/Profile";
-
-/* Entry Views */
-import CentralText from "./EntryViews/CentralText";
-import NavBar from "./EntryViews/Menu";
-import Background from "./InappViews/concert.jpg";
-
-const NotFound = () => <div> Not found </div>;
-
+import Graph from "./InappViews/Graph";
 const NotFoundRedirect = () => <div />;
 class App extends Component {
   constructor(props) {
@@ -54,68 +33,11 @@ class App extends Component {
     });
   }
   auth() {
-    let value = Cookies.get("session_token");
-    if (!value) {
-      return (
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={(props) => (
-              <div>
-                <NavBar {...props} update={this.otherauth.bind(this)} />{" "}
-                <CentralText {...props} />{" "}
-              </div>
-            )}
-          />{" "}
-          <Route component={NotFoundRedirect} />{" "}
-        </Switch>
-      );
-    }
     return (
       <Switch>
-        <Route
+      <Route
           exact
           path="/"
-          render={(props) => (
-            <div
-              style={{
-                backgroundImage: `url(${Background})`,
-                height: "1540px",
-                width: "1500px",
-              }}
-            >
-              <NavBar {...props} update={this.auth.bind(this)} />{" "}
-              <CentralText {...props} />{" "}
-            </div>
-          )}
-        />{" "}
-        <Route
-          exact
-          path="/creator"
-          render={(props) => (
-            <div>
-              <CreatorMenu {...props} />{" "}
-              <div
-                style={{
-                  marginTop: "0px",
-                  marginRight: "0px",
-                  background: "#F6F7F6",
-                  width: "1450px",
-                }}
-              >
-                <Performances
-                  {...props}
-                  sendBundle={this.updateCurrentBundle.bind(this)}
-                />{" "}
-                <Footer />
-              </div>{" "}
-            </div>
-          )}
-        />{" "}
-        <Route
-          exact
-          path="/feed"
           render={(props) => (
             <div>
               <InMenu {...props} />{" "}
@@ -131,133 +53,20 @@ class App extends Component {
                   {...props}
                   sendBundle={this.updateCurrentBundle.bind(this)}
                 />{" "}
-                <Footer />
               </div>{" "}
             </div>
           )}
         />{" "}
-        <Route
-          exact
-          path="/profile"
-          render={(props) => (
-            <div>
-              <InMenu {...props} />{" "}
-              <div
-                style={{
-                  marginTop: "0px",
-                  marginRight: "0px",
-                  background: "#F6F7F6",
-                  width: "1450px",
-                }}
-              >
-                <Profile {...props} /> <Footer />
-              </div>{" "}
-            </div>
-          )}
-        />{" "}
-        <Route
-          path="/analytics:id"
-          render={(props) => (
-            <div>
-              <CreatorMenu {...props} />{" "}
-              <div
-                style={{
-                  marginTop: "0px",
-                  marginRight: "0px",
-                  background: "#F6F7F6",
-                  width: "1450px",
-                }}
-              >
-                <Config {...props} /> <Footer />
-              </div>{" "}
-            </div>
-          )}
-        />{" "}
-        <Route
-          path="/watch:id"
-          render={(props) => (
-            <div>
-              <InMenu {...props} />{" "}
-              <div
-                style={{
-                  marginTop: "0px",
-                  marginRight: "0px",
-                  background: "#F6F7F6",
-                  width: "1450px",
-                }}
-              >
-                <Stream {...props} /> <Footer />
-              </div>{" "}
-            </div>
-          )}
-        />{" "}
-        <Route
-          exact
-          path="/createconfig"
-          render={(props) => (
-            <div>
-              <CreatorMenu {...props} />{" "}
-              <div
-                style={{
-                  marginTop: "0px",
-                  marginRight: "0px",
-                  background: "#F6F7F6",
-                  width: "1450px",
-                }}
-              >
-                <CreatorProfile {...props} /> <Footer />
-              </div>{" "}
-            </div>
-          )}
-        />{" "}
-        <Route
-          exact
-          path="/artists"
-          render={(props) => (
-            <div>
-              <InMenu {...props} />{" "}
-              <div
-                style={{
-                  marginTop: "0px",
-                  marginRight: "0px",
-                  background: "#F6F7F6",
-                  width: "1450px",
-                }}
-              >
-                <Artists {...props} /> <Footer />
-              </div>{" "}
-            </div>
-          )}
-        />{" "}
-        <Route
-          path="/wood"
-          render={(props) => (
-            <div
-              style={{
-                marginTop: "0px",
-                marginRight: "0px",
-                background: "#F6F7F6",
-                width: "1450px",
-              }}
-            >
-              <Info {...props} bundleData={this.state.bundle} />{" "}
-            </div>
-          )}
-        />{" "}
-        <Route
-          path="/check:id"
-          render={(props) => (
-            <div>
-              <Checkout {...props} bundleData={this.state.bundle} />{" "}
-            </div>
-          )}
-        />{" "}
+          <Route path ='/:ticker' render={(props) => 
+        <div >
+            <Graph {...props}/>
+        </div>
+    }/>
         <Route component={NotFoundRedirect} />{" "}
       </Switch>
     );
   }
   render() {
-    const { redirect } = this.state;
     const login = this.auth();
     return (
       <Router>

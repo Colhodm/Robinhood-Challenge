@@ -10,7 +10,6 @@ import {
   Icon,
   List,
 } from "semantic-ui-react";
-import myImage from "../EntryViews/touring.png";
 const navbar = {
   color: "#f47373",
   fontFamily: "Overpass",
@@ -43,62 +42,8 @@ const tabText = {
   marginBottom: "20px",
   textAlign: "center",
 };
-const rightText = {
-  marginLeft: "30px",
-  display: "flex",
-  textAlign: "center",
-};
-const boxedText = {
-  height: "45px",
-  width: "410px",
-  boxSizing: "border-box",
-  border: "2px solid #3F691A",
-  marginTop: "5px",
-  marginBottom: "16px",
-};
-const insideTextL = {
-  height: "19px",
-  width: "183px",
-  color: "#3F691A",
-  fontFamily: "Lato",
-  fontSize: "16px",
-  letterSpacing: "0.57px",
-  lineHeight: "19px",
-  paddingTop: "13px",
-  paddingBottom: "13px",
-  boxSizing: "border-box",
-  marginLeft: "16px",
-  display: "table-cell",
-  borderRight: "2px solid #3F691A",
-};
-const insideTextR = {
-  height: "19px",
-  width: "86px",
-  color: "#3F691A",
-  fontFamily: "Lato",
-  fontSize: "16px",
-  fontWeight: "500px",
-  letterSpacing: "0.57px",
-  lineHeight: "19px",
-  borderSpacing: "13px",
-  marginLeft: "16px",
-  display: "table-cell",
-};
-const buttonStyle = {
-  marginRight: "24px",
-  marginLeft: "255px",
-  marginTop: "5px",
-  marginBottom: "20px",
-  height: "45px",
-  width: "136px",
-  fontFamily: "Lato",
-  fontSize: "16px",
-  letterSpacing: "0.57px",
-  lineHeight: "19px",
-  background: "#F6F7F6",
-  color: "#595959",
-  fontWeight: "400",
-};
+
+
 
 class InMenu extends Component {
   constructor(props) {
@@ -172,11 +117,6 @@ class InMenu extends Component {
           <Grid.Row fluid stye={greenBut}>
             <Grid.Column>
               <Link to={"/feed"} style={navbar}>
-                <Image
-                  src={myImage}
-                  size="tiny"
-                  style={{ height: "50px", width: "50px" }}
-                />
               </Link>
             </Grid.Column>
           </Grid.Row>
@@ -199,34 +139,7 @@ class InMenu extends Component {
               </Link>
             </div>
           </Menu.Item>
-          <Menu.Item style={tabs}>
-            <div style={this.border_order_select}>
-              <Link to={"/artists"}>
-                <div style={tabText}>ARTISTS</div>
-              </Link>
-            </div>
-          </Menu.Item>
-          <Menu.Item style={tabs}>
-            <div style={this.border_profile_select}>
-              <Link to={"/profile"}>
-                <div style={tabText}>PROFILE</div>
-              </Link>
-            </div>
-          </Menu.Item>
-
-          <Grid.Column style={rightText} fluid>
-            <table style={boxedText}>
-              <tr>
-                <td style={insideTextL}>Drake to perform in:</td>
-                <td style={insideTextR}>
-                  {this.state.hours}: {this.state.minutes}: {this.state.seconds}
-                </td>
-              </tr>
-            </table>
-            <Link to={"/"}>
-              <Button style={buttonStyle}>Log Out</Button>
-            </Link>
-          </Grid.Column>
+  
         </Menu>
       </div>
     );
