@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from "react";
+import React, {Component } from "react";
 import "./App.css";
 import {
   withRouter,
@@ -8,29 +8,16 @@ import {
 
 } from "react-router-dom";
 /* Fan Views */
-import BestDeals from "./InappViews/bestdeals";
+import Tickers from "./InappViews/tickers";
 import InMenu from "./InappViews/inMen";
 import Graph from "./InappViews/Graph";
 const NotFoundRedirect = () => <div />;
 class App extends Component {
   constructor(props) {
     super(props);
-    // we track the zipcode in state because we need to pass this onto the next page we load
     this.state = {
       page: "",
     };
-  }
-  // our send data function sets the state correctly to use the data passed on by the child component
-  updateCurrentBundle(value) {
-    ////console.log(value,999999)
-    this.setState({
-      bundle: value,
-    });
-  }
-  otherauth(){
-    this.setState({
-      bundle: 2,
-    });
   }
   auth() {
     return (
@@ -49,7 +36,7 @@ class App extends Component {
                   width: "1450px",
                 }}
               >
-                <BestDeals
+                <Tickers
                   {...props}
                   sendBundle={this.updateCurrentBundle.bind(this)}
                 />{" "}
