@@ -46,9 +46,7 @@ class App extends Component {
           Tickers {
             ...props
           }
-          sendBundle = {
-            this.updateCurrentBundle.bind(this)
-          }
+       
           />{" "} <
           /div>{" "} <
           /div>
