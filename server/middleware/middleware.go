@@ -71,6 +71,7 @@ func init() {
 	fmt.Println("Collection instance created!")
 }
 
+// Grab all the stocks last price
 func Watch(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
@@ -90,6 +91,8 @@ func Watch(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(metadata)
 }
+
+//Handler function to grab the history of a stock
 func WatchStock(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
@@ -116,7 +119,7 @@ func getStock(performance_id models.Name) primitive.D {
 	return result
 }
 
-// get all cars from the DB and return them
+// get all Stocks from the DB and return them
 func getWatch() []primitive.M {
 	projectQuery := bson.M{}
 	cur, err := stockCollection.Find(context.Background(), projectQuery)
@@ -137,6 +140,8 @@ func getWatch() []primitive.M {
 	cur.Close(context.Background())
 	return projectResults
 }
+
+// Generate a new random price, we need to equalize rate of negative & positive occurances +
 func generatePrice(basePrice float32) float32 {
 	tmp := rand.Intn(1000)
 	if tmp < 500 {
@@ -148,7 +153,7 @@ func generatePrice(basePrice float32) float32 {
 	return conv
 }
 
-// get all cars from the DB and return them
+// Update DB with new prices
 func updateCount() error {
 	tmp := rand.Intn(10)
 	if tmp%5 != 0 {
